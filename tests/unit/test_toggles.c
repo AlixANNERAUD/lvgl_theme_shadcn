@@ -51,6 +51,7 @@ static void led_is_flat_primary(void)
 {
     lv_obj_t * led = lv_led_create(lv_screen_active());
     CHECK_INT(lv_obj_get_style_bg_opa(led, LV_PART_MAIN), LV_OPA_COVER);
+    CHECK_COLOR(lv_obj_get_style_bg_color(led, LV_PART_MAIN), lv_color_white());
     CHECK_INT(lv_obj_get_style_shadow_width(led, LV_PART_MAIN), 0);
     CHECK_INT(lv_obj_get_style_radius(led, LV_PART_MAIN), LV_RADIUS_CIRCLE);
     CHECK_COLOR(lv_led_get_color(led), dark()->primary);

@@ -197,7 +197,6 @@ static void build_collections(lv_obj_t * parent)
     prepare(parent);
     lv_obj_set_flex_flow(parent, LV_FLEX_FLOW_COLUMN_WRAP);
     const int32_t third_h = (CONTENT_H - 2 * SCENE_PAD) / 3;
-    const int32_t calendar_h = CONTENT_H - third_h - SCENE_PAD;
 
 #if LV_USE_TABVIEW
     lv_obj_t * tabview = lv_tabview_create(parent);
@@ -236,16 +235,20 @@ static void build_collections(lv_obj_t * parent)
 
 #if LV_USE_CALENDAR
     lv_obj_t * calendar = lv_calendar_create(parent);
-    lv_obj_set_size(calendar, HALF_W, calendar_h);
+    lv_obj_set_size(calendar, HALF_W, CONTENT_H - third_h - SCENE_PAD);
     lv_calendar_set_today_date(calendar, 2026, 10, 14);
     lv_calendar_set_month_shown(calendar, 2026, 10);
 #endif
 
 #if LV_USE_LIST
     lv_obj_t * list = lv_list_create(parent);
-    lv_obj_set_size(list, HALF_W, third_h);
+    lv_obj_set_size(list, HALF_W, LV_SIZE_CONTENT);
     lv_list_add_button(list, LV_SYMBOL_WIFI, "Network");
     lv_list_add_button(list, LV_SYMBOL_BELL, "Alerts");
+#if LV_USE_CALENDAR
+    lv_obj_update_layout(list);
+    lv_obj_set_height(calendar, CONTENT_H - lv_obj_get_height(list) - SCENE_PAD);
+#endif
 #endif
 }
 
