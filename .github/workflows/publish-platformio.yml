@@ -1,0 +1,34 @@
+name: publish-platformio
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    if: github.repository_owner == 'AlixANNERAUD'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PlatformIO
+        run: pip install platformio
+      - name: Check version
+        if: github.event_name == 'release'
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version=$(python -c "import json; print(json.load(open('library.json'))['version'])")
+          if [ "$version" != "${TAG#v}" ]; then
+            echo "library.json version $version does not match release tag $TAG"
+            exit 1
+          fi
+      - name: Pack
+        run: pio pkg pack -o "$RUNNER_TEMP"
+      - name: Publish
+        env:
+          PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
+        run: pio pkg publish "$RUNNER_TEMP"/lvgl_theme_shadcn-*.tar.gz --type library --owner alixanneraud --no-interactive
