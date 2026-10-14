@@ -165,6 +165,50 @@ static void build_actions(lv_theme_shadcn_state_t * st)
     set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_GHOST], p->accent, p->accent_fg);
 }
 
+static void build_toggles(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_theme_shadcn_styles_t * s = S(st);
+
+    lv_style_set_bg_color(&s->fill_primary, p->primary);
+    lv_style_set_bg_opa(&s->fill_primary, LV_OPA_COVER);
+    lv_style_set_radius(&s->fill_primary, LV_RADIUS_CIRCLE);
+
+    lv_style_set_bg_color(&s->switch_track, p->input);
+    lv_style_set_bg_opa(&s->switch_track, LV_OPA_COVER);
+    lv_style_set_radius(&s->switch_track, LV_RADIUS_CIRCLE);
+    lv_style_set_border_width(&s->switch_track, 0);
+
+    lv_style_set_bg_color(&s->switch_knob, p->background);
+    lv_style_set_bg_opa(&s->switch_knob, LV_OPA_COVER);
+    lv_style_set_radius(&s->switch_knob, LV_RADIUS_CIRCLE);
+    lv_style_set_pad_all(&s->switch_knob, -m->space_xs / 2);
+
+    lv_style_set_bg_color(&s->switch_knob_checked, p->primary_fg);
+
+    lv_style_set_pad_all(&s->checkbox_main, 0);
+    lv_style_set_pad_column(&s->checkbox_main, m->space_sm);
+
+    lv_style_set_bg_color(&s->checkbox_marker, p->background);
+    lv_style_set_bg_opa(&s->checkbox_marker, LV_OPA_COVER);
+    lv_style_set_border_width(&s->checkbox_marker, m->border_width);
+    lv_style_set_border_color(&s->checkbox_marker, p->input);
+    lv_style_set_border_opa(&s->checkbox_marker, LV_OPA_COVER);
+    lv_style_set_radius(&s->checkbox_marker, m->radius_sm);
+    lv_style_set_pad_all(&s->checkbox_marker, m->space_xs / 2);
+    lv_style_set_text_font(&s->checkbox_marker, st->fonts.small);
+
+    lv_style_set_bg_color(&s->checkbox_marker_checked, p->primary);
+    lv_style_set_border_color(&s->checkbox_marker_checked, p->primary);
+    lv_style_set_text_color(&s->checkbox_marker_checked, p->primary_fg);
+    lv_style_set_bg_image_src(&s->checkbox_marker_checked, LV_SYMBOL_OK);
+
+    lv_style_set_shadow_width(&s->led, 0);
+    lv_style_set_shadow_spread(&s->led, 0);
+    lv_style_set_radius(&s->led, LV_RADIUS_CIRCLE);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -182,4 +226,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_base(st);
     build_surfaces(st);
     build_actions(st);
+    build_toggles(st);
 }
