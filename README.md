@@ -1,7 +1,7 @@
 # lvgl_theme_shadcn
 
 [![CI](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/ci.yml/badge.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/blob/main/LICENSE)
 [![LVGL](https://img.shields.io/badge/LVGL-%E2%89%A5%209.6-brightgreen.svg)](https://lvgl.io)
 [![PlatformIO Registry](https://badges.registry.platformio.org/packages/alixanneraud/library/lvgl_theme_shadcn.svg)](https://registry.platformio.org/libraries/alixanneraud/lvgl_theme_shadcn)
 
@@ -11,8 +11,8 @@ roles, radii and crisp border-based surfaces, built for touch screens and cheap 
 Switch between dark and light at runtime, plug in your brand colour, and keep writing plain LVGL code.
 
 <p align="center">
-  <img src="tests/screenshots/ref/showcase-dark.png" alt="Smart home dashboard, dark palette" width="480">
-  <img src="tests/screenshots/ref/showcase-light.png" alt="Smart home dashboard, light palette" width="480">
+  <img src="https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/showcase-dark.png" alt="Smart home dashboard, dark palette" width="480">
+  <img src="https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/showcase-light.png" alt="Smart home dashboard, light palette" width="480">
 </p>
 
 ## Why lvgl_theme_shadcn?
@@ -36,16 +36,16 @@ Switch between dark and light at runtime, plug in your brand colour, and keep wr
 ## Gallery
 
 Every image below is a reference from the screenshot test suite, rendered at 480x320 straight from
-[`examples/scenes`](examples/scenes).
+[`examples/scenes`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/examples/scenes).
 
 | Scene | Dark | Light |
 | --- | --- | --- |
-| Buttons: variants, icons and states | ![Buttons, dark](tests/screenshots/ref/buttons-dark.png) | ![Buttons, light](tests/screenshots/ref/buttons-light.png) |
-| Toggles: switches, checkboxes and LEDs | ![Toggles, dark](tests/screenshots/ref/toggles-dark.png) | ![Toggles, light](tests/screenshots/ref/toggles-light.png) |
-| Ranges: sliders, bars, scales and arcs | ![Ranges, dark](tests/screenshots/ref/ranges-dark.png) | ![Ranges, light](tests/screenshots/ref/ranges-light.png) |
-| Inputs: text, selects and pickers | ![Inputs, dark](tests/screenshots/ref/inputs-dark.png) | ![Inputs, light](tests/screenshots/ref/inputs-light.png) |
-| Collections: tabs, tables, charts, calendar and lists | ![Collections, dark](tests/screenshots/ref/collections-dark.png) | ![Collections, light](tests/screenshots/ref/collections-light.png) |
-| Overlays: message box and keyboard | ![Overlays, dark](tests/screenshots/ref/overlays-dark.png) | ![Overlays, light](tests/screenshots/ref/overlays-light.png) |
+| Buttons: variants, icons and states | ![Buttons, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/buttons-dark.png) | ![Buttons, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/buttons-light.png) |
+| Toggles: switches, checkboxes and LEDs | ![Toggles, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/toggles-dark.png) | ![Toggles, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/toggles-light.png) |
+| Ranges: sliders, bars, scales and arcs | ![Ranges, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/ranges-dark.png) | ![Ranges, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/ranges-light.png) |
+| Inputs: text, selects and pickers | ![Inputs, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/inputs-dark.png) | ![Inputs, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/inputs-light.png) |
+| Collections: tabs, tables, charts, calendar and lists | ![Collections, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/collections-dark.png) | ![Collections, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/collections-light.png) |
+| Overlays: message box and keyboard | ![Overlays, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/overlays-dark.png) | ![Overlays, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/overlays-light.png) |
 
 ## Quick start
 
@@ -110,7 +110,7 @@ dependencies:
 ```
 
 Enable the fonts you use with `CONFIG_LV_FONT_MONTSERRAT_12=y` and friends. A complete project lives in
-[`examples/esp_idf`](examples/esp_idf).
+[`examples/esp_idf`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/examples/esp_idf).
 
 ### Zephyr
 
@@ -128,7 +128,7 @@ lib_deps =
     alixanneraud/lvgl_theme_shadcn
 ```
 
-LVGL is pulled in as a dependency; provide your `lv_conf.h` as usual. [`examples/platformio`](examples/platformio) is
+LVGL is pulled in as a dependency; provide your `lv_conf.h` as usual. [`examples/platformio`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/examples/platformio) is
 a native project that renders a themed button headlessly.
 
 ### Arduino
@@ -184,7 +184,7 @@ touch targets to 40 dp, for dense screens or pointer input.
 
 ## Gallery app
 
-[`examples/gallery`](examples/gallery) is an SDL2 desktop app with one tab per scene and a light switch in the header
+[`examples/gallery`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/examples/gallery) is an SDL2 desktop app with one tab per scene and a light switch in the header
 that flips the palette live. It is a standalone CMake project that fetches LVGL 9.6.0:
 
 ```sh
@@ -203,8 +203,8 @@ ctest --test-dir build --output-on-failure
 
 Building the repository at the top level fetches LVGL 9.6.0 and runs two kinds of tests:
 
-- **Unit tests** in [`tests/unit`](tests/unit) check palettes, lifecycle and the styles applied to each widget family.
-- **Screenshot tests** in [`tests/screenshots`](tests/screenshots) render every scene in both palettes at 480x320,
+- **Unit tests** in [`tests/unit`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/tests/unit) check palettes, lifecycle and the styles applied to each widget family.
+- **Screenshot tests** in [`tests/screenshots`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/tests/screenshots) render every scene in both palettes at 480x320,
   check that rendering is deterministic, and compare each image against `tests/screenshots/ref`. Renders land in
   `build/screenshots`, with a `-diff.png` highlighting the pixels that changed when a scene fails.
 
@@ -224,4 +224,4 @@ Rust bindings: coming soon.
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/blob/main/LICENSE).
