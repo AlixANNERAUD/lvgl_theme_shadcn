@@ -3,3 +3,10 @@
 /rust/target/
 /tests/screenshots/out/
 .DS_Store
+.pio/
+/examples/esp_idf/build/
+/examples/esp_idf/managed_components/
+/examples/esp_idf/sdkconfig
+/examples/esp_idf/sdkconfig.old
+/examples/esp_idf/dependencies.lock
+*.tar.gz

@@ -1,0 +1,8 @@
+if(CONFIG_LV_THEME_SHADCN)
+  include(${CMAKE_CURRENT_LIST_DIR}/../sources.cmake)
+  zephyr_library()
+  zephyr_library_sources(${LV_THEME_SHADCN_SOURCES})
+  zephyr_include_directories(${CMAKE_CURRENT_LIST_DIR}/../include)
+  zephyr_library_include_directories(${CMAKE_CURRENT_LIST_DIR}/../src)
+  zephyr_library_link_libraries(LVGL)
+endif()

@@ -1,0 +1,4 @@
+name: lvgl_theme_shadcn
+build:
+  cmake: zephyr
+  kconfig: zephyr/Kconfig

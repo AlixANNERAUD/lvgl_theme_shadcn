@@ -1,0 +1,23 @@
+version: "0.1.0"
+description: "Beautiful shadcn/ui-inspired theme for LVGL 9: every widget styled, dark and light palettes switchable at runtime, touch-first, MCU-friendly."
+url: "https://github.com/AlixANNERAUD/lvgl_theme_shadcn"
+repository: "https://github.com/AlixANNERAUD/lvgl_theme_shadcn.git"
+issues: "https://github.com/AlixANNERAUD/lvgl_theme_shadcn/issues"
+license: "MIT"
+tags:
+  - lvgl
+  - theme
+  - gui
+  - shadcn
+dependencies:
+  idf: ">=5.1"
+  lvgl/lvgl: ">=9.6.0"
+files:
+  exclude:
+    - "tests/**/*"
+    - "examples/**/*"
+    - "rust/**/*"
+    - "docs/**/*"
+    - "build*/**/*"
+    - ".github/**/*"
+    - ".superpowers/**/*"
