@@ -204,6 +204,9 @@ static void build_toggles(lv_theme_shadcn_state_t * st)
     lv_style_set_text_color(&s->checkbox_marker_checked, p->primary_fg);
     lv_style_set_bg_image_src(&s->checkbox_marker_checked, LV_SYMBOL_OK);
 
+    lv_style_set_bg_color(&s->led, lv_color_white());
+    lv_style_set_bg_opa(&s->led, LV_OPA_COVER);
+    lv_style_set_border_width(&s->led, 0);
     lv_style_set_shadow_width(&s->led, 0);
     lv_style_set_shadow_spread(&s->led, 0);
     lv_style_set_radius(&s->led, LV_RADIUS_CIRCLE);
