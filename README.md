@@ -121,6 +121,8 @@ CONFIG_LVGL=y
 CONFIG_LV_THEME_SHADCN=y
 ```
 
+The Zephyr LVGL module must be version 9.6 or newer; the theme header stops the build with an `#error` otherwise.
+
 ### PlatformIO
 
 ```ini
@@ -214,7 +216,8 @@ After an intentional visual change, regenerate the references and review them in
 tests/screenshots/update.sh
 ```
 
-Set `LV_THEME_SHADCN_LVGL_SOURCE_DIR` to a local LVGL checkout to build offline. CI runs the suite with gcc and
+Point the test build at a local LVGL checkout to build offline, either with the `LV_THEME_SHADCN_LVGL_SOURCE_DIR`
+environment variable or with `-DFETCHCONTENT_SOURCE_DIR_LVGL=<path>`. A missing screenshot reference fails the test. CI runs the suite with gcc and
 clang, in both RGB565 and XRGB8888 (`-DLV_THEME_SHADCN_TEST_COLOR_FORMAT=...`), and also builds the gallery, the
 ESP-IDF example and the PlatformIO example.
 
