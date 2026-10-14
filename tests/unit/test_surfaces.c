@@ -19,8 +19,9 @@ static void plain_obj_is_a_card(void)
 static void label_inherits_parent_text_color(void)
 {
     lv_obj_t * card = lv_obj_create(lv_screen_active());
+    lv_theme_shadcn_set_surface(card, LV_THEME_SHADCN_SURFACE_MUTED);
     lv_obj_t * label = lv_label_create(card);
-    CHECK_COLOR(lv_obj_get_style_text_color(label, LV_PART_MAIN), dark()->card_fg);
+    CHECK_COLOR(lv_obj_get_style_text_color(label, LV_PART_MAIN), dark()->muted_fg);
     CHECK_INT(lv_obj_get_style_bg_opa(label, LV_PART_MAIN), LV_OPA_TRANSP);
 }
 

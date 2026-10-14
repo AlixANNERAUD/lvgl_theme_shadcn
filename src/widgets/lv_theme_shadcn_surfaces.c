@@ -16,6 +16,7 @@ static void add_card(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
 
 static bool apply_plain_obj(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent)
 {
+    LV_UNUSED(parent);
 #if LV_USE_TABVIEW
     if(lv_obj_check_type(parent, &lv_tabview_class)) {
         lv_obj_add_style(obj, &S(st)->transparent, 0);
@@ -105,7 +106,9 @@ bool lv_theme_shadcn_apply_surfaces(lv_theme_shadcn_state_t * st, lv_obj_t * obj
         return true;
     }
 #endif
+#if LV_USE_LABEL
     if(lv_obj_check_type(obj, &lv_label_class)) return true;
+#endif
 #if LV_USE_SPAN
     if(lv_obj_check_type(obj, &lv_spangroup_class)) return true;
 #endif
