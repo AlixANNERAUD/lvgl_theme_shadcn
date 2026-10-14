@@ -11,6 +11,8 @@ void lv_theme_shadcn_add_button(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv
 
 bool lv_theme_shadcn_apply_actions(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent)
 {
+    LV_UNUSED(st);
+    LV_UNUSED(obj);
     LV_UNUSED(parent);
 #if LV_USE_BUTTON
     if(lv_obj_check_type(obj, &lv_button_class)) {
