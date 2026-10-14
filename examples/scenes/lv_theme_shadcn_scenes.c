@@ -247,7 +247,7 @@ static void build_showcase(lv_obj_t * parent)
 static void build_buttons(lv_obj_t * parent)
 {
     prepare(parent, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_style_pad_row(parent, 14, 0);
+    lv_obj_set_style_pad_row(parent, 12, 0);
     page_header(parent, "Buttons", "Variants, icons and states");
 
 #if LV_USE_BUTTON
@@ -264,6 +264,7 @@ static void build_buttons(lv_obj_t * parent)
     button(variants, LV_SYMBOL_SETTINGS "  Settings", LV_THEME_SHADCN_VARIANT_SECONDARY, QUARTER_W);
 
     lv_obj_t * states = box(parent, LV_FLEX_FLOW_ROW_WRAP, SCENE_PAD);
+    lv_obj_set_style_pad_bottom(states, 4, 0);
     lv_obj_t * states_label = muted_text(states, "States");
     lv_obj_set_width(states_label, lv_pct(100));
     lv_obj_add_state(button(states, "Pressed", LV_THEME_SHADCN_VARIANT_DEFAULT, QUARTER_W), LV_STATE_PRESSED);
