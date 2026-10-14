@@ -61,6 +61,60 @@ static void build_base(lv_theme_shadcn_state_t * st)
     lv_style_set_opa(&s->disabled, LV_THEME_SHADCN_DISABLED_OPA);
 }
 
+static void set_surface(lv_style_t * style, lv_color_t bg, lv_color_t fg)
+{
+    lv_style_set_bg_color(style, bg);
+    lv_style_set_bg_opa(style, LV_OPA_COVER);
+    lv_style_set_text_color(style, fg);
+}
+
+static void set_pad(lv_style_t * style, int32_t pad)
+{
+    lv_style_set_pad_all(style, pad);
+    lv_style_set_pad_gap(style, pad);
+}
+
+static void build_surfaces(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_theme_shadcn_styles_t * s = S(st);
+
+    set_surface(&s->surface[LV_THEME_SHADCN_SURFACE_BACKGROUND], p->background, p->foreground);
+    set_surface(&s->surface[LV_THEME_SHADCN_SURFACE_CARD], p->card, p->card_fg);
+    set_surface(&s->surface[LV_THEME_SHADCN_SURFACE_POPOVER], p->popover, p->popover_fg);
+    set_surface(&s->surface[LV_THEME_SHADCN_SURFACE_MUTED], p->muted, p->muted_fg);
+
+    lv_style_set_border_width(&s->container, m->border_width);
+    lv_style_set_border_color(&s->container, p->border);
+    lv_style_set_border_opa(&s->container, LV_OPA_COVER);
+    lv_style_set_radius(&s->container, m->radius_md);
+    lv_style_set_pad_all(&s->container, m->space_lg);
+    lv_style_set_pad_gap(&s->container, m->space_md);
+
+    lv_style_set_bg_opa(&s->transparent, LV_OPA_TRANSP);
+    lv_style_set_border_width(&s->transparent, 0);
+    lv_style_set_radius(&s->transparent, 0);
+    set_pad(&s->transparent, 0);
+
+    set_pad(&s->pad_none, 0);
+    set_pad(&s->pad_xs, m->space_xs);
+    set_pad(&s->pad_sm, m->space_sm);
+    set_pad(&s->pad_md, m->space_md);
+    set_pad(&s->pad_lg, m->space_lg);
+
+    lv_style_set_text_color(&s->text_muted, p->muted_fg);
+    lv_style_set_text_font(&s->font_small, st->fonts.small);
+    lv_style_set_text_font(&s->font_large, st->fonts.large);
+
+    set_surface(&s->accent, p->accent, p->accent_fg);
+
+    lv_style_set_border_color(&s->focused_input, p->ring);
+
+    lv_style_set_border_color(&s->error, p->destructive);
+    lv_style_set_text_color(&s->error, p->destructive);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -76,4 +130,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
 {
     lv_theme_shadcn_styles_reset(st);
     build_base(st);
+    build_surfaces(st);
 }

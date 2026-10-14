@@ -150,3 +150,24 @@ const lv_theme_shadcn_palette_t * lv_theme_shadcn_get_palette(lv_display_t * dis
     lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_find(disp);
     return st ? &st->palette : NULL;
 }
+
+static void remove_styles(lv_obj_t * obj, lv_style_t * styles, size_t count)
+{
+    for(size_t i = 0; i < count; i++) lv_obj_remove_style(obj, &styles[i], LV_PART_ANY | LV_STATE_ANY);
+}
+
+void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface)
+{
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
+    if(st == NULL || (int)surface < 0 || surface >= LV_THEME_SHADCN_SURFACE_COUNT) return;
+    remove_styles(obj, S(st)->surface, LV_THEME_SHADCN_SURFACE_COUNT);
+    lv_obj_add_style(obj, &S(st)->surface[surface], 0);
+}
+
+void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error)
+{
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
+    if(st == NULL) return;
+    lv_obj_remove_style(obj, &S(st)->error, LV_PART_ANY | LV_STATE_ANY);
+    if(error) lv_obj_add_style(obj, &S(st)->error, 0);
+}

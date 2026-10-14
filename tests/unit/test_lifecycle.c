@@ -87,6 +87,7 @@ static void resolution_change_rescales_metrics(void)
 {
     lv_obj_t * btn = lv_obj_create(lv_screen_active());
     int32_t before = lv_obj_get_style_radius(btn, LV_PART_MAIN);
+    CHECK(before > 0);
     lv_display_set_dpi(harness_display(), 320);
     lv_display_set_resolution(harness_display(), 320, 240);
     CHECK_INT(lv_obj_get_style_radius(btn, LV_PART_MAIN), before * 2);

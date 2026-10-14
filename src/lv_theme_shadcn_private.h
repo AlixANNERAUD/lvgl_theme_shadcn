@@ -33,6 +33,20 @@ typedef struct {
     lv_style_t transition;
     lv_style_t focus_ring;
     lv_style_t disabled;
+    lv_style_t surface[LV_THEME_SHADCN_SURFACE_COUNT];
+    lv_style_t container;
+    lv_style_t transparent;
+    lv_style_t pad_none;
+    lv_style_t pad_xs;
+    lv_style_t pad_sm;
+    lv_style_t pad_md;
+    lv_style_t pad_lg;
+    lv_style_t text_muted;
+    lv_style_t font_small;
+    lv_style_t font_large;
+    lv_style_t accent;
+    lv_style_t focused_input;
+    lv_style_t error;
 } lv_theme_shadcn_styles_t;
 
 typedef struct lv_theme_shadcn_state_t {
@@ -58,6 +72,7 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st);
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st);
 void lv_theme_shadcn_apply_cb(lv_theme_t * th, lv_obj_t * obj);
 void lv_theme_shadcn_add_interaction(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_style_selector_t part);
+bool lv_theme_shadcn_apply_surfaces(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj);
 
 #endif

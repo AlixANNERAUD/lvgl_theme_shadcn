@@ -9,3 +9,4 @@ endfunction()
 
 lv_theme_shadcn_add_test(test_palette)
 lv_theme_shadcn_add_test(test_lifecycle)
+lv_theme_shadcn_add_test(test_surfaces)

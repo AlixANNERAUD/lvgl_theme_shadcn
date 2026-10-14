@@ -30,4 +30,5 @@ void lv_theme_shadcn_apply_cb(lv_theme_t * th, lv_obj_t * obj)
         apply_screen(st, obj);
         return;
     }
+    if(lv_theme_shadcn_apply_surfaces(st, obj, parent)) return;
 }
