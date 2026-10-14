@@ -209,6 +209,46 @@ static void build_toggles(lv_theme_shadcn_state_t * st)
     lv_style_set_radius(&s->led, LV_RADIUS_CIRCLE);
 }
 
+static void build_ranges(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_theme_shadcn_styles_t * s = S(st);
+
+    lv_style_set_bg_color(&s->track, p->secondary);
+    lv_style_set_bg_opa(&s->track, LV_OPA_COVER);
+    lv_style_set_radius(&s->track, LV_RADIUS_CIRCLE);
+    lv_style_set_border_width(&s->track, 0);
+
+    lv_style_set_bg_color(&s->knob, p->background);
+    lv_style_set_bg_opa(&s->knob, LV_OPA_COVER);
+    lv_style_set_border_width(&s->knob, m->ring_width);
+    lv_style_set_border_color(&s->knob, p->primary);
+    lv_style_set_border_opa(&s->knob, LV_OPA_COVER);
+    lv_style_set_radius(&s->knob, LV_RADIUS_CIRCLE);
+    lv_style_set_pad_all(&s->knob, m->space_xs);
+
+    lv_style_set_arc_color(&s->arc_track, p->secondary);
+    lv_style_set_arc_width(&s->arc_track, m->space_sm);
+    lv_style_set_arc_rounded(&s->arc_track, true);
+    lv_style_set_bg_opa(&s->arc_track, LV_OPA_TRANSP);
+
+    lv_style_set_arc_color(&s->arc_indicator, p->primary);
+    lv_style_set_arc_width(&s->arc_indicator, m->space_sm);
+    lv_style_set_arc_rounded(&s->arc_indicator, true);
+
+    lv_style_set_line_color(&s->scale_main, p->border);
+    lv_style_set_line_width(&s->scale_main, m->ring_width);
+    lv_style_set_arc_color(&s->scale_main, p->border);
+    lv_style_set_arc_width(&s->scale_main, m->ring_width);
+    lv_style_set_text_color(&s->scale_main, p->muted_fg);
+
+    lv_style_set_line_color(&s->scale_ticks, p->muted_fg);
+    lv_style_set_line_width(&s->scale_ticks, m->ring_width);
+    lv_style_set_length(&s->scale_ticks, m->space_sm);
+    lv_style_set_text_color(&s->scale_ticks, p->muted_fg);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -227,4 +267,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_surfaces(st);
     build_actions(st);
     build_toggles(st);
+    build_ranges(st);
 }

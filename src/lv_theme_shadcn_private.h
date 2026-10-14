@@ -56,6 +56,12 @@ typedef struct {
     lv_style_t checkbox_marker;
     lv_style_t checkbox_marker_checked;
     lv_style_t led;
+    lv_style_t track;
+    lv_style_t knob;
+    lv_style_t arc_track;
+    lv_style_t arc_indicator;
+    lv_style_t scale_main;
+    lv_style_t scale_ticks;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
 } lv_theme_shadcn_styles_t;
@@ -87,6 +93,7 @@ bool lv_theme_shadcn_apply_actions(lv_theme_shadcn_state_t * st, lv_obj_t * obj,
 void lv_theme_shadcn_add_button(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_theme_shadcn_variant_t variant);
 bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_surfaces(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
+bool lv_theme_shadcn_apply_ranges(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj);
 
 #endif
