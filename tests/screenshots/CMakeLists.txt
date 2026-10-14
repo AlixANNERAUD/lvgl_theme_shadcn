@@ -20,4 +20,3 @@ endif()
 
 add_test(NAME screenshots
   COMMAND screenshots ${CMAKE_CURRENT_SOURCE_DIR}/ref ${CMAKE_BINARY_DIR}/screenshots)
-set_tests_properties(screenshots PROPERTIES SKIP_RETURN_CODE 77)

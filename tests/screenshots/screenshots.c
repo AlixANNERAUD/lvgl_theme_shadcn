@@ -223,10 +223,7 @@ int main(int argc, char ** argv)
     }
     lv_deinit();
 
-    if(failed) return 1;
-    if(missing) {
-        printf("run tests/screenshots/update.sh to create references\n");
-        return 77;
-    }
+    if(missing) printf("missing references: run tests/screenshots/update.sh to create them\n");
+    if(failed || missing) return 1;
     return 0;
 }
