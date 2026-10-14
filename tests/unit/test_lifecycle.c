@@ -107,6 +107,14 @@ static void init_styles_existing_active_screen(void)
     CHECK_COLOR(lv_obj_get_style_bg_color(lv_screen_active(), LV_PART_MAIN), lv_theme_shadcn_palette_zinc_dark()->background);
 }
 
+static void init_leaves_system_layers_transparent(void)
+{
+    CHECK(lv_obj_get_style_bg_opa(lv_layer_top(), LV_PART_MAIN) == LV_OPA_TRANSP);
+    CHECK(lv_obj_get_style_bg_opa(lv_layer_sys(), LV_PART_MAIN) == LV_OPA_TRANSP);
+    CHECK(lv_obj_get_style_bg_opa(lv_layer_bottom(), LV_PART_MAIN) == LV_OPA_TRANSP);
+    CHECK(lv_obj_get_style_bg_opa(lv_screen_active(), LV_PART_MAIN) == LV_OPA_COVER);
+}
+
 static void churn_heap(void)
 {
     for(int i = 0; i < 16; i++) {
@@ -154,6 +162,7 @@ int main(void)
 {
     RUN(init_activates_theme_and_styles_screen);
     RUN(init_styles_existing_active_screen);
+    RUN(init_leaves_system_layers_transparent);
     RUN_RAW(deinit_with_live_objects_detaches_styles);
     RUN_RAW(display_delete_with_live_objects_is_safe);
     RUN(get_palette_returns_copy_of_active_palette);

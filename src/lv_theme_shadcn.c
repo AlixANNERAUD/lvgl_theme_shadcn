@@ -80,17 +80,12 @@ static void display_event_cb(lv_event_t * e)
     }
 }
 
-static void apply_to_empty_roots(lv_theme_shadcn_state_t * st)
+static void apply_to_empty_screen(lv_theme_shadcn_state_t * st)
 {
-    lv_obj_t * roots[4] = {
-        lv_display_get_screen_active(st->disp),
-        lv_display_get_layer_top(st->disp),
-        lv_display_get_layer_sys(st->disp),
-        lv_display_get_layer_bottom(st->disp)
-    };
-    for(size_t i = 0; i < 4; i++) {
-        if(roots[i] && lv_obj_get_child_count(roots[i]) == 0) lv_theme_apply(roots[i]);
-    }
+    lv_obj_t * bottom = lv_display_get_layer_bottom(st->disp);
+    if(bottom && lv_obj_get_child_count(bottom) == 0) lv_obj_remove_style_all(bottom);
+    lv_obj_t * screen = lv_display_get_screen_active(st->disp);
+    if(screen && lv_obj_get_child_count(screen) == 0) lv_theme_apply(screen);
 }
 
 lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_palette_t * palette,
@@ -121,7 +116,7 @@ lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_pal
     lv_theme_shadcn_metrics_resolve(st);
     lv_theme_shadcn_styles_build(st);
     lv_display_set_theme(disp, st->theme);
-    apply_to_empty_roots(st);
+    apply_to_empty_screen(st);
     lv_obj_report_style_change(NULL);
     return st->theme;
 }
