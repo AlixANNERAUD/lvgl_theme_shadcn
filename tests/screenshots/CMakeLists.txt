@@ -2,6 +2,12 @@ if(NOT TARGET lv_theme_shadcn_scenes)
   return()
 endif()
 
+file(READ ${LV_BUILD_CONF_PATH} lv_theme_shadcn_conf)
+if(NOT lv_theme_shadcn_conf MATCHES "#define[ \t]+LV_USE_SNAPSHOT[ \t]+1" OR
+   NOT lv_theme_shadcn_conf MATCHES "#define[ \t]+LV_USE_LODEPNG[ \t]+1")
+  return()
+endif()
+
 add_executable(screenshots screenshots.c)
 target_link_libraries(screenshots PRIVATE lv_theme_shadcn_scenes)
 if(DEFINED lvgl_SOURCE_DIR)
