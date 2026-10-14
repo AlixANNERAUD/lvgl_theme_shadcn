@@ -30,6 +30,10 @@
     "exclude": [
       "tests",
       "examples",
+      "Cargo.toml",
+      "Cargo.lock",
+      "release-plz.toml",
+      "RELEASING.md",
       "rust",
       "scripts",
       "target",
