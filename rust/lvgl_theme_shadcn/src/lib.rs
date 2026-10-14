@@ -41,6 +41,28 @@
 //! assert!(!theme.palette().expect("palette").is_dark());
 //! ```
 //!
+//! # Palettes
+//!
+//! Every shadcn/ui base colour ([`Base`]) can be combined with every accent ([`Accent`]) in light or dark mode with
+//! [`Palette::new`]. [`Theme::set_palette`] restyles existing widgets in place, so palettes can be switched at
+//! runtime:
+//!
+//! ```no_run
+//! use lvgl_theme_shadcn::{Accent, Base, Palette, Theme};
+//!
+//! fn apply(theme: &Theme, base: Base, accent: Accent, dark: bool) {
+//!     theme.set_palette(&Palette::new(base, accent, dark));
+//! }
+//!
+//! for base in Base::ALL {
+//!     for accent in Accent::ALL {
+//!         let palette = Palette::new(base, accent, true);
+//!         assert!(palette.is_dark());
+//!         let _label = (base.name(), accent.name());
+//!     }
+//! }
+//! ```
+//!
 //! # Interoperability with another LVGL binding
 //!
 //! With a binding such as `lvgl_rust_sys`, pointers are passed directly and converted back with `.cast()`:
@@ -195,6 +217,194 @@ impl From<Color> for sys::lv_color_t {
     }
 }
 
+/// Base colour of a shadcn/ui palette: the neutral tones used for backgrounds, surfaces, borders and text.
+///
+/// `Gray` and `Slate` come from shadcn/ui's legacy base colours; the others from its current registry.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum Base {
+    /// shadcn/ui `neutral`.
+    Neutral,
+    /// shadcn/ui `stone`.
+    Stone,
+    /// shadcn/ui `zinc`, the default.
+    #[default]
+    Zinc,
+    /// shadcn/ui `gray`.
+    Gray,
+    /// shadcn/ui `slate`.
+    Slate,
+    /// shadcn/ui `mauve`.
+    Mauve,
+    /// shadcn/ui `olive`.
+    Olive,
+    /// shadcn/ui `mist`.
+    Mist,
+    /// shadcn/ui `taupe`.
+    Taupe,
+}
+
+impl Base {
+    /// Every base colour, in declaration order.
+    pub const ALL: [Base; 9] = [
+        Base::Neutral,
+        Base::Stone,
+        Base::Zinc,
+        Base::Gray,
+        Base::Slate,
+        Base::Mauve,
+        Base::Olive,
+        Base::Mist,
+        Base::Taupe,
+    ];
+
+    /// Returns the lowercase shadcn/ui name, such as `"zinc"`.
+    pub const fn name(self) -> &'static str {
+        match self {
+            Base::Neutral => "neutral",
+            Base::Stone => "stone",
+            Base::Zinc => "zinc",
+            Base::Gray => "gray",
+            Base::Slate => "slate",
+            Base::Mauve => "mauve",
+            Base::Olive => "olive",
+            Base::Mist => "mist",
+            Base::Taupe => "taupe",
+        }
+    }
+}
+
+impl From<Base> for sys::lv_theme_shadcn_base_t {
+    fn from(base: Base) -> Self {
+        match base {
+            Base::Neutral => Self::LV_THEME_SHADCN_BASE_NEUTRAL,
+            Base::Stone => Self::LV_THEME_SHADCN_BASE_STONE,
+            Base::Zinc => Self::LV_THEME_SHADCN_BASE_ZINC,
+            Base::Gray => Self::LV_THEME_SHADCN_BASE_GRAY,
+            Base::Slate => Self::LV_THEME_SHADCN_BASE_SLATE,
+            Base::Mauve => Self::LV_THEME_SHADCN_BASE_MAUVE,
+            Base::Olive => Self::LV_THEME_SHADCN_BASE_OLIVE,
+            Base::Mist => Self::LV_THEME_SHADCN_BASE_MIST,
+            Base::Taupe => Self::LV_THEME_SHADCN_BASE_TAUPE,
+        }
+    }
+}
+
+/// Accent colour of a shadcn/ui palette, overriding `primary`, `primary_fg`, `secondary`, `secondary_fg` and the
+/// chart colours of the base.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum Accent {
+    /// No accent: the base colour's own monochrome `primary` and charts.
+    #[default]
+    None,
+    /// shadcn/ui `amber`.
+    Amber,
+    /// shadcn/ui `blue`.
+    Blue,
+    /// shadcn/ui `cyan`.
+    Cyan,
+    /// shadcn/ui `emerald`.
+    Emerald,
+    /// shadcn/ui `fuchsia`.
+    Fuchsia,
+    /// shadcn/ui `green`.
+    Green,
+    /// shadcn/ui `indigo`.
+    Indigo,
+    /// shadcn/ui `lime`.
+    Lime,
+    /// shadcn/ui `orange`.
+    Orange,
+    /// shadcn/ui `pink`.
+    Pink,
+    /// shadcn/ui `purple`.
+    Purple,
+    /// shadcn/ui `red`.
+    Red,
+    /// shadcn/ui `rose`.
+    Rose,
+    /// shadcn/ui `sky`.
+    Sky,
+    /// shadcn/ui `teal`.
+    Teal,
+    /// shadcn/ui `violet`.
+    Violet,
+    /// shadcn/ui `yellow`.
+    Yellow,
+}
+
+impl Accent {
+    /// Every accent, starting with [`Accent::None`] and then in alphabetical order.
+    pub const ALL: [Accent; 18] = [
+        Accent::None,
+        Accent::Amber,
+        Accent::Blue,
+        Accent::Cyan,
+        Accent::Emerald,
+        Accent::Fuchsia,
+        Accent::Green,
+        Accent::Indigo,
+        Accent::Lime,
+        Accent::Orange,
+        Accent::Pink,
+        Accent::Purple,
+        Accent::Red,
+        Accent::Rose,
+        Accent::Sky,
+        Accent::Teal,
+        Accent::Violet,
+        Accent::Yellow,
+    ];
+
+    /// Returns the lowercase shadcn/ui name, such as `"blue"`, or `"none"`.
+    pub const fn name(self) -> &'static str {
+        match self {
+            Accent::None => "none",
+            Accent::Amber => "amber",
+            Accent::Blue => "blue",
+            Accent::Cyan => "cyan",
+            Accent::Emerald => "emerald",
+            Accent::Fuchsia => "fuchsia",
+            Accent::Green => "green",
+            Accent::Indigo => "indigo",
+            Accent::Lime => "lime",
+            Accent::Orange => "orange",
+            Accent::Pink => "pink",
+            Accent::Purple => "purple",
+            Accent::Red => "red",
+            Accent::Rose => "rose",
+            Accent::Sky => "sky",
+            Accent::Teal => "teal",
+            Accent::Violet => "violet",
+            Accent::Yellow => "yellow",
+        }
+    }
+}
+
+impl From<Accent> for sys::lv_theme_shadcn_accent_t {
+    fn from(accent: Accent) -> Self {
+        match accent {
+            Accent::None => Self::LV_THEME_SHADCN_ACCENT_NONE,
+            Accent::Amber => Self::LV_THEME_SHADCN_ACCENT_AMBER,
+            Accent::Blue => Self::LV_THEME_SHADCN_ACCENT_BLUE,
+            Accent::Cyan => Self::LV_THEME_SHADCN_ACCENT_CYAN,
+            Accent::Emerald => Self::LV_THEME_SHADCN_ACCENT_EMERALD,
+            Accent::Fuchsia => Self::LV_THEME_SHADCN_ACCENT_FUCHSIA,
+            Accent::Green => Self::LV_THEME_SHADCN_ACCENT_GREEN,
+            Accent::Indigo => Self::LV_THEME_SHADCN_ACCENT_INDIGO,
+            Accent::Lime => Self::LV_THEME_SHADCN_ACCENT_LIME,
+            Accent::Orange => Self::LV_THEME_SHADCN_ACCENT_ORANGE,
+            Accent::Pink => Self::LV_THEME_SHADCN_ACCENT_PINK,
+            Accent::Purple => Self::LV_THEME_SHADCN_ACCENT_PURPLE,
+            Accent::Red => Self::LV_THEME_SHADCN_ACCENT_RED,
+            Accent::Rose => Self::LV_THEME_SHADCN_ACCENT_ROSE,
+            Accent::Sky => Self::LV_THEME_SHADCN_ACCENT_SKY,
+            Accent::Teal => Self::LV_THEME_SHADCN_ACCENT_TEAL,
+            Accent::Violet => Self::LV_THEME_SHADCN_ACCENT_VIOLET,
+            Accent::Yellow => Self::LV_THEME_SHADCN_ACCENT_YELLOW,
+        }
+    }
+}
+
 /// The colour roles of a theme, mirroring shadcn/ui CSS variables.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Palette(sys::lv_theme_shadcn_palette_t);
@@ -242,6 +452,23 @@ palette_roles!(
 impl Palette {
     /// Number of chart colours.
     pub const CHART_COUNT: usize = 5;
+
+    /// Builds the shadcn/ui palette for `base` with `accent`, in dark or light mode.
+    ///
+    /// The tables are generated from the shadcn/ui registry and stored in flash; nothing is allocated. Switch
+    /// palettes at runtime with [`Theme::set_palette`]:
+    ///
+    /// ```no_run
+    /// # use lvgl_theme_shadcn::{Accent, Base, Palette, Theme};
+    /// # fn switch(theme: &Theme) {
+    /// theme.set_palette(&Palette::new(Base::Slate, Accent::Blue, true));
+    /// # }
+    /// ```
+    pub fn new(base: Base, accent: Accent, dark: bool) -> Self {
+        let mut out = sys::lv_theme_shadcn_palette_t::default();
+        unsafe { sys::lv_theme_shadcn_palette_make(&mut out, base.into(), accent.into(), dark) };
+        Self(out)
+    }
 
     /// The built-in dark zinc palette.
     pub fn zinc_dark() -> Self {

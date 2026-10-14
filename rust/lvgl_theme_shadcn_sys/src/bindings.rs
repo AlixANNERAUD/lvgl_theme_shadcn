@@ -47,6 +47,50 @@ pub struct lv_theme_shadcn_palette_t {
     pub chart: [lv_color_t; 5usize],
     pub dark: bool,
 }
+impl lv_theme_shadcn_base_t {
+    pub const LV_THEME_SHADCN_BASE_NEUTRAL: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(0);
+    pub const LV_THEME_SHADCN_BASE_STONE: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(1);
+    pub const LV_THEME_SHADCN_BASE_ZINC: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(2);
+    pub const LV_THEME_SHADCN_BASE_GRAY: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(3);
+    pub const LV_THEME_SHADCN_BASE_SLATE: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(4);
+    pub const LV_THEME_SHADCN_BASE_MAUVE: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(5);
+    pub const LV_THEME_SHADCN_BASE_OLIVE: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(6);
+    pub const LV_THEME_SHADCN_BASE_MIST: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(7);
+    pub const LV_THEME_SHADCN_BASE_TAUPE: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(8);
+    pub const LV_THEME_SHADCN_BASE_COUNT: lv_theme_shadcn_base_t = lv_theme_shadcn_base_t(9);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct lv_theme_shadcn_base_t(pub ::core::ffi::c_uint);
+impl lv_theme_shadcn_accent_t {
+    pub const LV_THEME_SHADCN_ACCENT_NONE: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(0);
+    pub const LV_THEME_SHADCN_ACCENT_AMBER: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(1);
+    pub const LV_THEME_SHADCN_ACCENT_BLUE: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(2);
+    pub const LV_THEME_SHADCN_ACCENT_CYAN: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(3);
+    pub const LV_THEME_SHADCN_ACCENT_EMERALD: lv_theme_shadcn_accent_t =
+        lv_theme_shadcn_accent_t(4);
+    pub const LV_THEME_SHADCN_ACCENT_FUCHSIA: lv_theme_shadcn_accent_t =
+        lv_theme_shadcn_accent_t(5);
+    pub const LV_THEME_SHADCN_ACCENT_GREEN: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(6);
+    pub const LV_THEME_SHADCN_ACCENT_INDIGO: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(7);
+    pub const LV_THEME_SHADCN_ACCENT_LIME: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(8);
+    pub const LV_THEME_SHADCN_ACCENT_ORANGE: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(9);
+    pub const LV_THEME_SHADCN_ACCENT_PINK: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(10);
+    pub const LV_THEME_SHADCN_ACCENT_PURPLE: lv_theme_shadcn_accent_t =
+        lv_theme_shadcn_accent_t(11);
+    pub const LV_THEME_SHADCN_ACCENT_RED: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(12);
+    pub const LV_THEME_SHADCN_ACCENT_ROSE: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(13);
+    pub const LV_THEME_SHADCN_ACCENT_SKY: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(14);
+    pub const LV_THEME_SHADCN_ACCENT_TEAL: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(15);
+    pub const LV_THEME_SHADCN_ACCENT_VIOLET: lv_theme_shadcn_accent_t =
+        lv_theme_shadcn_accent_t(16);
+    pub const LV_THEME_SHADCN_ACCENT_YELLOW: lv_theme_shadcn_accent_t =
+        lv_theme_shadcn_accent_t(17);
+    pub const LV_THEME_SHADCN_ACCENT_COUNT: lv_theme_shadcn_accent_t = lv_theme_shadcn_accent_t(18);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct lv_theme_shadcn_accent_t(pub ::core::ffi::c_uint);
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lv_theme_shadcn_fonts_t {
@@ -127,6 +171,22 @@ unsafe extern "C" {
         primary: lv_color_t,
         primary_fg: lv_color_t,
     );
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_palette_make(
+        out: *mut lv_theme_shadcn_palette_t,
+        base: lv_theme_shadcn_base_t,
+        accent: lv_theme_shadcn_accent_t,
+        dark: bool,
+    );
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_base_name(base: lv_theme_shadcn_base_t) -> *const ::core::ffi::c_char;
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_accent_name(
+        accent: lv_theme_shadcn_accent_t,
+    ) -> *const ::core::ffi::c_char;
 }
 unsafe extern "C" {
     pub fn lv_theme_shadcn_set_variant(obj: *mut lv_obj_t, variant: lv_theme_shadcn_variant_t);

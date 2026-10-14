@@ -2,9 +2,11 @@
 
 use core::ffi::c_void;
 
+use core::ffi::CStr;
+
 use lvgl_theme_shadcn::{
-    Color, Display, Flags, Fonts, Object, Palette, Surface, Theme, Variant, set_error, set_surface,
-    set_variant, sys,
+    Accent, Base, Color, Display, Flags, Fonts, Object, Palette, Surface, Theme, Variant,
+    set_error, set_surface, set_variant, sys,
 };
 
 const LV_PART_MAIN: u32 = 0;
@@ -88,6 +90,57 @@ fn with_primary_changes_primary_only() {
 }
 
 #[test]
+fn every_base_and_accent_constructs() {
+    for base in Base::ALL {
+        for dark in [false, true] {
+            let plain = Palette::new(base, Accent::None, dark);
+            assert_eq!(plain.is_dark(), dark);
+            assert_ne!(plain.background(), plain.foreground());
+            for accent in Accent::ALL {
+                let palette = Palette::new(base, accent, dark);
+                assert_eq!(palette.is_dark(), dark);
+                assert_eq!(palette.background(), plain.background());
+                assert_eq!(palette.card(), plain.card());
+                if accent == Accent::None {
+                    assert_eq!(palette, plain);
+                } else {
+                    assert_ne!(palette.primary(), plain.primary());
+                }
+            }
+        }
+    }
+    assert_eq!(
+        Palette::new(Base::Zinc, Accent::None, true),
+        Palette::zinc_dark()
+    );
+    assert_eq!(
+        Palette::new(Base::Zinc, Accent::None, false),
+        Palette::zinc_light()
+    );
+    assert_eq!(
+        Palette::new(Base::Neutral, Accent::Blue, false).primary(),
+        Color::hex(0x1447e6)
+    );
+}
+
+#[test]
+fn names_match_c() {
+    assert_eq!(Base::default(), Base::Zinc);
+    assert_eq!(Accent::default(), Accent::None);
+    assert_eq!(Base::Zinc.name(), "zinc");
+    assert_eq!(Accent::Blue.name(), "blue");
+    assert_eq!(Accent::None.name(), "none");
+    for base in Base::ALL {
+        let c = unsafe { CStr::from_ptr(sys::lv_theme_shadcn_base_name(base.into())) };
+        assert_eq!(c.to_str(), Ok(base.name()));
+    }
+    for accent in Accent::ALL {
+        let c = unsafe { CStr::from_ptr(sys::lv_theme_shadcn_accent_name(accent.into())) };
+        assert_eq!(c.to_str(), Ok(accent.name()));
+    }
+}
+
+#[test]
 fn flags_combine() {
     assert_eq!(Flags::NONE | Flags::COMPACT, Flags::COMPACT);
     assert!(Flags::COMPACT.contains(Flags::NONE));
@@ -137,6 +190,19 @@ fn theme_lifecycle_and_helpers() {
     assert!(!theme.palette().expect("palette").is_dark());
     assert_eq!(theme.palette(), Some(Palette::zinc_light()));
     assert_eq!(bg_color(&button), Palette::zinc_light().primary());
+
+    let screen_object = unsafe { Object::from_ptr(screen) }.expect("screen");
+    for base in Base::ALL {
+        for accent in Accent::ALL {
+            for dark in [true, false] {
+                let palette = Palette::new(base, accent, dark);
+                theme.set_palette(&palette);
+                assert_eq!(theme.palette(), Some(palette));
+                assert_eq!(bg_color(&button), palette.primary());
+                assert_eq!(bg_color(&screen_object), palette.background());
+            }
+        }
+    }
 
     drop(theme);
     assert!(!Theme::is_active(&display));
