@@ -253,6 +253,44 @@ static void build_ranges(lv_theme_shadcn_state_t * st)
     lv_style_set_text_color(&s->scale_ticks, p->muted_fg);
 }
 
+static void build_inputs(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_theme_shadcn_styles_t * s = S(st);
+
+    set_surface(&s->input, p->background, p->foreground);
+    lv_style_set_border_width(&s->input, m->border_width);
+    lv_style_set_border_color(&s->input, p->input);
+    lv_style_set_border_opa(&s->input, LV_OPA_COVER);
+    lv_style_set_radius(&s->input, m->radius_md);
+    lv_style_set_pad_hor(&s->input, m->space_md);
+    lv_style_set_pad_ver(&s->input, m->space_sm);
+
+    lv_style_set_text_color(&s->placeholder, p->muted_fg);
+
+    lv_style_set_border_color(&s->cursor, p->foreground);
+    lv_style_set_border_width(&s->cursor, m->ring_width);
+    lv_style_set_border_side(&s->cursor, LV_BORDER_SIDE_LEFT);
+    lv_style_set_pad_left(&s->cursor, -m->border_width);
+    lv_style_set_anim_duration(&s->cursor, 400);
+
+    lv_style_set_border_width(&s->popover_frame, m->border_width);
+    lv_style_set_border_color(&s->popover_frame, p->border);
+    lv_style_set_border_opa(&s->popover_frame, LV_OPA_COVER);
+    lv_style_set_radius(&s->popover_frame, m->radius_md);
+    lv_style_set_pad_all(&s->popover_frame, m->space_xs);
+
+    set_surface(&s->key, p->secondary, p->secondary_fg);
+    lv_style_set_radius(&s->key, m->radius_md);
+    lv_style_set_border_width(&s->key, 0);
+    lv_style_set_shadow_width(&s->key, 0);
+
+    lv_style_set_bg_color(&s->key_pressed, lv_color_mix(p->secondary_fg, p->secondary, LV_THEME_SHADCN_PRESS_MIX));
+
+    set_surface(&s->key_control, p->input, p->foreground);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -272,4 +310,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_actions(st);
     build_toggles(st);
     build_ranges(st);
+    build_inputs(st);
 }

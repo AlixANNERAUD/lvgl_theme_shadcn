@@ -63,6 +63,13 @@ typedef struct {
     lv_style_t scale_main;
     lv_style_t scale_minor;
     lv_style_t scale_ticks;
+    lv_style_t input;
+    lv_style_t placeholder;
+    lv_style_t cursor;
+    lv_style_t popover_frame;
+    lv_style_t key;
+    lv_style_t key_pressed;
+    lv_style_t key_control;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
 } lv_theme_shadcn_styles_t;
@@ -95,6 +102,7 @@ void lv_theme_shadcn_add_button(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv
 bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_surfaces(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_ranges(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
+bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj);
 
 #endif
