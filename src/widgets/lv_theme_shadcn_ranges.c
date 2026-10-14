@@ -41,7 +41,7 @@ bool lv_theme_shadcn_apply_ranges(lv_theme_shadcn_state_t * st, lv_obj_t * obj, 
 #if LV_USE_SCALE
     if(lv_obj_check_type(obj, &lv_scale_class)) {
         lv_obj_add_style(obj, &S(st)->scale_main, 0);
-        lv_obj_add_style(obj, &S(st)->scale_main, LV_PART_ITEMS);
+        lv_obj_add_style(obj, &S(st)->scale_minor, LV_PART_ITEMS);
         lv_obj_add_style(obj, &S(st)->scale_ticks, LV_PART_INDICATOR);
         return true;
     }

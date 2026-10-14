@@ -61,6 +61,7 @@ typedef struct {
     lv_style_t arc_track;
     lv_style_t arc_indicator;
     lv_style_t scale_main;
+    lv_style_t scale_minor;
     lv_style_t scale_ticks;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];

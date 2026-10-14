@@ -54,6 +54,12 @@ static void scale_parts(void)
     CHECK_COLOR(lv_obj_get_style_line_color(sc, LV_PART_MAIN), dark()->border);
     CHECK_COLOR(lv_obj_get_style_line_color(sc, LV_PART_INDICATOR), dark()->muted_fg);
     CHECK_COLOR(lv_obj_get_style_text_color(sc, LV_PART_INDICATOR), dark()->muted_fg);
+    CHECK_COLOR(lv_obj_get_style_line_color(sc, LV_PART_ITEMS), dark()->border);
+    CHECK(lv_obj_get_style_line_width(sc, LV_PART_MAIN) > 0);
+    CHECK(lv_obj_get_style_line_width(sc, LV_PART_ITEMS) > 0);
+    CHECK_INT(lv_obj_get_style_length(sc, LV_PART_ITEMS), lv_display_dpx(harness_display(), 4));
+    CHECK(lv_obj_get_style_length(sc, LV_PART_ITEMS) > 0);
+    CHECK(lv_obj_get_style_length(sc, LV_PART_INDICATOR) > lv_obj_get_style_length(sc, LV_PART_ITEMS));
 }
 
 static void slider_disabled_dims(void)
