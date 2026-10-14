@@ -16,11 +16,11 @@ static bool children_inside(lv_obj_t * parent)
 
 static void every_scene_fits_the_screen(void)
 {
-    static const char * const names[] = { "buttons", "toggles", "ranges", "inputs", "collections", "overlays" };
+    static const char * const names[] = { "showcase", "buttons", "toggles", "ranges", "inputs", "collections", "overlays" };
     uint32_t count = 0;
     const lv_theme_shadcn_scene_t * scenes = lv_theme_shadcn_scenes(&count);
-    CHECK_INT(count, 6);
-    if(count != 6) return;
+    CHECK_INT(count, 7);
+    if(count != 7) return;
     for(uint32_t i = 0; i < count; i++) {
         CHECK(strcmp(scenes[i].name, names[i]) == 0);
         lv_obj_t * screen = lv_obj_create(NULL);
