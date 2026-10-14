@@ -88,6 +88,47 @@ static void table_last_row_has_no_divider(void)
     CHECK_INT(table_last_row_bordered, 0);
 }
 
+static void table_single_row_has_no_divider(void)
+{
+    lv_obj_t * t = lv_table_create(lv_screen_active());
+    lv_table_set_column_count(t, 2);
+    lv_table_set_row_count(t, 1);
+    lv_table_set_cell_value(t, 0, 0, "a");
+    lv_table_set_cell_value(t, 0, 1, "b");
+    lv_obj_add_event_cb(t, table_probe_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
+    lv_obj_set_send_draw_task_events(t, true);
+    table_rows_bordered = 0;
+    table_last_row_bordered = 0;
+    lv_refr_now(harness_display());
+    CHECK_INT(table_rows_bordered, 0);
+    CHECK_INT(table_last_row_bordered, 0);
+}
+
+static void table_divider_returns_after_deinit(void)
+{
+    lv_obj_t * t = lv_table_create(lv_screen_active());
+    lv_table_set_column_count(t, 2);
+    lv_table_set_row_count(t, 3);
+    for(uint32_t r = 0; r < 3; r++) {
+        lv_table_set_cell_value(t, r, 0, "a");
+        lv_table_set_cell_value(t, r, 1, "b");
+    }
+    lv_theme_shadcn_deinit(harness_display());
+    static lv_style_t divider;
+    lv_style_init(&divider);
+    lv_style_set_border_width(&divider, 1);
+    lv_style_set_border_opa(&divider, LV_OPA_COVER);
+    lv_style_set_border_side(&divider, LV_BORDER_SIDE_BOTTOM);
+    lv_obj_add_style(t, &divider, LV_PART_ITEMS);
+    lv_obj_add_event_cb(t, table_probe_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
+    lv_obj_set_send_draw_task_events(t, true);
+    table_rows_bordered = 0;
+    table_last_row_bordered = 0;
+    lv_refr_now(harness_display());
+    CHECK(table_rows_bordered > 0);
+    CHECK(table_last_row_bordered > 0);
+}
+
 static bool highlight_seen;
 static lv_color_t highlight_fill;
 static lv_opa_t highlight_opa;
@@ -201,6 +242,8 @@ int main(void)
     RUN(tabview_segmented);
     RUN(table_cells);
     RUN(table_last_row_has_no_divider);
+    RUN(table_single_row_has_no_divider);
+    RUN(table_divider_returns_after_deinit);
     RUN(calendar_days);
     RUN(chart_frame);
     RUN(chart_series_visible);

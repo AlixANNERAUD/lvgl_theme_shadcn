@@ -12,12 +12,13 @@ static void add_scrollbar(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
 static void table_draw_cb(lv_event_t * e)
 {
     lv_obj_t * table = lv_event_get_current_target_obj(e);
+    if(lv_theme_shadcn_state_from_obj(table) == NULL) return;
     lv_draw_task_t * task = lv_event_get_draw_task(e);
     lv_draw_dsc_base_t * base = lv_draw_task_get_draw_dsc(task);
     if(base == NULL || base->part != LV_PART_ITEMS) return;
     if(base->id1 + 1 != lv_table_get_row_count(table)) return;
     lv_draw_border_dsc_t * border = lv_draw_task_get_border_dsc(task);
-    if(border != NULL) border->opa = LV_OPA_TRANSP;
+    if(border != NULL && border->side == LV_BORDER_SIDE_BOTTOM) border->opa = LV_OPA_TRANSP;
 }
 #endif
 
