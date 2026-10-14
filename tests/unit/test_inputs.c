@@ -59,6 +59,17 @@ static void dropdown_and_list(void)
     CHECK_COLOR(lv_obj_get_style_bg_color(list, LV_PART_SELECTED), dark()->accent);
 }
 
+static void dropdown_padding_matches_textarea(void)
+{
+    lv_obj_t * ta = lv_textarea_create(lv_screen_active());
+    lv_obj_t * dd = lv_dropdown_create(lv_screen_active());
+    int32_t pad = lv_display_dpx(harness_display(), 12);
+    CHECK_INT(lv_obj_get_style_pad_left(ta, LV_PART_MAIN), pad);
+    CHECK_INT(lv_obj_get_style_pad_right(ta, LV_PART_MAIN), pad);
+    CHECK_INT(lv_obj_get_style_pad_left(dd, LV_PART_MAIN), pad);
+    CHECK_INT(lv_obj_get_style_pad_right(dd, LV_PART_MAIN), pad);
+}
+
 static void roller_selected_row(void)
 {
     lv_obj_t * r = lv_roller_create(lv_screen_active());
@@ -85,6 +96,7 @@ int main(void)
     RUN(dropdown_error_open);
     RUN(spinbox_matches_textarea);
     RUN(dropdown_and_list);
+    RUN(dropdown_padding_matches_textarea);
     RUN(roller_selected_row);
     RUN(keyboard_keys);
     return harness_result();

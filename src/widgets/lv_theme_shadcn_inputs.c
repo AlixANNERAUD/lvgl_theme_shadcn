@@ -40,8 +40,8 @@ bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, 
 #endif
 #if LV_USE_DROPDOWN
     if(lv_obj_check_type(obj, &lv_dropdown_class)) {
-        add_input(st, obj);
         lv_obj_add_style(obj, &S(st)->control, 0);
+        add_input(st, obj);
         lv_obj_add_style(obj, &S(st)->focused_input, LV_STATE_CHECKED);
         lv_theme_shadcn_set_touch_target(st, obj);
         return true;
