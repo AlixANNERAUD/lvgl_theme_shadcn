@@ -52,4 +52,4 @@ jobs:
       - name: Publish
         env:
           PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
-        run: pio pkg publish "$RUNNER_TEMP"/lvgl_theme_shadcn-*.tar.gz --type library --owner alixanneraud --no-interactive
+        run: pio pkg publish "$RUNNER_TEMP"/lvgl_theme_shadcn-*.tar.gz --type library --owner alix-anneraud --no-interactive

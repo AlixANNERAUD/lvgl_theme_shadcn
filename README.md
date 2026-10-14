@@ -6,7 +6,7 @@
 [![docs.rs](https://img.shields.io/docsrs/lvgl_theme_shadcn)](https://docs.rs/lvgl_theme_shadcn)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/blob/main/LICENSE)
 [![LVGL](https://img.shields.io/badge/LVGL-%E2%89%A5%209.6-brightgreen.svg)](https://lvgl.io)
-[![PlatformIO Registry](https://badges.registry.platformio.org/packages/alixanneraud/library/lvgl_theme_shadcn.svg)](https://registry.platformio.org/libraries/alixanneraud/lvgl_theme_shadcn)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/alix-anneraud/library/lvgl_theme_shadcn.svg)](https://registry.platformio.org/libraries/alix-anneraud/lvgl_theme_shadcn)
 
 **Make your LVGL 9 interface look like [shadcn/ui](https://ui.shadcn.com) with one function call.**
 `lvgl_theme_shadcn` is a C99 theme that restyles every core [LVGL](https://lvgl.io) widget with shadcn's colour
@@ -131,7 +131,7 @@ The Zephyr LVGL module must be version 9.6 or newer; the theme header stops the 
 
 ```ini
 lib_deps =
-    alixanneraud/lvgl_theme_shadcn
+    alix-anneraud/lvgl_theme_shadcn
 ```
 
 LVGL is pulled in as a dependency; provide your `lv_conf.h` as usual. [`examples/platformio`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/examples/platformio) is

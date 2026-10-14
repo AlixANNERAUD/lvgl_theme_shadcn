@@ -10,7 +10,7 @@ registry.
   also stand for the C library.
 - `lvgl_theme_shadcn_sys`: the raw FFI crate, which ships and compiles the C sources. It is published to crates.io
   together with `lvgl_theme_shadcn`, and has no tag or GitHub release of its own.
-- The C library: [PlatformIO](https://registry.platformio.org/libraries/alixanneraud/lvgl_theme_shadcn) package,
+- The C library: [PlatformIO](https://registry.platformio.org/libraries/alix-anneraud/lvgl_theme_shadcn) package,
   plus the `CMakeLists.txt`, `library.properties` (Arduino) and `idf_component.yml` (ESP-IDF) manifests, all
   consumed from the `vX.Y.Z` tag.
 
@@ -80,8 +80,8 @@ changes by hand if they are missing.
 `.github/workflows/publish-platformio.yml` is called by the `Release` workflow after a release (a GitHub release
 created by release-plz with `GITHUB_TOKEN` does not trigger other workflows). It checks that the C manifests match the
 Cargo version and the released version, packs the library with `pio pkg pack` and publishes it to the
-[PlatformIO registry](https://registry.platformio.org/libraries/alixanneraud/lvgl_theme_shadcn) under the
-`alixanneraud` owner.
+[PlatformIO registry](https://registry.platformio.org/libraries/alix-anneraud/lvgl_theme_shadcn) under the
+`alix-anneraud` owner.
 
 It can also be started by hand from the Actions tab (`workflow_dispatch`), optionally with the expected version. The
 registry rejects a version that already exists.
