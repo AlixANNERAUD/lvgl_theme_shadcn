@@ -41,3 +41,31 @@ jobs:
         run: cmake -S examples/gallery -B build-gallery
       - name: Build
         run: cmake --build build-gallery --parallel
+
+  esp-idf:
+    runs-on: ubuntu-latest
+    container: espressif/idf:v5.4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        shell: bash
+        working-directory: examples/esp_idf
+        run: |
+          . "$IDF_PATH/export.sh"
+          idf.py set-target esp32 build
+
+  platformio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PlatformIO
+        run: pip install platformio
+      - name: Build
+        run: pio run -d examples/platformio
+      - name: Run
+        run: examples/platformio/.pio/build/native/program
+      - name: Pack
+        run: pio pkg pack -o "$RUNNER_TEMP"
