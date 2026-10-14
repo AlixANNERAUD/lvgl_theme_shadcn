@@ -42,17 +42,18 @@ static unsigned char * to_rgba(const lv_draw_buf_t * snap)
 
 static bool render(const lv_theme_shadcn_scene_t * scene, lv_draw_buf_t * snap)
 {
+    lv_obj_t * previous = lv_screen_active();
     lv_obj_t * screen = lv_obj_create(NULL);
     lv_obj_set_size(screen, WIDTH, HEIGHT);
     lv_screen_load(screen);
+    if(previous != NULL) lv_obj_delete(previous);
     scene->build(screen);
     for(int i = 0; i < SETTLE_STEPS; i++) {
         lv_tick_inc(SETTLE_TICK_MS);
         lv_timer_handler();
     }
     bool ok = lv_snapshot_take_to_draw_buf(screen, LV_COLOR_FORMAT_XRGB8888, snap) == LV_RESULT_OK;
-    lv_obj_t * blank = lv_obj_create(NULL);
-    lv_screen_load(blank);
+    lv_screen_load(lv_obj_create(NULL));
     lv_obj_delete(screen);
     return ok;
 }
@@ -89,10 +90,10 @@ static lv_draw_buf_t * read_png(const char * path, unsigned * width, unsigned * 
     unsigned char * png = size > 0 ? malloc((size_t)size) : NULL;
     bool ok = png != NULL && fread(png, 1, (size_t)size, file) == (size_t)size;
     fclose(file);
-    unsigned char * decoded = NULL;
-    if(ok) ok = lodepng_decode32(&decoded, width, height, png, (size_t)size) == 0;
+    lv_draw_buf_t * decoded = NULL;
+    if(ok) ok = lodepng_decode32((unsigned char **)&decoded, width, height, png, (size_t)size) == 0;
     free(png);
-    return ok ? (lv_draw_buf_t *)decoded : NULL;
+    return ok ? decoded : NULL;
 }
 
 static unsigned count_diff(const unsigned char * actual, const unsigned char * ref, unsigned char * diff)
