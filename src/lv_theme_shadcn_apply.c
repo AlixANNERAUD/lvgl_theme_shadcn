@@ -30,6 +30,7 @@ void lv_theme_shadcn_apply_cb(lv_theme_t * th, lv_obj_t * obj)
         apply_screen(st, obj);
         return;
     }
+    if(lv_theme_shadcn_apply_overlays(st, obj, parent)) return;
     if(lv_theme_shadcn_apply_collections(st, obj, parent)) return;
     if(lv_theme_shadcn_apply_inputs(st, obj, parent)) return;
     if(lv_theme_shadcn_apply_ranges(st, obj, parent)) return;

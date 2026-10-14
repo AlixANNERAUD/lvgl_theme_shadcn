@@ -22,6 +22,7 @@ add_library(lvgl_theme_shadcn
   src/widgets/lv_theme_shadcn_actions.c
   src/widgets/lv_theme_shadcn_collections.c
   src/widgets/lv_theme_shadcn_inputs.c
+  src/widgets/lv_theme_shadcn_overlays.c
   src/widgets/lv_theme_shadcn_ranges.c
   src/widgets/lv_theme_shadcn_surfaces.c
   src/widgets/lv_theme_shadcn_toggles.c)

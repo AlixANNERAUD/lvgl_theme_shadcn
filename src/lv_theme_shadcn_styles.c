@@ -351,6 +351,29 @@ static void build_collections(lv_theme_shadcn_state_t * st)
     lv_style_set_pad_column(&s->chart_series, dp(st, 2));
 }
 
+static void build_overlays(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_theme_shadcn_styles_t * s = S(st);
+
+    lv_style_set_bg_color(&s->backdrop, lv_color_black());
+    lv_style_set_bg_opa(&s->backdrop, LV_OPA_50);
+
+    lv_style_set_border_width(&s->msgbox, m->border_width);
+    lv_style_set_border_color(&s->msgbox, p->border);
+    lv_style_set_border_opa(&s->msgbox, LV_OPA_COVER);
+    lv_style_set_radius(&s->msgbox, m->radius_lg);
+    lv_style_set_pad_all(&s->msgbox, m->space_xl);
+    lv_style_set_pad_gap(&s->msgbox, m->space_md);
+    lv_style_set_shadow_width(&s->msgbox, 0);
+
+    lv_style_set_bg_opa(&s->msgbox_footer, LV_OPA_TRANSP);
+    lv_style_set_border_width(&s->msgbox_footer, 0);
+    lv_style_set_pad_all(&s->msgbox_footer, 0);
+    lv_style_set_pad_column(&s->msgbox_footer, m->space_sm);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -372,4 +395,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_ranges(st);
     build_inputs(st);
     build_collections(st);
+    build_overlays(st);
 }
