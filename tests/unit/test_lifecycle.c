@@ -102,9 +102,60 @@ static void compact_flag_shrinks_spacing(void)
     lv_deinit();
 }
 
+static void init_styles_existing_active_screen(void)
+{
+    CHECK_COLOR(lv_obj_get_style_bg_color(lv_screen_active(), LV_PART_MAIN), lv_theme_shadcn_palette_zinc_dark()->background);
+}
+
+static void churn_heap(void)
+{
+    for(int i = 0; i < 16; i++) {
+        lv_obj_t * o = lv_obj_create(NULL);
+        lv_obj_t * c = lv_label_create(o);
+        lv_label_set_text(c, "churn");
+        lv_obj_delete(o);
+    }
+    lv_tick_inc(50);
+    lv_timer_handler();
+}
+
+static void deinit_with_live_objects_detaches_styles(void)
+{
+    lv_init();
+    lv_display_t * disp = harness_create_display();
+    lv_theme_shadcn_init(disp, lv_theme_shadcn_palette_zinc_dark(), harness_fonts(), LV_THEME_SHADCN_FLAG_NONE);
+    lv_obj_t * parent = lv_obj_create(lv_screen_active());
+    lv_obj_t * child = lv_obj_create(parent);
+    lv_color_t themed = lv_theme_shadcn_palette_zinc_dark()->background;
+    CHECK_COLOR(lv_obj_get_style_bg_color(lv_screen_active(), LV_PART_MAIN), themed);
+    lv_theme_shadcn_deinit(disp);
+    churn_heap();
+    CHECK(!lv_color_eq(lv_obj_get_style_bg_color(lv_screen_active(), LV_PART_MAIN), themed));
+    CHECK(!lv_color_eq(lv_obj_get_style_bg_color(parent, LV_PART_MAIN), themed));
+    CHECK(!lv_color_eq(lv_obj_get_style_bg_color(child, LV_PART_MAIN), themed));
+    lv_deinit();
+}
+
+static void display_delete_with_live_objects_is_safe(void)
+{
+    lv_init();
+    lv_display_t * keep = harness_create_display();
+    lv_display_t * gone = lv_display_create(100, 100);
+    lv_theme_shadcn_init(gone, lv_theme_shadcn_palette_zinc_dark(), NULL, LV_THEME_SHADCN_FLAG_NONE);
+    lv_obj_t * o = lv_obj_create(lv_display_get_screen_active(gone));
+    lv_obj_create(o);
+    lv_display_delete(gone);
+    churn_heap();
+    CHECK(!lv_theme_shadcn_is_active(keep));
+    lv_deinit();
+}
+
 int main(void)
 {
     RUN(init_activates_theme_and_styles_screen);
+    RUN(init_styles_existing_active_screen);
+    RUN_RAW(deinit_with_live_objects_detaches_styles);
+    RUN_RAW(display_delete_with_live_objects_is_safe);
     RUN(get_palette_returns_copy_of_active_palette);
     RUN(set_palette_restyles_existing_screen);
     RUN_RAW(null_fonts_fall_back_to_default);

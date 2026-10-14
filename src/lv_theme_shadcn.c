@@ -2,6 +2,8 @@
 
 static lv_theme_shadcn_state_t * states;
 
+static void display_event_cb(lv_event_t * e);
+
 lv_theme_shadcn_state_t * lv_theme_shadcn_state_find(const lv_display_t * disp)
 {
     for(lv_theme_shadcn_state_t * st = states; st; st = st->next) {
@@ -44,19 +46,26 @@ static void unlink_state(lv_theme_shadcn_state_t * st)
     if(*link) *link = st->next;
 }
 
-static void free_state_cb(void * arg)
+static lv_obj_tree_walk_res_t detach_cb(lv_obj_t * obj, void * user_data)
 {
-    lv_theme_shadcn_state_t * st = arg;
+    lv_theme_shadcn_state_t * st = user_data;
+    if(lv_obj_get_display(obj) != st->disp) return LV_OBJ_TREE_WALK_SKIP_CHILDREN;
+    lv_style_t * styles = (lv_style_t *)S(st);
+    size_t count = sizeof(lv_theme_shadcn_styles_t) / sizeof(lv_style_t);
+    for(size_t i = 0; i < count; i++) {
+        lv_obj_remove_style(obj, &styles[i], LV_PART_ANY | LV_STATE_ANY);
+    }
+    return LV_OBJ_TREE_WALK_NEXT;
+}
+
+static void destroy_state(lv_theme_shadcn_state_t * st)
+{
+    unlink_state(st);
+    lv_obj_tree_walk(NULL, detach_cb, st);
+    lv_display_remove_event_cb_with_user_data(st->disp, display_event_cb, st);
     lv_theme_shadcn_styles_reset(st);
     lv_theme_delete(st->theme);
     lv_free(st);
-}
-
-static void free_state(lv_theme_shadcn_state_t * st)
-{
-    unlink_state(st);
-    st->disp = NULL;
-    lv_async_call(free_state_cb, st);
 }
 
 static void display_event_cb(lv_event_t * e)
@@ -67,7 +76,20 @@ static void display_event_cb(lv_event_t * e)
         rebuild(st);
     }
     else if(code == LV_EVENT_DELETE) {
-        free_state(st);
+        destroy_state(st);
+    }
+}
+
+static void apply_to_empty_roots(lv_theme_shadcn_state_t * st)
+{
+    lv_obj_t * roots[4] = {
+        lv_display_get_screen_active(st->disp),
+        lv_display_get_layer_top(st->disp),
+        lv_display_get_layer_sys(st->disp),
+        lv_display_get_layer_bottom(st->disp)
+    };
+    for(size_t i = 0; i < 4; i++) {
+        if(roots[i] && lv_obj_get_child_count(roots[i]) == 0) lv_theme_apply(roots[i]);
     }
 }
 
@@ -96,8 +118,11 @@ lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_pal
     st->palette = *palette;
     st->flags = flags;
     resolve_fonts(st, fonts);
+    lv_theme_shadcn_metrics_resolve(st);
+    lv_theme_shadcn_styles_build(st);
     lv_display_set_theme(disp, st->theme);
-    rebuild(st);
+    apply_to_empty_roots(st);
+    lv_obj_report_style_change(NULL);
     return st->theme;
 }
 
@@ -106,9 +131,8 @@ void lv_theme_shadcn_deinit(lv_display_t * disp)
     if(disp == NULL) disp = lv_display_get_default();
     lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_find(disp);
     if(st == NULL) return;
-    lv_display_remove_event_cb_with_user_data(disp, display_event_cb, st);
     if(lv_display_get_theme(disp) == st->theme) lv_display_set_theme(disp, st->previous_theme);
-    free_state(st);
+    destroy_state(st);
 }
 
 bool lv_theme_shadcn_is_active(lv_display_t * disp)
