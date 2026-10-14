@@ -147,6 +147,7 @@ static void chart_frame(void)
     lv_obj_t * ch = lv_chart_create(lv_screen_active());
     CHECK_COLOR(lv_obj_get_style_bg_color(ch, LV_PART_MAIN), dark()->background);
     CHECK_COLOR(lv_obj_get_style_line_color(ch, LV_PART_MAIN), dark()->border);
+    CHECK(lv_obj_get_style_line_width(ch, LV_PART_MAIN) > 0);
     CHECK_COLOR(lv_obj_get_style_border_color(ch, LV_PART_MAIN), dark()->border);
 }
 

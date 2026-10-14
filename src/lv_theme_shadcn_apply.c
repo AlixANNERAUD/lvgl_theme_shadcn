@@ -14,6 +14,24 @@ void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * o
     if(extra > 0) lv_obj_set_ext_click_area(obj, extra);
 }
 
+static void toggle_size_cb(lv_event_t * e)
+{
+    lv_obj_t * obj = lv_event_get_target_obj(e);
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
+    if(st == NULL) return;
+    int32_t w = lv_obj_get_width(obj);
+    int32_t h = lv_obj_get_height(obj);
+    int32_t smaller = w < h ? w : h;
+    int32_t extra = (st->metrics.touch_target - smaller) / 2;
+    lv_obj_set_ext_click_area(obj, extra > 0 ? extra : 0);
+}
+
+void lv_theme_shadcn_set_toggle_touch_target(lv_obj_t * obj)
+{
+    lv_obj_remove_event_cb_with_user_data(obj, toggle_size_cb, NULL);
+    lv_obj_add_event_cb(obj, toggle_size_cb, LV_EVENT_SIZE_CHANGED, NULL);
+}
+
 static void apply_screen(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
 {
     lv_obj_add_style(obj, &S(st)->screen, 0);

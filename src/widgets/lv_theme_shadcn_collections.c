@@ -142,12 +142,20 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
         lv_obj_add_style(obj, &S(st)->focus_ring, LV_PART_ITEMS | LV_STATE_FOCUS_KEY);
         return true;
     }
-    if(lv_obj_check_type(obj, &lv_calendar_header_arrow_class)
-       || lv_obj_check_type(obj, &lv_calendar_header_dropdown_class)) {
+#if LV_USE_CALENDAR_HEADER_ARROW
+    if(lv_obj_check_type(obj, &lv_calendar_header_arrow_class)) {
         lv_obj_add_style(obj, &S(st)->transparent, 0);
         lv_obj_add_style(obj, &S(st)->pad_xs, 0);
         return true;
     }
+#endif
+#if LV_USE_CALENDAR_HEADER_DROPDOWN
+    if(lv_obj_check_type(obj, &lv_calendar_header_dropdown_class)) {
+        lv_obj_add_style(obj, &S(st)->transparent, 0);
+        lv_obj_add_style(obj, &S(st)->pad_xs, 0);
+        return true;
+    }
+#endif
 #endif
 #if LV_USE_CHART
     if(lv_obj_check_type(obj, &lv_chart_class)) {

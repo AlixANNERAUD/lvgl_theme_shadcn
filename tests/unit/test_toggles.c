@@ -55,6 +55,31 @@ static void led_is_flat_primary(void)
     CHECK_COLOR(lv_led_get_color(led), dark()->primary);
 }
 
+static void check_touch_target(lv_obj_t * obj)
+{
+    lv_obj_update_layout(obj);
+    int32_t target = lv_display_dpx(harness_display(), 48);
+    lv_area_t a;
+    lv_obj_get_coords(obj, &a);
+    lv_point_t centre = {(a.x1 + a.x2) / 2, (a.y1 + a.y2) / 2};
+    lv_point_t near_pt = {centre.x, centre.y + target / 2 - 1};
+    lv_point_t far_pt = {centre.x, centre.y + target};
+    CHECK(lv_obj_hit_test(obj, &near_pt));
+    CHECK(!lv_obj_hit_test(obj, &far_pt));
+}
+
+static void switch_touch_target(void)
+{
+    lv_obj_t * sw = lv_switch_create(lv_screen_active());
+    check_touch_target(sw);
+}
+
+static void checkbox_touch_target(void)
+{
+    lv_obj_t * cb = lv_checkbox_create(lv_screen_active());
+    check_touch_target(cb);
+}
+
 int main(void)
 {
     RUN(switch_track_and_knob);
@@ -62,5 +87,7 @@ int main(void)
     RUN(checkbox_marker);
     RUN(checkbox_focus_ring_on_main);
     RUN(led_is_flat_primary);
+    RUN(switch_touch_target);
+    RUN(checkbox_touch_target);
     return harness_result();
 }

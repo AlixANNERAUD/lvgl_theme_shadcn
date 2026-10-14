@@ -344,6 +344,7 @@ static void build_collections(lv_theme_shadcn_state_t * st)
     lv_style_set_radius(&s->calendar_day, m->radius_sm);
 
     lv_style_set_line_color(&s->chart, p->border);
+    lv_style_set_line_width(&s->chart, m->border_width);
 
     lv_style_set_line_width(&s->chart_series, dp(st, 3));
     lv_style_set_radius(&s->chart_series, dp(st, 3));

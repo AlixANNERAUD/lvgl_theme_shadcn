@@ -1,6 +1,6 @@
 # lvgl_theme_shadcn
 
-A touch-first [LVGL](https://lvgl.io) theme inspired by [shadcn/ui](https://ui.shadcn.com), for C and Rust.
+A touch-first [LVGL](https://lvgl.io) theme inspired by [shadcn/ui](https://ui.shadcn.com), for C (Rust bindings planned).
 
 - Shadcn colour roles, shapes and border-based surfaces; Material Design 3 touch targets, state feedback and focus model.
 - Every core LVGL widget styled in every interaction state.

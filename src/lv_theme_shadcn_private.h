@@ -119,5 +119,6 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
 bool lv_theme_shadcn_apply_overlays(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj);
+void lv_theme_shadcn_set_toggle_touch_target(lv_obj_t * obj);
 
 #endif
