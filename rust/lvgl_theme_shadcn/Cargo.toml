@@ -1,0 +1,12 @@
+[package]
+name = "lvgl_theme_shadcn"
+description = "Safe no_std bindings to the shadcn/ui-inspired LVGL 9 theme"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+lvgl_theme_shadcn_sys = { version = "=0.1.0", path = "../lvgl_theme_shadcn_sys" }

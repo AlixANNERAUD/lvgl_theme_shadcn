@@ -1,0 +1,10 @@
+#ifndef LV_THEME_SHADCN_RUST_CI_LV_CONF_H
+#define LV_THEME_SHADCN_RUST_CI_LV_CONF_H
+
+#ifndef LV_THEME_SHADCN_TEST_COLOR_FORMAT
+#define LV_THEME_SHADCN_TEST_COLOR_FORMAT LV_COLOR_FORMAT_XRGB8888
+#endif
+
+#include "../../../tests/conf/lv_conf.h"
+
+#endif
