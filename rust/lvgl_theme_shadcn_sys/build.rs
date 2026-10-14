@@ -25,6 +25,13 @@ fn main() {
     let manifest_dir =
         PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"));
     let c_dir = manifest_dir.join("c");
+    if !c_dir.join("src").is_dir() && env::var_os("DOCS_RS").is_none() {
+        panic!(
+            "{} is not a directory: the C sources are a symlink in the git repository and this checkout did not \
+             create it. Enable git symlinks (`git config core.symlinks true`) and check the files out again",
+            c_dir.join("src").display()
+        );
+    }
     for path in ["src", "include", "sources.cmake"] {
         println!("cargo::rerun-if-changed={}", c_dir.join(path).display());
     }
@@ -71,7 +78,7 @@ fn locate_lvgl() -> Lvgl {
     let pair = |include: &str, conf: &str| match (env::var_os(include), env::var_os(conf)) {
         (Some(include), Some(conf)) => Some(Lvgl {
             include: PathBuf::from(include),
-            conf: PathBuf::from(conf),
+            conf: conf_dir(&PathBuf::from(conf)),
         }),
         _ => None,
     };
@@ -84,6 +91,22 @@ fn locate_lvgl() -> Lvgl {
                  directory containing lvgl.h) and LV_CONF_PATH (directory containing lv_conf.h)"
             )
         })
+}
+
+fn conf_dir(value: &Path) -> PathBuf {
+    let dir = if value.is_file() && value.file_name().is_some_and(|name| name == "lv_conf.h") {
+        value.parent().map(Path::to_path_buf)
+    } else if value.is_dir() && value.join("lv_conf.h").is_file() {
+        Some(value.to_path_buf())
+    } else {
+        None
+    };
+    dir.unwrap_or_else(|| {
+        panic!(
+            "LV_CONF_PATH must be the directory containing lv_conf.h (got {})",
+            value.display()
+        )
+    })
 }
 
 fn lvgl_include_dirs(include: &Path) -> Vec<PathBuf> {
