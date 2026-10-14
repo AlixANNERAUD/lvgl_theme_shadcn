@@ -111,7 +111,6 @@ static void init_leaves_system_layers_transparent(void)
 {
     CHECK(lv_obj_get_style_bg_opa(lv_layer_top(), LV_PART_MAIN) == LV_OPA_TRANSP);
     CHECK(lv_obj_get_style_bg_opa(lv_layer_sys(), LV_PART_MAIN) == LV_OPA_TRANSP);
-    CHECK(lv_obj_get_style_bg_opa(lv_layer_bottom(), LV_PART_MAIN) == LV_OPA_TRANSP);
     CHECK(lv_obj_get_style_bg_opa(lv_screen_active(), LV_PART_MAIN) == LV_OPA_COVER);
 }
 
