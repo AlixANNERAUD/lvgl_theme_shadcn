@@ -1,0 +1,2 @@
+[shift-base]
+src:*/src/widgets/roller/lv_roller.c

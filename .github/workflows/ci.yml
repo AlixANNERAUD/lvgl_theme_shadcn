@@ -31,6 +31,26 @@ jobs:
           name: screenshots-${{ matrix.compiler }}-${{ matrix.color_format }}
           path: build/screenshots/
 
+  sanitize:
+    runs-on: ubuntu-latest
+    env:
+      ASAN_OPTIONS: detect_leaks=1
+      UBSAN_OPTIONS: print_stacktrace=1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: >
+          cmake -S . -B build-asan
+          -DCMAKE_C_COMPILER=clang
+          -DCMAKE_BUILD_TYPE=Debug
+          -DLV_THEME_SHADCN_WERROR=ON
+          -DLV_THEME_SHADCN_SANITIZE=ON
+          -DLV_THEME_SHADCN_TEST_COLOR_FORMAT=LV_COLOR_FORMAT_XRGB8888
+      - name: Build
+        run: cmake --build build-asan --parallel
+      - name: Test
+        run: ctest --test-dir build-asan --output-on-failure
+
   gallery:
     runs-on: ubuntu-latest
     steps:
