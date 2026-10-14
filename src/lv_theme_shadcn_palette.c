@@ -1,43 +1,23 @@
 #include "lv_theme_shadcn_private.h"
 
-#define HEX(c) LV_COLOR_MAKE(((c) >> 16) & 0xff, ((c) >> 8) & 0xff, (c) & 0xff)
+static bool base_valid(lv_theme_shadcn_base_t base)
+{
+    return (int)base >= 0 && base < LV_THEME_SHADCN_BASE_COUNT;
+}
 
-static const lv_theme_shadcn_palette_t zinc_dark = {
-    .background = HEX(0x09090b), .foreground = HEX(0xfafafa),
-    .card = HEX(0x18181b), .card_fg = HEX(0xfafafa),
-    .popover = HEX(0x18181b), .popover_fg = HEX(0xfafafa),
-    .primary = HEX(0xe4e4e7), .primary_fg = HEX(0x18181b),
-    .secondary = HEX(0x27272a), .secondary_fg = HEX(0xfafafa),
-    .muted = HEX(0x27272a), .muted_fg = HEX(0x9f9fa9),
-    .accent = HEX(0x27272a), .accent_fg = HEX(0xfafafa),
-    .destructive = HEX(0xff6467), .destructive_fg = HEX(0xfafafa),
-    .border = HEX(0x27272a), .input = HEX(0x3f3f46), .ring = HEX(0x71717b),
-    .chart = { HEX(0x8ec5ff), HEX(0x2b7fff), HEX(0x155dfc), HEX(0x1447e6), HEX(0x193cb8) },
-    .dark = true,
-};
-
-static const lv_theme_shadcn_palette_t zinc_light = {
-    .background = HEX(0xffffff), .foreground = HEX(0x09090b),
-    .card = HEX(0xffffff), .card_fg = HEX(0x09090b),
-    .popover = HEX(0xffffff), .popover_fg = HEX(0x09090b),
-    .primary = HEX(0x18181b), .primary_fg = HEX(0xfafafa),
-    .secondary = HEX(0xf4f4f5), .secondary_fg = HEX(0x18181b),
-    .muted = HEX(0xf4f4f5), .muted_fg = HEX(0x71717b),
-    .accent = HEX(0xf4f4f5), .accent_fg = HEX(0x18181b),
-    .destructive = HEX(0xe7000b), .destructive_fg = HEX(0xfafafa),
-    .border = HEX(0xe4e4e7), .input = HEX(0xe4e4e7), .ring = HEX(0x9f9fa9),
-    .chart = { HEX(0x8ec5ff), HEX(0x2b7fff), HEX(0x155dfc), HEX(0x1447e6), HEX(0x193cb8) },
-    .dark = false,
-};
+static bool accent_valid(lv_theme_shadcn_accent_t accent)
+{
+    return (int)accent >= 0 && accent < LV_THEME_SHADCN_ACCENT_COUNT;
+}
 
 const lv_theme_shadcn_palette_t * lv_theme_shadcn_palette_zinc_dark(void)
 {
-    return &zinc_dark;
+    return &lv_theme_shadcn_base_palettes[LV_THEME_SHADCN_BASE_ZINC][1];
 }
 
 const lv_theme_shadcn_palette_t * lv_theme_shadcn_palette_zinc_light(void)
 {
-    return &zinc_light;
+    return &lv_theme_shadcn_base_palettes[LV_THEME_SHADCN_BASE_ZINC][0];
 }
 
 void lv_theme_shadcn_palette_from_primary(lv_theme_shadcn_palette_t * out, const lv_theme_shadcn_palette_t * base,
@@ -47,4 +27,30 @@ void lv_theme_shadcn_palette_from_primary(lv_theme_shadcn_palette_t * out, const
     out->primary = primary;
     out->primary_fg = primary_fg;
     out->ring = lv_color_mix(primary, base->background, LV_OPA_50);
+}
+
+void lv_theme_shadcn_palette_make(lv_theme_shadcn_palette_t * out, lv_theme_shadcn_base_t base,
+                                  lv_theme_shadcn_accent_t accent, bool dark)
+{
+    if(out == NULL) return;
+    if(!base_valid(base)) base = LV_THEME_SHADCN_BASE_ZINC;
+    if(!accent_valid(accent)) accent = LV_THEME_SHADCN_ACCENT_NONE;
+    *out = lv_theme_shadcn_base_palettes[base][dark ? 1 : 0];
+    if(accent == LV_THEME_SHADCN_ACCENT_NONE) return;
+    const lv_theme_shadcn_accent_colors_t * colors = &lv_theme_shadcn_accent_palettes[accent - 1][dark ? 1 : 0];
+    out->primary = colors->primary;
+    out->primary_fg = colors->primary_fg;
+    out->secondary = colors->secondary;
+    out->secondary_fg = colors->secondary_fg;
+    for(int i = 0; i < 5; i++) out->chart[i] = colors->chart[i];
+}
+
+const char * lv_theme_shadcn_base_name(lv_theme_shadcn_base_t base)
+{
+    return lv_theme_shadcn_base_names[base_valid(base) ? base : LV_THEME_SHADCN_BASE_ZINC];
+}
+
+const char * lv_theme_shadcn_accent_name(lv_theme_shadcn_accent_t accent)
+{
+    return lv_theme_shadcn_accent_names[accent_valid(accent) ? accent : LV_THEME_SHADCN_ACCENT_NONE];
 }

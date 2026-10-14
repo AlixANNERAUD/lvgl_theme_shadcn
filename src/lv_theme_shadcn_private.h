@@ -10,6 +10,19 @@
 #define LV_THEME_SHADCN_TRANSITION_MS 150
 
 typedef struct {
+    lv_color_t primary;
+    lv_color_t primary_fg;
+    lv_color_t secondary;
+    lv_color_t secondary_fg;
+    lv_color_t chart[5];
+} lv_theme_shadcn_accent_colors_t;
+
+extern const lv_theme_shadcn_palette_t lv_theme_shadcn_base_palettes[LV_THEME_SHADCN_BASE_COUNT][2];
+extern const lv_theme_shadcn_accent_colors_t lv_theme_shadcn_accent_palettes[LV_THEME_SHADCN_ACCENT_COUNT - 1][2];
+extern const char * const lv_theme_shadcn_base_names[LV_THEME_SHADCN_BASE_COUNT];
+extern const char * const lv_theme_shadcn_accent_names[LV_THEME_SHADCN_ACCENT_COUNT];
+
+typedef struct {
     int32_t space_xs;
     int32_t space_sm;
     int32_t space_md;

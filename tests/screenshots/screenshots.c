@@ -121,6 +121,59 @@ static unsigned count_diff(const unsigned char * actual, const unsigned char * r
     return count;
 }
 
+static void check(const lv_theme_shadcn_scene_t * scene, const char * name, const char * ref_dir, const char * out_dir,
+                  bool update, int * failed, int * missing)
+{
+    char path[512];
+    unsigned char * actual = render(scene, &snapshot_a) ? to_rgba(&snapshot_a) : NULL;
+    if(actual == NULL) {
+        printf("FAIL %s (render error)\n", name);
+        (*failed)++;
+        return;
+    }
+
+    snprintf(path, sizeof(path), "%s/%s.png", out_dir, name);
+    if(!write_png(path, actual)) {
+        printf("FAIL %s (cannot write %s)\n", name, path);
+        (*failed)++;
+    } else if(update) {
+        snprintf(path, sizeof(path), "%s/%s.png", ref_dir, name);
+        if(write_png(path, actual)) printf("UPDATED %s\n", name);
+        else {
+            printf("FAIL %s (cannot write %s)\n", name, path);
+            (*failed)++;
+        }
+    } else {
+        snprintf(path, sizeof(path), "%s/%s.png", ref_dir, name);
+        unsigned rw = 0;
+        unsigned rh = 0;
+        lv_draw_buf_t * ref = read_png(path, &rw, &rh);
+        if(ref == NULL) {
+            printf("MISSING %s (0 px)\n", name);
+            (*missing)++;
+        } else if(rw != WIDTH || rh != HEIGHT) {
+            printf("FAIL %s (size %ux%u)\n", name, rw, rh);
+            (*failed)++;
+        } else {
+            unsigned char * diff = malloc((size_t)WIDTH * HEIGHT * 4);
+            unsigned n = diff ? count_diff(actual, (const unsigned char *)ref->data, diff) : (unsigned)WIDTH * HEIGHT;
+            if((uint64_t)n * 1000 > (uint64_t)WIDTH * HEIGHT * MAX_DIFF_PERMILLE) {
+                printf("FAIL %s (%u px)\n", name, n);
+                (*failed)++;
+                if(diff) {
+                    snprintf(path, sizeof(path), "%s/%s-diff.png", out_dir, name);
+                    write_png(path, diff);
+                }
+            } else {
+                printf("PASS %s (%u px)\n", name, n);
+            }
+            free(diff);
+        }
+        if(ref != NULL) lv_draw_buf_destroy(ref);
+    }
+    free(actual);
+}
+
 int main(int argc, char ** argv)
 {
     bool update = false;
@@ -165,60 +218,35 @@ int main(int argc, char ** argv)
 
     int failed = 0;
     int missing = 0;
+    const lv_theme_shadcn_scene_t * showcase = NULL;
     for(int p = 0; p < 2; p++) {
         lv_theme_shadcn_set_palette(display, palettes[p]);
         for(uint32_t s = 0; s < count; s++) {
             char name[96];
-            char path[512];
             snprintf(name, sizeof(name), "%s-%s", scenes[s].name, palette_names[p]);
+            check(&scenes[s], name, ref_dir, out_dir, update, &failed, &missing);
+            if(strcmp(scenes[s].name, "showcase") == 0) showcase = &scenes[s];
+        }
+    }
 
-            unsigned char * actual = render(&scenes[s], &snapshot_a) ? to_rgba(&snapshot_a) : NULL;
-            if(actual == NULL) {
-                printf("FAIL %s (render error)\n", name);
-                failed++;
-                continue;
-            }
-
-            snprintf(path, sizeof(path), "%s/%s.png", out_dir, name);
-            if(!write_png(path, actual)) {
-                printf("FAIL %s (cannot write %s)\n", name, path);
-                failed++;
-            } else if(update) {
-                snprintf(path, sizeof(path), "%s/%s.png", ref_dir, name);
-                if(write_png(path, actual)) printf("UPDATED %s\n", name);
-                else {
-                    printf("FAIL %s (cannot write %s)\n", name, path);
-                    failed++;
-                }
-            } else {
-                snprintf(path, sizeof(path), "%s/%s.png", ref_dir, name);
-                unsigned rw = 0;
-                unsigned rh = 0;
-                lv_draw_buf_t * ref = read_png(path, &rw, &rh);
-                if(ref == NULL) {
-                    printf("MISSING %s (0 px)\n", name);
-                    missing++;
-                } else if(rw != WIDTH || rh != HEIGHT) {
-                    printf("FAIL %s (size %ux%u)\n", name, rw, rh);
-                    failed++;
-                } else {
-                    unsigned char * diff = malloc((size_t)WIDTH * HEIGHT * 4);
-                    unsigned n = diff ? count_diff(actual, (const unsigned char *)ref->data, diff) : (unsigned)WIDTH * HEIGHT;
-                    if((uint64_t)n * 1000 > (uint64_t)WIDTH * HEIGHT * MAX_DIFF_PERMILLE) {
-                        printf("FAIL %s (%u px)\n", name, n);
-                        failed++;
-                        if(diff) {
-                            snprintf(path, sizeof(path), "%s/%s-diff.png", out_dir, name);
-                            write_png(path, diff);
-                        }
-                    } else {
-                        printf("PASS %s (%u px)\n", name, n);
-                    }
-                    free(diff);
-                }
-                if(ref != NULL) lv_draw_buf_destroy(ref);
-            }
-            free(actual);
+    if(showcase == NULL) {
+        printf("FAIL showcase scene missing\n");
+        failed++;
+    } else {
+        lv_theme_shadcn_palette_t palette;
+        for(int a = LV_THEME_SHADCN_ACCENT_NONE + 1; a < LV_THEME_SHADCN_ACCENT_COUNT; a++) {
+            char name[96];
+            lv_theme_shadcn_palette_make(&palette, LV_THEME_SHADCN_BASE_ZINC, (lv_theme_shadcn_accent_t)a, true);
+            lv_theme_shadcn_set_palette(display, &palette);
+            snprintf(name, sizeof(name), "palette-accent-%s-dark", lv_theme_shadcn_accent_name((lv_theme_shadcn_accent_t)a));
+            check(showcase, name, ref_dir, out_dir, update, &failed, &missing);
+        }
+        for(int b = 0; b < LV_THEME_SHADCN_BASE_COUNT; b++) {
+            char name[96];
+            lv_theme_shadcn_palette_make(&palette, (lv_theme_shadcn_base_t)b, LV_THEME_SHADCN_ACCENT_NONE, false);
+            lv_theme_shadcn_set_palette(display, &palette);
+            snprintf(name, sizeof(name), "palette-base-%s-light", lv_theme_shadcn_base_name((lv_theme_shadcn_base_t)b));
+            check(showcase, name, ref_dir, out_dir, update, &failed, &missing);
         }
     }
     lv_deinit();

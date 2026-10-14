@@ -52,8 +52,8 @@ fn zinc_palettes_match_c() {
     assert_eq!(dark.primary(), Color::hex(0xe4e4e7));
     assert_eq!(dark.destructive(), Color::hex(0xff6467));
     assert_eq!(dark.ring(), Color::hex(0x71717b));
-    assert_eq!(dark.chart(0), Color::hex(0x8ec5ff));
-    assert_eq!(dark.chart(Palette::CHART_COUNT - 1), Color::hex(0x193cb8));
+    assert_eq!(dark.chart(0), Color::hex(0xd4d4d8));
+    assert_eq!(dark.chart(Palette::CHART_COUNT - 1), Color::hex(0x27272a));
     assert_eq!(light.primary(), Color::hex(0x18181b));
     assert_eq!(light.background(), Color::hex(0xffffff));
 }

@@ -45,6 +45,41 @@ typedef struct {
     bool dark;
 } lv_theme_shadcn_palette_t;
 
+typedef enum {
+    LV_THEME_SHADCN_BASE_NEUTRAL,
+    LV_THEME_SHADCN_BASE_STONE,
+    LV_THEME_SHADCN_BASE_ZINC,
+    LV_THEME_SHADCN_BASE_GRAY,
+    LV_THEME_SHADCN_BASE_SLATE,
+    LV_THEME_SHADCN_BASE_MAUVE,
+    LV_THEME_SHADCN_BASE_OLIVE,
+    LV_THEME_SHADCN_BASE_MIST,
+    LV_THEME_SHADCN_BASE_TAUPE,
+    LV_THEME_SHADCN_BASE_COUNT,
+} lv_theme_shadcn_base_t;
+
+typedef enum {
+    LV_THEME_SHADCN_ACCENT_NONE,
+    LV_THEME_SHADCN_ACCENT_AMBER,
+    LV_THEME_SHADCN_ACCENT_BLUE,
+    LV_THEME_SHADCN_ACCENT_CYAN,
+    LV_THEME_SHADCN_ACCENT_EMERALD,
+    LV_THEME_SHADCN_ACCENT_FUCHSIA,
+    LV_THEME_SHADCN_ACCENT_GREEN,
+    LV_THEME_SHADCN_ACCENT_INDIGO,
+    LV_THEME_SHADCN_ACCENT_LIME,
+    LV_THEME_SHADCN_ACCENT_ORANGE,
+    LV_THEME_SHADCN_ACCENT_PINK,
+    LV_THEME_SHADCN_ACCENT_PURPLE,
+    LV_THEME_SHADCN_ACCENT_RED,
+    LV_THEME_SHADCN_ACCENT_ROSE,
+    LV_THEME_SHADCN_ACCENT_SKY,
+    LV_THEME_SHADCN_ACCENT_TEAL,
+    LV_THEME_SHADCN_ACCENT_VIOLET,
+    LV_THEME_SHADCN_ACCENT_YELLOW,
+    LV_THEME_SHADCN_ACCENT_COUNT,
+} lv_theme_shadcn_accent_t;
+
 typedef struct {
     const lv_font_t * small;
     const lv_font_t * normal;
@@ -83,6 +118,10 @@ const lv_theme_shadcn_palette_t * lv_theme_shadcn_palette_zinc_dark(void);
 const lv_theme_shadcn_palette_t * lv_theme_shadcn_palette_zinc_light(void);
 void lv_theme_shadcn_palette_from_primary(lv_theme_shadcn_palette_t * out, const lv_theme_shadcn_palette_t * base,
                                           lv_color_t primary, lv_color_t primary_fg);
+void lv_theme_shadcn_palette_make(lv_theme_shadcn_palette_t * out, lv_theme_shadcn_base_t base,
+                                  lv_theme_shadcn_accent_t accent, bool dark);
+const char * lv_theme_shadcn_base_name(lv_theme_shadcn_base_t base);
+const char * lv_theme_shadcn_accent_name(lv_theme_shadcn_accent_t accent);
 
 void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t variant);
 void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface);
