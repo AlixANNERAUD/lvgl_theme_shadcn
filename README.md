@@ -1,6 +1,9 @@
 # lvgl_theme_shadcn
 
 [![CI](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/ci.yml/badge.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/ci.yml)
+[![Rust](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/rust.yml/badge.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/rust.yml)
+[![crates.io](https://img.shields.io/crates/v/lvgl_theme_shadcn.svg)](https://crates.io/crates/lvgl_theme_shadcn)
+[![docs.rs](https://img.shields.io/docsrs/lvgl_theme_shadcn)](https://docs.rs/lvgl_theme_shadcn)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/blob/main/LICENSE)
 [![LVGL](https://img.shields.io/badge/LVGL-%E2%89%A5%209.6-brightgreen.svg)](https://lvgl.io)
 [![PlatformIO Registry](https://badges.registry.platformio.org/packages/alixanneraud/library/lvgl_theme_shadcn.svg)](https://registry.platformio.org/libraries/alixanneraud/lvgl_theme_shadcn)
@@ -30,7 +33,8 @@ Switch between dark and light at runtime, plug in your brand colour, and keep wr
   per widget when you need them.
 - **Brand it in one line.** Derive a full palette from your primary colour with `lv_theme_shadcn_palette_from_primary`,
   or fill in your own palette struct.
-- **C today, Rust next.** Plain C99 with no dependency besides LVGL; Rust bindings are on the way.
+- **C and Rust.** Plain C99 with no dependency besides LVGL, plus `no_std` Rust bindings on
+  [crates.io](https://crates.io/crates/lvgl_theme_shadcn) that work with any LVGL binding.
 - **Ready for your toolchain.** CMake, ESP-IDF, Zephyr, PlatformIO and Arduino manifests are included.
 
 ## Gallery
@@ -223,7 +227,48 @@ ESP-IDF example and the PlatformIO example.
 
 ## Rust
 
-Rust bindings: coming soon.
+The [`lvgl_theme_shadcn`](https://crates.io/crates/lvgl_theme_shadcn) crate wraps the theme in a safe, `no_std`,
+allocation-free API, on top of the raw [`lvgl_theme_shadcn_sys`](https://crates.io/crates/lvgl_theme_shadcn_sys)
+bindings. It does not depend on any LVGL Rust crate, so it plugs into whichever binding your app already uses.
+
+```sh
+cargo add lvgl_theme_shadcn
+```
+
+The C theme is compiled by the sys crate, which needs the LVGL headers and your `lv_conf.h`. Point it at them in
+`.cargo/config.toml`:
+
+```toml
+[env]
+LVGL_INCLUDE_DIR = { value = "third_party/lvgl", relative = true }
+LV_CONF_PATH = { value = "config", relative = true }
+```
+
+`LVGL_INCLUDE_DIR` is the LVGL root (the directory containing `lvgl.h`) and `LV_CONF_PATH` the directory containing
+`lv_conf.h`; use the same configuration as the LVGL you link against. Linking LVGL itself stays your app's job,
+through its LVGL binding or build system.
+
+Handles are built from raw pointers of any type, so the `lv_display_t` and `lv_obj_t` pointers handed out by your
+binding (for example `lvgl_rust_sys`) go straight in, and `as_ptr().cast()` takes them back out:
+
+```rust
+use lvgl_theme_shadcn::{Color, Display, Flags, Fonts, Object, Palette, Theme, Variant};
+
+let brand = Palette::zinc_dark().with_primary(Color::hex(0x2563eb), Color::hex(0xffffff));
+let theme = unsafe {
+    let display = Display::from_ptr(display_ptr).expect("display");
+    Theme::init(display, &brand, &Fonts::default(), Flags::NONE).expect("theme")
+};
+
+let button = unsafe { Object::from_ptr(button_ptr) }.expect("button");
+unsafe { lvgl_theme_shadcn::set_variant(&button, Variant::Destructive) };
+
+theme.set_palette(&Palette::zinc_light());
+assert!(!theme.palette().expect("active theme").is_dark());
+```
+
+Dropping the `Theme` restores the display's previous theme. See the
+[API documentation](https://docs.rs/lvgl_theme_shadcn) for fonts, surfaces, error states and palette roles.
 
 ## License
 
