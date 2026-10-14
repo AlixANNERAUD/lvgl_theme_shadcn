@@ -47,6 +47,29 @@ static void checkbox_focus_ring_on_main(void)
     CHECK_COLOR(lv_obj_get_style_outline_color(cb, LV_PART_MAIN), dark()->ring);
 }
 
+static void check_disabled_toggle(lv_obj_t * obj)
+{
+    lv_obj_add_state(obj, LV_STATE_DISABLED);
+    harness_settle();
+    CHECK_INT(lv_obj_get_style_opa(obj, LV_PART_MAIN), LV_OPA_50);
+}
+
+static void switch_disabled_is_half_opacity(void)
+{
+    lv_theme_shadcn_set_palette(harness_display(), lv_theme_shadcn_palette_zinc_light());
+    lv_obj_t * sw = lv_switch_create(lv_screen_active());
+    check_disabled_toggle(sw);
+    CHECK_COLOR(lv_obj_get_style_bg_color(sw, LV_PART_MAIN), lv_theme_shadcn_palette_zinc_light()->input);
+    CHECK_COLOR(lv_obj_get_style_bg_color(sw, LV_PART_KNOB), lv_color_hex(0xffffff));
+}
+
+static void checkbox_disabled_is_half_opacity(void)
+{
+    lv_obj_t * cb = lv_checkbox_create(lv_screen_active());
+    check_disabled_toggle(cb);
+    CHECK_COLOR(lv_obj_get_style_border_color(cb, LV_PART_INDICATOR), dark()->input);
+}
+
 static void led_is_flat_primary(void)
 {
     lv_obj_t * led = lv_led_create(lv_screen_active());
@@ -88,6 +111,8 @@ int main(void)
     RUN(switch_knob_light_palette);
     RUN(checkbox_marker);
     RUN(checkbox_focus_ring_on_main);
+    RUN(switch_disabled_is_half_opacity);
+    RUN(checkbox_disabled_is_half_opacity);
     RUN(led_is_flat_primary);
     RUN(switch_touch_target);
     RUN(checkbox_touch_target);

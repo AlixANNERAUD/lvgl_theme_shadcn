@@ -59,6 +59,7 @@ static void build_base(lv_theme_shadcn_state_t * st)
     lv_style_set_outline_opa(&s->focus_ring, LV_OPA_COVER);
 
     lv_style_set_opa(&s->disabled, LV_THEME_SHADCN_DISABLED_OPA);
+    lv_style_set_opa(&s->disabled_toggle, LV_THEME_SHADCN_TOGGLE_DISABLED_OPA);
 }
 
 static void set_surface(lv_style_t * style, lv_color_t bg, lv_color_t fg)

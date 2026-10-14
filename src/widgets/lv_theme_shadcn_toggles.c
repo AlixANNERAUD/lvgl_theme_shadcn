@@ -22,6 +22,7 @@ bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj,
         lv_obj_add_style(obj, &S(st)->switch_knob, LV_PART_KNOB);
         lv_obj_add_style(obj, &S(st)->switch_knob_checked, LV_PART_KNOB | LV_STATE_CHECKED);
         lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+        lv_obj_add_style(obj, &S(st)->disabled_toggle, LV_PART_MAIN | LV_STATE_DISABLED);
         lv_theme_shadcn_set_toggle_touch_target(obj);
         return true;
     }
@@ -32,6 +33,7 @@ bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj,
         lv_obj_add_style(obj, &S(st)->checkbox_marker, LV_PART_INDICATOR);
         lv_obj_add_style(obj, &S(st)->checkbox_marker_checked, LV_PART_INDICATOR | LV_STATE_CHECKED);
         lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+        lv_obj_add_style(obj, &S(st)->disabled_toggle, LV_PART_MAIN | LV_STATE_DISABLED);
         lv_theme_shadcn_set_toggle_touch_target(obj);
         return true;
     }
