@@ -22,7 +22,24 @@ static void textarea_error(void)
 {
     lv_obj_t * ta = lv_textarea_create(lv_screen_active());
     lv_theme_shadcn_set_error(ta, true);
+    lv_obj_add_state(ta, LV_STATE_FOCUSED);
+    harness_settle();
     CHECK_COLOR(lv_obj_get_style_border_color(ta, LV_PART_MAIN), dark()->destructive);
+    lv_theme_shadcn_set_error(ta, false);
+    harness_settle();
+    CHECK_COLOR(lv_obj_get_style_border_color(ta, LV_PART_MAIN), dark()->ring);
+}
+
+static void dropdown_error_open(void)
+{
+    lv_obj_t * dd = lv_dropdown_create(lv_screen_active());
+    lv_theme_shadcn_set_error(dd, true);
+    lv_obj_add_state(dd, LV_STATE_CHECKED);
+    harness_settle();
+    CHECK_COLOR(lv_obj_get_style_border_color(dd, LV_PART_MAIN), dark()->destructive);
+    lv_theme_shadcn_set_error(dd, false);
+    harness_settle();
+    CHECK_COLOR(lv_obj_get_style_border_color(dd, LV_PART_MAIN), dark()->ring);
 }
 
 static void spinbox_matches_textarea(void)
@@ -47,6 +64,8 @@ static void roller_selected_row(void)
     lv_obj_t * r = lv_roller_create(lv_screen_active());
     CHECK_COLOR(lv_obj_get_style_bg_color(r, LV_PART_SELECTED), dark()->accent);
     CHECK_COLOR(lv_obj_get_style_text_color(r, LV_PART_SELECTED), dark()->accent_fg);
+    CHECK_INT(lv_obj_get_style_text_align(r, LV_PART_MAIN), LV_TEXT_ALIGN_CENTER);
+    CHECK(lv_obj_get_style_anim_duration(r, LV_PART_MAIN) > 0);
 }
 
 static void keyboard_keys(void)
@@ -63,6 +82,7 @@ int main(void)
 {
     RUN(textarea_input_box);
     RUN(textarea_error);
+    RUN(dropdown_error_open);
     RUN(spinbox_matches_textarea);
     RUN(dropdown_and_list);
     RUN(roller_selected_row);

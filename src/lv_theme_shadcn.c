@@ -168,8 +168,12 @@ void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error)
 {
     lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
     if(st == NULL) return;
-    lv_obj_remove_style(obj, &S(st)->error, LV_PART_ANY | LV_STATE_ANY);
-    if(error) lv_obj_add_style(obj, &S(st)->error, 0);
+    lv_obj_remove_style(obj, &S(st)->error, LV_PART_MAIN | LV_STATE_ANY);
+    if(!error) return;
+    lv_obj_add_style(obj, &S(st)->error, 0);
+    lv_obj_add_style(obj, &S(st)->error, LV_STATE_FOCUSED);
+    lv_obj_add_style(obj, &S(st)->error, LV_STATE_FOCUS_KEY);
+    lv_obj_add_style(obj, &S(st)->error, LV_STATE_CHECKED);
 }
 
 void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t variant)

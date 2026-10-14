@@ -60,6 +60,7 @@ bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, 
 #if LV_USE_ROLLER
     if(lv_obj_check_type(obj, &lv_roller_class)) {
         add_input(st, obj);
+        lv_obj_add_style(obj, &S(st)->roller, 0);
         lv_obj_add_style(obj, &S(st)->accent, LV_PART_SELECTED);
         return true;
     }

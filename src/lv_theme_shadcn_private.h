@@ -70,6 +70,7 @@ typedef struct {
     lv_style_t key;
     lv_style_t key_pressed;
     lv_style_t key_control;
+    lv_style_t roller;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
 } lv_theme_shadcn_styles_t;

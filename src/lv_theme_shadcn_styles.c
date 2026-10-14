@@ -289,6 +289,10 @@ static void build_inputs(lv_theme_shadcn_state_t * st)
     lv_style_set_bg_color(&s->key_pressed, lv_color_mix(p->secondary_fg, p->secondary, LV_THEME_SHADCN_PRESS_MIX));
 
     set_surface(&s->key_control, p->input, p->foreground);
+
+    lv_style_set_text_align(&s->roller, LV_TEXT_ALIGN_CENTER);
+    lv_style_set_text_line_space(&s->roller, m->space_md);
+    lv_style_set_anim_duration(&s->roller, 200);
 }
 
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
