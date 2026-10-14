@@ -153,7 +153,7 @@ const lv_theme_shadcn_palette_t * lv_theme_shadcn_get_palette(lv_display_t * dis
 
 static void remove_styles(lv_obj_t * obj, lv_style_t * styles, size_t count)
 {
-    for(size_t i = 0; i < count; i++) lv_obj_remove_style(obj, &styles[i], LV_PART_ANY | LV_STATE_ANY);
+    for(size_t i = 0; i < count; i++) lv_obj_remove_style(obj, &styles[i], LV_PART_MAIN | LV_STATE_ANY);
 }
 
 void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface)

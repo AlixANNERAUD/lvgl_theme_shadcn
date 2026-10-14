@@ -1,4 +1,3 @@
-
 #include "harness.h"
 
 static const lv_theme_shadcn_palette_t * dark(void)
@@ -103,6 +102,29 @@ static void buttonmatrix_items_are_outline(void)
     CHECK_COLOR(lv_obj_get_style_bg_color(bm, LV_PART_ITEMS), dark()->accent);
 }
 
+static void button_label_is_centred(void)
+{
+    lv_obj_t * btn = lv_button_create(lv_screen_active());
+    lv_obj_t * label = lv_label_create(btn);
+    lv_label_set_text(label, "Save");
+    lv_obj_update_layout(btn);
+    lv_area_t b;
+    lv_area_t l;
+    lv_obj_get_coords(btn, &b);
+    lv_obj_get_coords(label, &l);
+    int32_t diff = (b.y1 + b.y2) - (l.y1 + l.y2);
+    CHECK(diff >= -2 && diff <= 2);
+}
+
+static void variant_change_keeps_item_styles(void)
+{
+    static const char * map[] = { "A", "B", "" };
+    lv_obj_t * bm = lv_buttonmatrix_create(lv_screen_active());
+    lv_buttonmatrix_set_map(bm, map);
+    lv_theme_shadcn_set_variant(bm, LV_THEME_SHADCN_VARIANT_DEFAULT);
+    CHECK_COLOR(lv_obj_get_style_border_color(bm, LV_PART_ITEMS), dark()->input);
+}
+
 int main(void)
 {
     RUN(button_is_primary);
@@ -113,5 +135,7 @@ int main(void)
     RUN(destructive_variant);
     RUN(helpers_ignore_foreign_display);
     RUN(buttonmatrix_items_are_outline);
+    RUN(button_label_is_centred);
+    RUN(variant_change_keeps_item_styles);
     return harness_result();
 }

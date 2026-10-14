@@ -131,11 +131,19 @@ static void build_actions(lv_theme_shadcn_state_t * st)
     lv_theme_shadcn_styles_t * s = S(st);
 
     lv_style_set_min_height(&s->control, m->control_height);
+    lv_style_set_height(&s->control, m->control_height);
     lv_style_set_radius(&s->control, m->radius_md);
     lv_style_set_pad_hor(&s->control, m->space_lg);
     lv_style_set_pad_ver(&s->control, m->space_sm);
     lv_style_set_pad_gap(&s->control, m->space_sm);
     lv_style_set_shadow_width(&s->control, 0);
+#if LV_USE_FLEX
+    lv_style_set_layout(&s->control, LV_LAYOUT_FLEX);
+    lv_style_set_flex_flow(&s->control, LV_FLEX_FLOW_ROW);
+    lv_style_set_flex_main_place(&s->control, LV_FLEX_ALIGN_CENTER);
+    lv_style_set_flex_cross_place(&s->control, LV_FLEX_ALIGN_CENTER);
+    lv_style_set_flex_track_place(&s->control, LV_FLEX_ALIGN_CENTER);
+#endif
 
     set_filled(&s->variant[LV_THEME_SHADCN_VARIANT_DEFAULT], &s->variant_pressed[LV_THEME_SHADCN_VARIANT_DEFAULT], p->primary, p->primary_fg);
     set_filled(&s->variant[LV_THEME_SHADCN_VARIANT_SECONDARY], &s->variant_pressed[LV_THEME_SHADCN_VARIANT_SECONDARY], p->secondary, p->secondary_fg);

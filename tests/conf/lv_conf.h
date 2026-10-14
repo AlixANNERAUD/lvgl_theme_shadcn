@@ -17,5 +17,6 @@
 #define LV_USE_SNAPSHOT 1
 #define LV_USE_LODEPNG 1
 #define LV_USE_THORVG_INTERNAL 0
+#define LV_USE_FLEX 1
 
 #endif
