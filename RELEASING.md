@@ -38,6 +38,17 @@ or any C manifest diverge.
 Ordinary merges never publish: `release_always = false` restricts publishing to merged Release PRs. If validation
 fails, nothing is published.
 
+## Recovering a failed release
+
+- Validation fails after the Release PR is merged: nothing was published. Fix the problem with a normal pull request.
+  The next Release PR then carries the version that was never published, and merging it publishes. Re-running the
+  failed workflow does not help, because it replays the same commit, and `release_always = false` prevents publishing
+  from any commit that is not a merged Release PR.
+- The crates are published but the PlatformIO publish failed: use "Re-run failed jobs" on the `Release` run, which
+  keeps the version output of the release job. Alternatively, start `publish-platformio` by hand from the Actions tab
+  with `version` set to `X.Y.Z`. Re-running the whole workflow does not work, because `releases_created` is then
+  false and the PlatformIO job is skipped.
+
 ## SemVer policy
 
 Pull requests are squash-merged, so each pull request title becomes one commit on `main`. The `PR Title` workflow
@@ -83,6 +94,9 @@ registry rejects a version that already exists.
   `pio account token`, then add it under **Settings > Secrets and variables > Actions** or with
   `gh secret set PLATFORMIO_AUTH_TOKEN`.
 - **Settings > Actions > General > Workflow permissions**: enable "Allow GitHub Actions to create and approve pull
-  requests". Alternatively, replace `GITHUB_TOKEN` in the `release-plz-pr`
-  job with a personal access token, which also lets CI run on the Release PR (pull requests opened and commits pushed
-  with `GITHUB_TOKEN` do not trigger other workflows).
+  requests".
+- Optional repository secret `RELEASE_PLZ_TOKEN`: a fine-grained personal access token limited to this repository
+  with `Contents` and `Pull requests` read and write permissions. The `release-plz-pr` job uses it to open the Release
+  PR and to push the C manifest sync commit, which makes CI run on the Release PR including that commit. Without it
+  the job falls back to `GITHUB_TOKEN`, and pull requests opened and commits pushed with `GITHUB_TOKEN` do not
+  trigger other workflows.
