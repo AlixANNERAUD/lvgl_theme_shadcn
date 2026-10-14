@@ -47,9 +47,45 @@ static void table_cells(void)
 {
     lv_obj_t * t = lv_table_create(lv_screen_active());
     CHECK_COLOR(lv_obj_get_style_border_color(t, LV_PART_ITEMS), dark()->border);
-    CHECK_INT(lv_obj_get_style_border_side(t, LV_PART_ITEMS), LV_BORDER_SIDE_FULL);
-    CHECK_COLOR(lv_obj_get_style_bg_color(t, LV_PART_ITEMS), dark()->background);
-    CHECK_INT(lv_obj_get_style_bg_opa(t, LV_PART_ITEMS), LV_OPA_COVER);
+    CHECK_INT(lv_obj_get_style_border_side(t, LV_PART_ITEMS), LV_BORDER_SIDE_BOTTOM);
+    CHECK_INT(lv_obj_get_style_bg_opa(t, LV_PART_ITEMS), LV_OPA_TRANSP);
+    CHECK_COLOR(lv_obj_get_style_text_color(t, LV_PART_ITEMS), dark()->foreground);
+    CHECK_COLOR(lv_obj_get_style_border_color(t, LV_PART_MAIN), dark()->border);
+    CHECK_INT(lv_obj_get_style_radius(t, LV_PART_MAIN), lv_display_dpx(harness_display(), 8));
+    CHECK(lv_obj_get_style_clip_corner(t, LV_PART_MAIN));
+}
+
+static uint32_t table_rows_bordered;
+static uint32_t table_last_row_bordered;
+
+static void table_probe_cb(lv_event_t * e)
+{
+    lv_obj_t * t = lv_event_get_current_target_obj(e);
+    lv_draw_task_t * task = lv_event_get_draw_task(e);
+    lv_draw_dsc_base_t * base = lv_draw_task_get_draw_dsc(task);
+    if(base->part != LV_PART_ITEMS) return;
+    lv_draw_border_dsc_t * border = lv_draw_task_get_border_dsc(task);
+    if(border == NULL || border->opa <= LV_OPA_MIN || border->width == 0) return;
+    if(base->id1 == lv_table_get_row_count(t) - 1) table_last_row_bordered++;
+    else table_rows_bordered++;
+}
+
+static void table_last_row_has_no_divider(void)
+{
+    lv_obj_t * t = lv_table_create(lv_screen_active());
+    lv_table_set_column_count(t, 2);
+    lv_table_set_row_count(t, 3);
+    for(uint32_t r = 0; r < 3; r++) {
+        lv_table_set_cell_value(t, r, 0, "a");
+        lv_table_set_cell_value(t, r, 1, "b");
+    }
+    lv_obj_add_event_cb(t, table_probe_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
+    lv_obj_set_send_draw_task_events(t, true);
+    table_rows_bordered = 0;
+    table_last_row_bordered = 0;
+    lv_refr_now(harness_display());
+    CHECK(table_rows_bordered > 0);
+    CHECK_INT(table_last_row_bordered, 0);
 }
 
 static bool highlight_seen;
@@ -164,6 +200,7 @@ int main(void)
     RUN(list_rows);
     RUN(tabview_segmented);
     RUN(table_cells);
+    RUN(table_last_row_has_no_divider);
     RUN(calendar_days);
     RUN(chart_frame);
     RUN(chart_series_visible);

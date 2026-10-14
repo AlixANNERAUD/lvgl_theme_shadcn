@@ -464,14 +464,9 @@ static void build_collections(lv_obj_t * parent)
 #if LV_USE_TABLE
     lv_obj_t * table = lv_table_create(left);
     lv_obj_set_size(table, HALF_W, LV_SIZE_CONTENT);
-    lv_obj_set_style_border_width(table, 0, 0);
-    lv_obj_set_style_bg_opa(table, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_bg_opa(table, LV_OPA_TRANSP, LV_PART_ITEMS);
-    lv_obj_set_style_border_side(table, LV_BORDER_SIDE_BOTTOM, LV_PART_ITEMS);
-    lv_obj_set_style_pad_hor(table, 4, LV_PART_ITEMS);
     lv_table_set_column_count(table, 3);
     lv_table_set_row_count(table, 3);
-    lv_table_set_column_width(table, 0, HALF_W - 140);
+    lv_table_set_column_width(table, 0, HALF_W - 142);
     lv_table_set_column_width(table, 1, 60);
     lv_table_set_column_width(table, 2, 80);
     lv_table_set_cell_value(table, 0, 0, "Item");

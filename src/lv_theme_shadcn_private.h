@@ -73,6 +73,7 @@ typedef struct {
     lv_style_t roller;
     lv_style_t list_text;
     lv_style_t list_button;
+    lv_style_t table;
     lv_style_t table_cell;
     lv_style_t tab_bar;
     lv_style_t tab_button;
