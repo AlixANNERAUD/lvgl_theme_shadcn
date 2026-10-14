@@ -50,7 +50,7 @@ static void disabled_obj_is_dimmed(void)
     lv_obj_t * box = lv_obj_create(lv_screen_active());
     lv_obj_add_state(box, LV_STATE_DISABLED);
     harness_settle();
-    CHECK_INT(lv_obj_get_style_opa(box, LV_PART_MAIN), 97);
+    CHECK_INT(lv_obj_get_style_opa(box, LV_PART_MAIN), LV_OPA_50);
 }
 
 static void focus_key_shows_ring(void)

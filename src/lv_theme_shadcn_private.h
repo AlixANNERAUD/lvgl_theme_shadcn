@@ -6,8 +6,7 @@
 #define LV_THEME_SHADCN_VARIANT_COUNT 5
 #define LV_THEME_SHADCN_SURFACE_COUNT 4
 #define LV_THEME_SHADCN_PRESS_MIX 26
-#define LV_THEME_SHADCN_DISABLED_OPA 97
-#define LV_THEME_SHADCN_TOGGLE_DISABLED_OPA LV_OPA_50
+#define LV_THEME_SHADCN_DISABLED_OPA LV_OPA_50
 #define LV_THEME_SHADCN_TRANSITION_MS 150
 
 typedef struct {
@@ -34,7 +33,6 @@ typedef struct {
     lv_style_t transition;
     lv_style_t focus_ring;
     lv_style_t disabled;
-    lv_style_t disabled_toggle;
     lv_style_t surface[LV_THEME_SHADCN_SURFACE_COUNT];
     lv_style_t container;
     lv_style_t transparent;
