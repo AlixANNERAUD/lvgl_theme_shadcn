@@ -42,6 +42,7 @@ jobs:
         run: >
           cmake -S . -B build-asan
           -DCMAKE_C_COMPILER=clang
+          -DCMAKE_CXX_COMPILER=clang++
           -DCMAKE_BUILD_TYPE=Debug
           -DLV_THEME_SHADCN_WERROR=ON
           -DLV_THEME_SHADCN_SANITIZE=ON

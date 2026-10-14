@@ -25,9 +25,7 @@ option(LV_THEME_SHADCN_SANITIZE "Build with address and undefined sanitizers" OF
 if(LV_THEME_SHADCN_SANITIZE)
   add_compile_options(-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer)
   add_link_options(-fsanitize=address,undefined)
-  if(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-fsanitize-ignorelist=${CMAKE_CURRENT_LIST_DIR}/tests/sanitize-ignorelist.txt)
-  endif()
+  add_compile_options($<$<COMPILE_LANG_AND_ID:C,Clang,AppleClang>:-fsanitize-ignorelist=${CMAKE_CURRENT_LIST_DIR}/tests/sanitize-ignorelist.txt>)
   add_compile_definitions(LV_THEME_SHADCN_SANITIZE_BUILD=1)
 endif()
 
