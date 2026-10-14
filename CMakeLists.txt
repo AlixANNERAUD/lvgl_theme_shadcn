@@ -18,7 +18,7 @@ else()
 endif()
 
 option(LV_THEME_SHADCN_BUILD_TESTS "Build unit tests" ${LV_THEME_SHADCN_TOP_LEVEL})
-option(LV_THEME_SHADCN_BUILD_EXAMPLES "Build examples" ${LV_THEME_SHADCN_TOP_LEVEL})
+option(LV_THEME_SHADCN_BUILD_EXAMPLES "Build demo scenes used by tests and the gallery" ${LV_THEME_SHADCN_TOP_LEVEL})
 option(LV_THEME_SHADCN_WERROR "Treat warnings as errors" OFF)
 option(LV_THEME_SHADCN_SANITIZE "Build with address and undefined sanitizers" OFF)
 
