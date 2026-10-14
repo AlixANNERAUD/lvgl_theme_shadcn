@@ -1,0 +1,10 @@
+add_library(lv_theme_shadcn_harness STATIC harness.c)
+target_link_libraries(lv_theme_shadcn_harness PUBLIC lvgl_theme_shadcn)
+
+function(lv_theme_shadcn_add_test name)
+  add_executable(${name} ${name}.c)
+  target_link_libraries(${name} PRIVATE lv_theme_shadcn_harness)
+  add_test(NAME ${name} COMMAND ${name})
+endfunction()
+
+lv_theme_shadcn_add_test(test_palette)
