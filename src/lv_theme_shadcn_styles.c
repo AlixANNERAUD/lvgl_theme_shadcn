@@ -180,7 +180,7 @@ static void build_toggles(lv_theme_shadcn_state_t * st)
     lv_style_set_radius(&s->switch_track, LV_RADIUS_CIRCLE);
     lv_style_set_border_width(&s->switch_track, 0);
 
-    lv_style_set_bg_color(&s->switch_knob, p->background);
+    lv_style_set_bg_color(&s->switch_knob, p->dark ? p->foreground : p->background);
     lv_style_set_bg_opa(&s->switch_knob, LV_OPA_COVER);
     lv_style_set_radius(&s->switch_knob, LV_RADIUS_CIRCLE);
     lv_style_set_pad_all(&s->switch_knob, -m->space_xs / 2);
