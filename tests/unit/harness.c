@@ -30,9 +30,9 @@ const lv_theme_shadcn_fonts_t * harness_fonts(void)
 
 void harness_begin(const lv_theme_shadcn_palette_t * palette)
 {
-    (void)palette;
     lv_init();
     display = harness_create_display();
+    if(palette) lv_theme_shadcn_init(display, palette, harness_fonts(), LV_THEME_SHADCN_FLAG_NONE);
 }
 
 void harness_end(void)
