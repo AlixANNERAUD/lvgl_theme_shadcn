@@ -1,0 +1,140 @@
+name: Rust
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Install libclang
+        run: sudo apt-get update && sudo apt-get install -y libclang-dev
+
+      - name: Build LVGL
+        run: |
+          cmake -S rust/ci -B build-rust-ci -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-rust-ci --parallel
+          {
+            echo "LVGL_INCLUDE_DIR=$PWD/build-rust-ci/_deps/lvgl-src"
+            echo "LV_CONF_PATH=$PWD/rust/ci/conf"
+            echo "LVGL_LIB_DIR=$PWD/build-rust-ci/lib"
+          } >> "$GITHUB_ENV"
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Clippy with all Features
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Documentation
+        run: cargo doc --workspace --no-deps
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+      - name: Documentation without LVGL
+        run: env -u LVGL_INCLUDE_DIR -u LV_CONF_PATH -u LVGL_LIB_DIR DOCS_RS=1 cargo doc --workspace --no-deps
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+      - name: Test
+        run: cargo test --workspace
+
+      - name: Test with all Features
+        run: cargo test --workspace --all-features
+
+      - name: Integration tests are linked
+        run: |
+          tests=$(cargo test --workspace -- --list)
+          for name in palette_layout_matches_c theme_lifecycle_and_helpers; do
+            if ! printf '%s\n' "$tests" | grep -q "^$name: test$"; then
+              echo "::error::Integration test $name was not built, check LVGL_LIB_DIR"
+              exit 1
+            fi
+          done
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@1.88
+
+      - name: Install libclang
+        run: sudo apt-get update && sudo apt-get install -y libclang-dev
+
+      - name: Build LVGL
+        run: |
+          cmake -S rust/ci -B build-rust-ci -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-rust-ci --parallel
+          {
+            echo "LVGL_INCLUDE_DIR=$PWD/build-rust-ci/_deps/lvgl-src"
+            echo "LV_CONF_PATH=$PWD/rust/ci/conf"
+            echo "LVGL_LIB_DIR=$PWD/build-rust-ci/lib"
+          } >> "$GITHUB_ENV"
+
+      - name: Test
+        run: cargo test --workspace
+
+      - name: Test with all Features
+        run: cargo test --workspace --all-features
+
+      - name: Integration tests are linked
+        run: |
+          tests=$(cargo test --workspace -- --list)
+          for name in palette_layout_matches_c theme_lifecycle_and_helpers; do
+            if ! printf '%s\n' "$tests" | grep -q "^$name: test$"; then
+              echo "::error::Integration test $name was not built, check LVGL_LIB_DIR"
+              exit 1
+            fi
+          done
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Version consistency
+        run: |
+          metadata=$(cargo metadata --format-version 1 --no-deps)
+          theme=$(echo "$metadata" | jq -r '.packages[] | select(.name == "lvgl_theme_shadcn") | .version')
+          sys=$(echo "$metadata" | jq -r '.packages[] | select(.name == "lvgl_theme_shadcn_sys") | .version')
+          pin=$(echo "$metadata" | jq -r '.packages[] | select(.name == "lvgl_theme_shadcn") | .dependencies[] | select(.name == "lvgl_theme_shadcn_sys") | .req')
+          echo "lvgl_theme_shadcn=$theme lvgl_theme_shadcn_sys=$sys pin=$pin"
+          test "$theme" = "$sys"
+          test "$pin" = "=$theme"
+          scripts/sync-version.sh
+          if ! git diff --exit-code; then
+            echo "::error::C manifest versions differ from the Cargo workspace version, run scripts/sync-version.sh"
+            exit 1
+          fi
+
+      - name: Fetch LVGL headers
+        run: |
+          git clone --quiet --depth 1 --branch v9.6.0 https://github.com/lvgl/lvgl.git "$RUNNER_TEMP/lvgl"
+          {
+            echo "LVGL_INCLUDE_DIR=$RUNNER_TEMP/lvgl"
+            echo "LV_CONF_PATH=$PWD/rust/ci/conf"
+          } >> "$GITHUB_ENV"
+
+      - name: Package
+        run: cargo package --workspace
