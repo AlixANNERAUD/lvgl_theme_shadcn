@@ -340,6 +340,8 @@ static void build_collections(lv_theme_shadcn_state_t * st)
     lv_style_set_text_color(&s->tab_button, p->muted_fg);
     lv_style_set_radius(&s->tab_button, m->radius_sm);
     lv_style_set_border_width(&s->tab_button, 0);
+    lv_style_set_min_height(&s->tab_button, 0);
+    lv_style_set_pad_ver(&s->tab_button, m->space_xs);
 
     set_surface(&s->tab_button_checked, p->background, p->foreground);
 

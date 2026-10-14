@@ -43,6 +43,11 @@ static void tabview_segmented(void)
     CHECK_INT(lv_obj_get_style_pad_left(page, LV_PART_MAIN), lv_display_dpx(harness_display(), 16));
 }
 
+static bool area_inside(const lv_area_t * inner, const lv_area_t * outer)
+{
+    return inner->x1 >= outer->x1 && inner->y1 >= outer->y1 && inner->x2 <= outer->x2 && inner->y2 <= outer->y2;
+}
+
 static uint32_t list_rows_bordered;
 static uint32_t list_last_row_bordered;
 
@@ -81,6 +86,52 @@ static void list_rows_stay_inside_rounded_frame(void)
     lv_list_add_button(list, NULL, "Last");
     CHECK(lv_obj_get_style_radius(list, LV_PART_MAIN) > 0);
     CHECK(lv_obj_get_style_clip_corner(list, LV_PART_MAIN));
+}
+
+static void tabview_bar_padded_evenly(lv_display_t * disp)
+{
+    lv_obj_t * tv = lv_tabview_create(lv_display_get_screen_active(disp));
+    lv_obj_set_size(tv, 240, 104);
+    lv_tabview_set_tab_bar_size(tv, 36);
+    lv_tabview_add_tab(tv, "One");
+    lv_tabview_add_tab(tv, "Two");
+    lv_obj_t * bar = lv_tabview_get_tab_bar(tv);
+    lv_obj_t * tab = lv_obj_get_child(bar, 0);
+    lv_obj_update_layout(tv);
+    int32_t pad = lv_obj_get_style_pad_top(bar, LV_PART_MAIN);
+    CHECK(pad > 0);
+    CHECK_INT(lv_obj_get_style_pad_bottom(bar, LV_PART_MAIN), pad);
+    CHECK_INT(lv_obj_get_style_pad_left(bar, LV_PART_MAIN), pad);
+    CHECK_INT(lv_obj_get_style_pad_right(bar, LV_PART_MAIN), pad);
+    lv_area_t bar_area;
+    lv_area_t tab_area;
+    lv_obj_get_coords(bar, &bar_area);
+    lv_obj_get_coords(tab, &tab_area);
+    lv_area_t content = bar_area;
+    content.x1 += pad;
+    content.y1 += pad;
+    content.x2 -= pad;
+    content.y2 -= pad;
+    CHECK(area_inside(&tab_area, &content));
+    CHECK_INT(tab_area.y1 - bar_area.y1, bar_area.y2 - tab_area.y2);
+    CHECK_INT(tab_area.x1 - bar_area.x1, tab_area.y1 - bar_area.y1);
+    lv_obj_t * cont = lv_tabview_get_content(tv);
+    lv_area_t cont_area;
+    lv_obj_get_coords(cont, &cont_area);
+    CHECK(cont_area.y1 > bar_area.y2);
+}
+
+static void tabview_bar_padded_evenly_default(void)
+{
+    tabview_bar_padded_evenly(harness_display());
+}
+
+static void tabview_bar_padded_evenly_compact(void)
+{
+    lv_display_t * disp = harness_display();
+    lv_theme_shadcn_deinit(disp);
+    lv_theme_shadcn_init(disp, lv_theme_shadcn_palette_zinc_light(), harness_fonts(), LV_THEME_SHADCN_FLAG_COMPACT);
+    tabview_bar_padded_evenly(disp);
 }
 
 static void table_cells(void)
@@ -282,6 +333,8 @@ int main(void)
     RUN(tabview_segmented);
     RUN(list_rows_stay_inside_rounded_frame);
     RUN(list_last_row_has_no_divider);
+    RUN(tabview_bar_padded_evenly_default);
+    RUN(tabview_bar_padded_evenly_compact);
     RUN(table_cells);
     RUN(table_last_row_has_no_divider);
     RUN(table_single_row_has_no_divider);
