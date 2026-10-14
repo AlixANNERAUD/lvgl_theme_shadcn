@@ -22,20 +22,15 @@ fn main() {
     }
     println!("cargo::rustc-check-cfg=cfg(lvgl_theme_shadcn_linked)");
 
-    let manifest_dir =
-        PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"));
-    let c_dir = manifest_dir.join("c");
-    if !c_dir.join("src").is_dir() && env::var_os("DOCS_RS").is_none() {
-        panic!(
-            "{} is not a directory: the C sources are a symlink in the git repository and this checkout did not \
-             create it. Enable git symlinks (`git config core.symlinks true`) and check the files out again",
-            c_dir.join("src").display()
-        );
-    }
+    let c_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"));
+    let crate_dir = c_dir.join("rust").join("lvgl_theme_shadcn_sys");
     for path in ["src", "include", "sources.cmake"] {
         println!("cargo::rerun-if-changed={}", c_dir.join(path).display());
     }
-    println!("cargo::rerun-if-changed=src/bindings.rs");
+    println!(
+        "cargo::rerun-if-changed={}",
+        crate_dir.join("src").join("bindings.rs").display()
+    );
     println!(
         "cargo::metadata=include={}",
         c_dir.join("include").display()
@@ -43,7 +38,7 @@ fn main() {
 
     if env::var_os("DOCS_RS").is_some() {
         #[cfg(feature = "bindgen")]
-        copy_committed_bindings(&manifest_dir);
+        copy_committed_bindings(&crate_dir);
         return;
     }
 
@@ -145,8 +140,8 @@ fn out_bindings() -> PathBuf {
 }
 
 #[cfg(feature = "bindgen")]
-fn copy_committed_bindings(manifest_dir: &Path) {
-    fs::copy(manifest_dir.join("src").join("bindings.rs"), out_bindings())
+fn copy_committed_bindings(crate_dir: &Path) {
+    fs::copy(crate_dir.join("src").join("bindings.rs"), out_bindings())
         .expect("copy committed bindings");
 }
 

@@ -1,5 +1,5 @@
 [workspace]
-members = ["rust/lvgl_theme_shadcn_sys", "rust/lvgl_theme_shadcn"]
+members = [".", "rust/lvgl_theme_shadcn"]
 resolver = "3"
 
 [workspace.package]
@@ -10,3 +10,51 @@ repository = "https://github.com/AlixANNERAUD/lvgl_theme_shadcn"
 homepage = "https://github.com/AlixANNERAUD/lvgl_theme_shadcn"
 authors = ["Alix ANNERAUD <alix@anneraud.fr>"]
 rust-version = "1.88"
+
+[package]
+name = "lvgl_theme_shadcn_sys"
+description = "Raw no_std FFI bindings to the shadcn/ui-inspired LVGL 9 theme"
+keywords = ["lvgl", "theme", "shadcn", "embedded", "no-std"]
+categories = ["external-ffi-bindings", "embedded", "no-std", "gui"]
+readme = "rust/lvgl_theme_shadcn_sys/README.md"
+documentation = "https://docs.rs/lvgl_theme_shadcn_sys"
+links = "lvgl_theme_shadcn"
+build = "rust/lvgl_theme_shadcn_sys/build.rs"
+autolib = false
+autobins = false
+autoexamples = false
+autotests = false
+autobenches = false
+include = [
+    "/src/**/*.c",
+    "/src/**/*.h",
+    "/include/**/*.h",
+    "/sources.cmake",
+    "/LICENSE",
+    "/rust/lvgl_theme_shadcn_sys/build.rs",
+    "/rust/lvgl_theme_shadcn_sys/src/**",
+    "/rust/lvgl_theme_shadcn_sys/tests/**",
+    "/rust/lvgl_theme_shadcn_sys/generate-bindings.sh",
+    "/rust/lvgl_theme_shadcn_sys/README.md",
+]
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "rust/lvgl_theme_shadcn_sys/src/lib.rs"
+
+[[test]]
+name = "ffi"
+path = "rust/lvgl_theme_shadcn_sys/tests/ffi.rs"
+
+[features]
+bindgen = ["dep:bindgen"]
+
+[build-dependencies]
+cc = "1"
+bindgen = { version = "0.72", optional = true }

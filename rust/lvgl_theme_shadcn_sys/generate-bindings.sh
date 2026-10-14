@@ -5,9 +5,10 @@ set -eu
 : "${LV_CONF_PATH:?set LV_CONF_PATH to the directory containing lv_conf.h}"
 
 crate_dir=$(cd "$(dirname "$0")" && pwd)
+root_dir=$(cd "$crate_dir/../.." && pwd)
 output="${1:-$crate_dir/src/bindings.rs}"
 
-bindgen "$crate_dir/c/include/lv_theme_shadcn.h" \
+bindgen "$root_dir/include/lv_theme_shadcn.h" \
     --output "$output" \
     --use-core \
     --disable-header-comment \
