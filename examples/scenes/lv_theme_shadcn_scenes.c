@@ -34,6 +34,14 @@ static lv_obj_t * box(lv_obj_t * parent, lv_flex_flow_t flow, int32_t gap)
     return b;
 }
 
+static lv_obj_t * inline_group(lv_obj_t * parent, int32_t gap, lv_flex_align_t align)
+{
+    lv_obj_t * group = box(parent, LV_FLEX_FLOW_ROW, gap);
+    lv_obj_set_width(group, LV_SIZE_CONTENT);
+    lv_obj_set_flex_align(group, LV_FLEX_ALIGN_START, align, align);
+    return group;
+}
+
 static lv_obj_t * spread_row(lv_obj_t * parent)
 {
     lv_obj_t * row = box(parent, LV_FLEX_FLOW_ROW, SCENE_PAD);
@@ -118,6 +126,25 @@ static lv_obj_t * labelled(lv_obj_t * parent, const char * title, const char * v
     return group;
 }
 
+#if LV_USE_CHART
+static lv_color_t chart_color(lv_obj_t * obj, int index, lv_palette_t fallback)
+{
+    const lv_theme_shadcn_palette_t * palette = palette_of(obj);
+    return palette ? palette->chart[index] : lv_palette_main(fallback);
+}
+#endif
+
+#if LV_USE_SPINNER
+static lv_obj_t * small_spinner(lv_obj_t * parent, int32_t size, int32_t arc_width)
+{
+    lv_obj_t * spinner = lv_spinner_create(parent);
+    lv_obj_set_size(spinner, size, size);
+    lv_obj_set_style_arc_width(spinner, arc_width, 0);
+    lv_obj_set_style_arc_width(spinner, arc_width, LV_PART_INDICATOR);
+    return spinner;
+}
+#endif
+
 static lv_obj_t * field(lv_obj_t * parent, const char * label)
 {
     lv_obj_t * f = box(parent, LV_FLEX_FLOW_COLUMN, 6);
@@ -140,9 +167,7 @@ static lv_obj_t * button(lv_obj_t * parent, const char * str, lv_theme_shadcn_va
 static lv_obj_t * switch_row(lv_obj_t * parent, const char * icon, const char * str, lv_state_t state)
 {
     lv_obj_t * row = spread_row(parent);
-    lv_obj_t * left = box(row, LV_FLEX_FLOW_ROW, 10);
-    lv_obj_set_width(left, LV_SIZE_CONTENT);
-    lv_obj_set_flex_align(left, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_t * left = inline_group(row, 10, LV_FLEX_ALIGN_CENTER);
     if(icon) {
         lv_obj_t * glyph = text(left, icon);
         lv_obj_set_width(glyph, 16);
@@ -183,8 +208,8 @@ static void build_showcase(lv_obj_t * parent)
 #endif
 
     lv_obj_t * energy = card(parent, HALF_W, "Energy", "Usage over the last 7 days.");
-    lv_obj_t * figure = box(energy, LV_FLEX_FLOW_ROW, 8);
-    lv_obj_set_flex_align(figure, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_END);
+    lv_obj_t * figure = inline_group(energy, 8, LV_FLEX_ALIGN_END);
+    lv_obj_set_width(figure, lv_pct(100));
     heading(figure, "12.4 kWh");
     lv_obj_t * trend = muted_text(figure, "+8% vs last week");
     lv_obj_set_style_pad_bottom(trend, 2, 0);
@@ -200,9 +225,7 @@ static void build_showcase(lv_obj_t * parent)
     lv_chart_set_div_line_count(chart, 0, 0);
     lv_chart_set_point_count(chart, 7);
     lv_chart_set_axis_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100);
-    const lv_theme_shadcn_palette_t * palette = palette_of(parent);
-    lv_color_t bar_color = palette ? palette->chart[1] : lv_palette_main(LV_PALETTE_BLUE);
-    lv_chart_series_t * series = lv_chart_add_series(chart, bar_color, LV_CHART_AXIS_PRIMARY_Y);
+    lv_chart_series_t * series = lv_chart_add_series(chart, chart_color(parent, 1, LV_PALETTE_BLUE), LV_CHART_AXIS_PRIMARY_Y);
     static const int32_t usage[7] = { 45, 62, 38, 74, 56, 88, 67 };
     for(int i = 0; i < 7; i++) lv_chart_set_next_value(chart, series, usage[i]);
 #endif
@@ -248,10 +271,7 @@ static void build_buttons(lv_obj_t * parent)
     lv_obj_add_state(button(states, "Disabled", LV_THEME_SHADCN_VARIANT_DEFAULT, QUARTER_W), LV_STATE_DISABLED);
     lv_obj_t * loading = button(states, NULL, LV_THEME_SHADCN_VARIANT_SECONDARY, QUARTER_W);
 #if LV_USE_SPINNER
-    lv_obj_t * spinner = lv_spinner_create(loading);
-    lv_obj_set_size(spinner, 14, 14);
-    lv_obj_set_style_arc_width(spinner, 2, 0);
-    lv_obj_set_style_arc_width(spinner, 2, LV_PART_INDICATOR);
+    lv_obj_t * spinner = small_spinner(loading, 14, 2);
     lv_obj_set_style_arc_opa(spinner, LV_OPA_TRANSP, 0);
     const lv_theme_shadcn_palette_t * palette = palette_of(parent);
     if(palette) lv_obj_set_style_arc_color(spinner, palette->secondary_fg, LV_PART_INDICATOR);
@@ -277,9 +297,7 @@ static void build_buttons(lv_obj_t * parent)
 #if LV_USE_LED
 static void status_led(lv_obj_t * parent, const char * str, lv_color_t color, uint8_t brightness)
 {
-    lv_obj_t * item = box(parent, LV_FLEX_FLOW_ROW, 8);
-    lv_obj_set_width(item, LV_SIZE_CONTENT);
-    lv_obj_set_flex_align(item, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_t * item = inline_group(parent, 8, LV_FLEX_ALIGN_CENTER);
     lv_obj_t * led = lv_led_create(item);
     lv_obj_set_size(led, 10, 10);
     lv_led_set_color(led, color);
@@ -315,8 +333,8 @@ static void build_toggles(lv_obj_t * parent)
 #endif
     equalize(notifications, privacy);
 
-    lv_obj_t * status = card(parent, CONTENT_W, "Status", "Live state of connected services.");
 #if LV_USE_LED
+    lv_obj_t * status = card(parent, CONTENT_W, "Status", "Live state of connected services.");
     lv_obj_t * leds = box(status, LV_FLEX_FLOW_ROW, 8);
     lv_obj_set_flex_align(leds, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     status_led(leds, "Online", lv_color_hex(0x22c55e), LV_LED_BRIGHT_MAX);
@@ -370,13 +388,8 @@ static void build_ranges(lv_obj_t * parent)
     lv_obj_center(arc_value);
 #endif
 #if LV_USE_SPINNER
-    lv_obj_t * progress = box(round, LV_FLEX_FLOW_ROW, 8);
-    lv_obj_set_width(progress, LV_SIZE_CONTENT);
-    lv_obj_set_flex_align(progress, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_t * spinner = lv_spinner_create(progress);
-    lv_obj_set_size(spinner, 16, 16);
-    lv_obj_set_style_arc_width(spinner, 3, 0);
-    lv_obj_set_style_arc_width(spinner, 3, LV_PART_INDICATOR);
+    lv_obj_t * progress = inline_group(round, 8, LV_FLEX_ALIGN_CENTER);
+    small_spinner(progress, 16, 3);
     muted_text(progress, "128 of 196 files");
 #endif
     equalize(linear, round);
@@ -441,10 +454,14 @@ static void build_inputs(lv_obj_t * parent)
 static void build_collections(lv_obj_t * parent)
 {
     prepare(parent, LV_FLEX_FLOW_ROW);
+#if LV_USE_TABVIEW || LV_USE_TABLE || LV_USE_CHART
     lv_obj_t * left = box(parent, LV_FLEX_FLOW_COLUMN, SCENE_PAD);
     lv_obj_set_size(left, HALF_W, CONTENT_H);
+#endif
+#if LV_USE_CALENDAR || LV_USE_LIST
     lv_obj_t * right = box(parent, LV_FLEX_FLOW_COLUMN, SCENE_PAD);
     lv_obj_set_size(right, HALF_W, CONTENT_H);
+#endif
 
 #if LV_USE_TABVIEW
     lv_obj_t * tabview = lv_tabview_create(left);
@@ -487,11 +504,8 @@ static void build_collections(lv_obj_t * parent)
     lv_chart_set_point_count(chart, 10);
     lv_chart_set_div_line_count(chart, 3, 0);
     lv_chart_set_axis_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100);
-    const lv_theme_shadcn_palette_t * palette = palette_of(parent);
-    lv_color_t first = palette ? palette->chart[0] : lv_palette_main(LV_PALETTE_BLUE);
-    lv_color_t second = palette ? palette->chart[1] : lv_palette_main(LV_PALETTE_GREEN);
-    lv_chart_series_t * revenue = lv_chart_add_series(chart, first, LV_CHART_AXIS_PRIMARY_Y);
-    lv_chart_series_t * costs = lv_chart_add_series(chart, second, LV_CHART_AXIS_PRIMARY_Y);
+    lv_chart_series_t * revenue = lv_chart_add_series(chart, chart_color(parent, 0, LV_PALETTE_BLUE), LV_CHART_AXIS_PRIMARY_Y);
+    lv_chart_series_t * costs = lv_chart_add_series(chart, chart_color(parent, 1, LV_PALETTE_GREEN), LV_CHART_AXIS_PRIMARY_Y);
     static const int32_t revenue_values[10] = { 20, 35, 30, 55, 45, 70, 60, 80, 65, 90 };
     static const int32_t cost_values[10] = { 10, 15, 25, 20, 30, 28, 40, 35, 45, 42 };
     for(int i = 0; i < 10; i++) {

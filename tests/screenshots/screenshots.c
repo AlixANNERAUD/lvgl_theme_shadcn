@@ -90,9 +90,10 @@ static lv_draw_buf_t * read_png(const char * path, unsigned * width, unsigned * 
     unsigned char * png = size > 0 ? malloc((size_t)size) : NULL;
     bool ok = png != NULL && fread(png, 1, (size_t)size, file) == (size_t)size;
     fclose(file);
-    lv_draw_buf_t * decoded = NULL;
-    if(ok) ok = lodepng_decode32((unsigned char **)&decoded, width, height, png, (size_t)size) == 0;
+    unsigned char * raw = NULL;
+    if(ok) ok = lodepng_decode32(&raw, width, height, png, (size_t)size) == 0;
     free(png);
+    lv_draw_buf_t * decoded = (lv_draw_buf_t *)raw;
     return ok ? decoded : NULL;
 }
 
@@ -220,6 +221,7 @@ int main(int argc, char ** argv)
             free(actual);
         }
     }
+    lv_deinit();
 
     if(failed) return 1;
     if(missing) {
