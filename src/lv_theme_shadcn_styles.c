@@ -115,6 +115,48 @@ static void build_surfaces(lv_theme_shadcn_state_t * st)
     lv_style_set_text_color(&s->error, p->destructive);
 }
 
+static void set_filled(lv_style_t * normal, lv_style_t * pressed, lv_color_t bg, lv_color_t fg)
+{
+    lv_style_set_bg_color(normal, bg);
+    lv_style_set_bg_opa(normal, LV_OPA_COVER);
+    lv_style_set_text_color(normal, fg);
+    lv_style_set_border_width(normal, 0);
+    lv_style_set_bg_color(pressed, lv_color_mix(fg, bg, LV_THEME_SHADCN_PRESS_MIX));
+}
+
+static void build_actions(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_theme_shadcn_styles_t * s = S(st);
+
+    lv_style_set_min_height(&s->control, m->control_height);
+    lv_style_set_radius(&s->control, m->radius_md);
+    lv_style_set_pad_hor(&s->control, m->space_lg);
+    lv_style_set_pad_ver(&s->control, m->space_sm);
+    lv_style_set_pad_gap(&s->control, m->space_sm);
+    lv_style_set_shadow_width(&s->control, 0);
+
+    set_filled(&s->variant[LV_THEME_SHADCN_VARIANT_DEFAULT], &s->variant_pressed[LV_THEME_SHADCN_VARIANT_DEFAULT], p->primary, p->primary_fg);
+    set_filled(&s->variant[LV_THEME_SHADCN_VARIANT_SECONDARY], &s->variant_pressed[LV_THEME_SHADCN_VARIANT_SECONDARY], p->secondary, p->secondary_fg);
+    set_filled(&s->variant[LV_THEME_SHADCN_VARIANT_DESTRUCTIVE], &s->variant_pressed[LV_THEME_SHADCN_VARIANT_DESTRUCTIVE], p->destructive, p->destructive_fg);
+
+    lv_style_t * outline = &s->variant[LV_THEME_SHADCN_VARIANT_OUTLINE];
+    lv_style_set_bg_opa(outline, LV_OPA_TRANSP);
+    lv_style_set_border_width(outline, m->border_width);
+    lv_style_set_border_color(outline, p->input);
+    lv_style_set_border_opa(outline, LV_OPA_COVER);
+    lv_style_set_text_color(outline, p->foreground);
+
+    lv_style_t * ghost = &s->variant[LV_THEME_SHADCN_VARIANT_GHOST];
+    lv_style_set_bg_opa(ghost, LV_OPA_TRANSP);
+    lv_style_set_border_width(ghost, 0);
+    lv_style_set_text_color(ghost, p->foreground);
+
+    set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_OUTLINE], p->accent, p->accent_fg);
+    set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_GHOST], p->accent, p->accent_fg);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -131,4 +173,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     lv_theme_shadcn_styles_reset(st);
     build_base(st);
     build_surfaces(st);
+    build_actions(st);
 }

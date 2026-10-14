@@ -19,6 +19,7 @@ add_library(lvgl_theme_shadcn
   src/lv_theme_shadcn_apply.c
   src/lv_theme_shadcn_palette.c
   src/lv_theme_shadcn_styles.c
+  src/widgets/lv_theme_shadcn_actions.c
   src/widgets/lv_theme_shadcn_surfaces.c)
 add_library(lvgl_theme_shadcn::lvgl_theme_shadcn ALIAS lvgl_theme_shadcn)
 target_include_directories(lvgl_theme_shadcn PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)

@@ -171,3 +171,13 @@ void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error)
     lv_obj_remove_style(obj, &S(st)->error, LV_PART_ANY | LV_STATE_ANY);
     if(error) lv_obj_add_style(obj, &S(st)->error, 0);
 }
+
+void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t variant)
+{
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
+    if(st == NULL || (int)variant < 0 || variant >= LV_THEME_SHADCN_VARIANT_COUNT) return;
+    remove_styles(obj, S(st)->variant, LV_THEME_SHADCN_VARIANT_COUNT);
+    remove_styles(obj, S(st)->variant_pressed, LV_THEME_SHADCN_VARIANT_COUNT);
+    lv_obj_add_style(obj, &S(st)->variant[variant], 0);
+    lv_obj_add_style(obj, &S(st)->variant_pressed[variant], LV_STATE_PRESSED);
+}
