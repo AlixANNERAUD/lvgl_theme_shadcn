@@ -17,3 +17,8 @@ lv_theme_shadcn_add_test(test_inputs)
 lv_theme_shadcn_add_test(test_collections)
 lv_theme_shadcn_add_test(test_overlays)
 lv_theme_shadcn_add_test(test_coverage)
+
+if(TARGET lv_theme_shadcn_scenes)
+  lv_theme_shadcn_add_test(test_scenes)
+  target_link_libraries(test_scenes PRIVATE lv_theme_shadcn_scenes)
+endif()

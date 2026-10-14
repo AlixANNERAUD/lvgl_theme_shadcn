@@ -8,6 +8,7 @@ else()
 endif()
 
 option(LV_THEME_SHADCN_BUILD_TESTS "Build unit tests" ${LV_THEME_SHADCN_TOP_LEVEL})
+option(LV_THEME_SHADCN_BUILD_EXAMPLES "Build examples" ${LV_THEME_SHADCN_TOP_LEVEL})
 option(LV_THEME_SHADCN_WERROR "Treat warnings as errors" OFF)
 
 if(LV_THEME_SHADCN_BUILD_TESTS)
@@ -37,5 +38,8 @@ endif()
 
 if(LV_THEME_SHADCN_BUILD_TESTS)
   enable_testing()
+  if(LV_THEME_SHADCN_BUILD_EXAMPLES)
+    add_subdirectory(examples/scenes)
+  endif()
   add_subdirectory(tests/unit)
 endif()
