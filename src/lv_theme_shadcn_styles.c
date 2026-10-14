@@ -295,6 +295,57 @@ static void build_inputs(lv_theme_shadcn_state_t * st)
     lv_style_set_anim_duration(&s->roller, 200);
 }
 
+static void build_collections(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_theme_shadcn_styles_t * s = S(st);
+
+    lv_style_set_bg_opa(&s->list_text, LV_OPA_TRANSP);
+    lv_style_set_text_color(&s->list_text, p->muted_fg);
+    lv_style_set_text_font(&s->list_text, st->fonts.small);
+    lv_style_set_pad_hor(&s->list_text, m->space_md);
+    lv_style_set_pad_ver(&s->list_text, m->space_sm);
+
+    lv_style_set_bg_opa(&s->list_button, LV_OPA_TRANSP);
+    lv_style_set_text_color(&s->list_button, p->foreground);
+    lv_style_set_border_width(&s->list_button, m->border_width);
+    lv_style_set_border_color(&s->list_button, p->border);
+    lv_style_set_border_side(&s->list_button, LV_BORDER_SIDE_BOTTOM);
+    lv_style_set_radius(&s->list_button, 0);
+    lv_style_set_pad_all(&s->list_button, m->space_md);
+    lv_style_set_pad_gap(&s->list_button, m->space_md);
+    lv_style_set_min_height(&s->list_button, m->touch_target);
+
+    set_surface(&s->table_cell, p->background, p->foreground);
+    lv_style_set_border_width(&s->table_cell, m->border_width);
+    lv_style_set_border_color(&s->table_cell, p->border);
+    lv_style_set_border_opa(&s->table_cell, LV_OPA_COVER);
+    lv_style_set_border_side(&s->table_cell, LV_BORDER_SIDE_FULL);
+    lv_style_set_pad_all(&s->table_cell, m->space_sm);
+
+    set_surface(&s->tab_bar, p->muted, p->muted_fg);
+    lv_style_set_radius(&s->tab_bar, m->radius_md);
+    lv_style_set_pad_all(&s->tab_bar, m->space_xs);
+    lv_style_set_pad_gap(&s->tab_bar, m->space_xs);
+    lv_style_set_border_width(&s->tab_bar, 0);
+
+    lv_style_set_bg_opa(&s->tab_button, LV_OPA_TRANSP);
+    lv_style_set_text_color(&s->tab_button, p->muted_fg);
+    lv_style_set_radius(&s->tab_button, m->radius_sm);
+    lv_style_set_border_width(&s->tab_button, 0);
+
+    set_surface(&s->tab_button_checked, p->background, p->foreground);
+
+    set_surface(&s->calendar_day, p->card, p->card_fg);
+    lv_style_set_border_width(&s->calendar_day, m->border_width);
+    lv_style_set_border_color(&s->calendar_day, p->card);
+    lv_style_set_border_opa(&s->calendar_day, LV_OPA_COVER);
+    lv_style_set_radius(&s->calendar_day, m->radius_sm);
+
+    lv_style_set_line_color(&s->chart, p->border);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -315,4 +366,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_toggles(st);
     build_ranges(st);
     build_inputs(st);
+    build_collections(st);
 }

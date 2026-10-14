@@ -71,6 +71,14 @@ typedef struct {
     lv_style_t key_pressed;
     lv_style_t key_control;
     lv_style_t roller;
+    lv_style_t list_text;
+    lv_style_t list_button;
+    lv_style_t table_cell;
+    lv_style_t tab_bar;
+    lv_style_t tab_button;
+    lv_style_t tab_button_checked;
+    lv_style_t calendar_day;
+    lv_style_t chart;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
 } lv_theme_shadcn_styles_t;
@@ -103,6 +111,7 @@ void lv_theme_shadcn_add_button(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv
 bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_surfaces(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_ranges(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
+bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj);
 
