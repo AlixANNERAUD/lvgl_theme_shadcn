@@ -38,7 +38,7 @@
 //!     Theme::init(display, &Palette::zinc_dark(), &Fonts::default(), Flags::NONE).expect("theme")
 //! };
 //! theme.set_palette(&Palette::zinc_light());
-//! assert!(!theme.palette().is_dark());
+//! assert!(!theme.palette().expect("palette").is_dark());
 //! ```
 //!
 //! # Interoperability with another LVGL binding
@@ -254,7 +254,7 @@ impl Palette {
     }
 
     /// Returns a copy of this palette with new `primary` and `primary_fg` colours and a matching `ring`.
-    pub fn from_primary(&self, primary: Color, primary_fg: Color) -> Palette {
+    pub fn with_primary(&self, primary: Color, primary_fg: Color) -> Palette {
         let mut out = self.0;
         unsafe {
             sys::lv_theme_shadcn_palette_from_primary(
@@ -441,7 +441,8 @@ pub struct Theme {
 impl Theme {
     /// Applies the theme to `display`, returning `None` if LVGL cannot allocate it.
     ///
-    /// Initialising a display that already has a shadcn theme updates it in place.
+    /// Initialising a display that already has a shadcn theme updates it in place. Only one `Theme` per display may
+    /// exist: the C state is shared, so dropping either `Theme` tears it down.
     ///
     /// # Safety
     ///
@@ -481,15 +482,14 @@ impl Theme {
         unsafe { sys::lv_theme_shadcn_set_palette(self.display.as_ptr(), &palette.0) }
     }
 
-    /// Returns the current palette.
-    ///
-    /// # Panics
-    ///
-    /// Panics if the theme was deinitialised outside this crate.
-    pub fn palette(&self) -> Palette {
+    /// Returns the current palette, or `None` if the C theme state no longer exists.
+    pub fn palette(&self) -> Option<Palette> {
         let palette = unsafe { sys::lv_theme_shadcn_get_palette(self.display.as_ptr()) };
-        assert!(!palette.is_null(), "shadcn theme was deinitialised");
-        Palette(unsafe { *palette })
+        if palette.is_null() {
+            None
+        } else {
+            Some(Palette(unsafe { *palette }))
+        }
     }
 
     /// Whether the shadcn theme is the active theme of `display`.

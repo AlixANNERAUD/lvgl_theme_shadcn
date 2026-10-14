@@ -6,7 +6,7 @@ shadcn/ui-inspired theme for LVGL 9.6+. No allocation, no dependency on any LVGL
 ```rust,ignore
 use lvgl_theme_shadcn::{Color, Display, Flags, Fonts, Object, Palette, Theme, Variant};
 
-let palette = Palette::zinc_dark().from_primary(Color::hex(0x2563eb), Color::hex(0xffffff));
+let palette = Palette::zinc_dark().with_primary(Color::hex(0x2563eb), Color::hex(0xffffff));
 let theme = unsafe {
     let display = Display::from_ptr(lv_display_create(480, 320)).unwrap();
     Theme::init(display, &palette, &Fonts::default(), Flags::NONE).unwrap()

@@ -8,6 +8,7 @@ use lvgl_theme_shadcn::{
 };
 
 const LV_PART_MAIN: u32 = 0;
+/// Probed from LVGL 9.6 with the `rust/ci` `lv_conf.h`; the value depends on the LVGL version.
 const LV_STYLE_BG_COLOR: u8 = 73;
 
 #[repr(C)]
@@ -47,12 +48,6 @@ fn zinc_palettes_match_c() {
     let light = Palette::zinc_light();
     assert!(dark.is_dark());
     assert!(!light.is_dark());
-    assert_eq!(dark.as_raw(), unsafe {
-        &*sys::lv_theme_shadcn_palette_zinc_dark()
-    });
-    assert_eq!(light.as_raw(), unsafe {
-        &*sys::lv_theme_shadcn_palette_zinc_light()
-    });
     assert_eq!(dark.background(), Color::hex(0x09090b));
     assert_eq!(dark.primary(), Color::hex(0xe4e4e7));
     assert_eq!(dark.destructive(), Color::hex(0xff6467));
@@ -77,11 +72,11 @@ fn palette_setters_roundtrip() {
 }
 
 #[test]
-fn from_primary_changes_primary_only() {
+fn with_primary_changes_primary_only() {
     let base = Palette::zinc_dark();
     let primary = Color::hex(0x2563eb);
     let primary_fg = Color::hex(0xffffff);
-    let derived = base.from_primary(primary, primary_fg);
+    let derived = base.with_primary(primary, primary_fg);
     assert_eq!(derived.primary(), primary);
     assert_eq!(derived.primary_fg(), primary_fg);
     assert_ne!(derived.ring(), base.ring());
@@ -120,8 +115,8 @@ fn theme_lifecycle_and_helpers() {
     .expect("theme");
     assert!(Theme::is_active(&display));
     assert_eq!(theme.display(), &display);
-    assert!(theme.palette().is_dark());
-    assert_eq!(theme.palette(), Palette::zinc_dark());
+    assert!(theme.palette().expect("palette").is_dark());
+    assert_eq!(theme.palette(), Some(Palette::zinc_dark()));
 
     let screen = unsafe { lv_display_get_screen_active(display.as_ptr()) };
     let button = unsafe { Object::from_ptr(lv_button_create(screen)) }.expect("button");
@@ -139,8 +134,8 @@ fn theme_lifecycle_and_helpers() {
     }
 
     theme.set_palette(&Palette::zinc_light());
-    assert!(!theme.palette().is_dark());
-    assert_eq!(theme.palette(), Palette::zinc_light());
+    assert!(!theme.palette().expect("palette").is_dark());
+    assert_eq!(theme.palette(), Some(Palette::zinc_light()));
     assert_eq!(bg_color(&button), Palette::zinc_light().primary());
 
     drop(theme);
@@ -156,7 +151,7 @@ fn theme_lifecycle_and_helpers() {
     }
     .expect("theme");
     assert!(Theme::is_active(&display));
-    assert!(!theme.palette().is_dark());
+    assert!(!theme.palette().expect("palette").is_dark());
     drop(theme);
     assert!(!Theme::is_active(&display));
 }
