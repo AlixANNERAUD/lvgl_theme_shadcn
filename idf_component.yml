@@ -17,6 +17,8 @@ files:
     - "tests/**/*"
     - "examples/**/*"
     - "rust/**/*"
+    - "scripts/**/*"
+    - "target/**/*"
     - "docs/**/*"
     - "build*/**/*"
     - ".github/**/*"

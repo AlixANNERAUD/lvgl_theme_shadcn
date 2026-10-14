@@ -1,9 +1,18 @@
 name: publish-platformio
 
 on:
-  release:
-    types: [published]
+  workflow_call:
+    inputs:
+      version:
+        description: Released version, checked against the manifests
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      version:
+        description: Expected version, checked against the manifests when set
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -20,14 +29,20 @@ jobs:
       - name: Install PlatformIO
         run: pip install platformio
       - name: Check version
-        if: github.event_name == 'release'
         env:
-          TAG: ${{ github.event.release.tag_name }}
+          VERSION: ${{ inputs.version }}
         run: |
-          version=$(python -c "import json; print(json.load(open('library.json'))['version'])")
-          if [ "$version" != "${TAG#v}" ]; then
-            echo "library.json version $version does not match release tag $TAG"
+          scripts/sync-version.sh
+          if ! git diff --exit-code; then
+            echo "::error::C manifest versions differ from the Cargo workspace version"
             exit 1
+          fi
+          if [ -n "$VERSION" ]; then
+            scripts/sync-version.sh "${VERSION#v}"
+            if ! git diff --exit-code; then
+              echo "::error::C manifest versions differ from the released version $VERSION"
+              exit 1
+            fi
           fi
       - name: Pack
         run: pio pkg pack -o "$RUNNER_TEMP"

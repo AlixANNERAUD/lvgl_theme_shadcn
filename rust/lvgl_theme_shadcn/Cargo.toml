@@ -4,12 +4,14 @@ description = "Safe no_std bindings to the shadcn/ui-inspired LVGL 9 theme"
 keywords = ["lvgl", "theme", "shadcn", "embedded", "no-std"]
 categories = ["embedded", "no-std", "gui", "api-bindings"]
 readme = "README.md"
+documentation = "https://docs.rs/lvgl_theme_shadcn"
 build = "build.rs"
 include = ["/build.rs", "/src/**", "/tests/**", "/README.md", "/LICENSE"]
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+homepage.workspace = true
 authors.workspace = true
 rust-version.workspace = true
 

@@ -4,6 +4,7 @@ description = "Raw no_std FFI bindings to the shadcn/ui-inspired LVGL 9 theme"
 keywords = ["lvgl", "theme", "shadcn", "embedded", "no-std"]
 categories = ["external-ffi-bindings", "embedded", "no-std", "gui"]
 readme = "README.md"
+documentation = "https://docs.rs/lvgl_theme_shadcn_sys"
 links = "lvgl_theme_shadcn"
 build = "build.rs"
 include = [
@@ -21,6 +22,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+homepage.workspace = true
 authors.workspace = true
 rust-version.workspace = true
 

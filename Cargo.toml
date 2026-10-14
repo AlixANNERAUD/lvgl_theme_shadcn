@@ -7,5 +7,6 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT"
 repository = "https://github.com/AlixANNERAUD/lvgl_theme_shadcn"
+homepage = "https://github.com/AlixANNERAUD/lvgl_theme_shadcn"
 authors = ["Alix ANNERAUD <alix@anneraud.fr>"]
 rust-version = "1.88"
