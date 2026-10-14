@@ -79,6 +79,7 @@ typedef struct {
     lv_style_t tab_button_checked;
     lv_style_t calendar_day;
     lv_style_t chart;
+    lv_style_t chart_series;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
 } lv_theme_shadcn_styles_t;

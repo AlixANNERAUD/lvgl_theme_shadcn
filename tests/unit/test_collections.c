@@ -77,6 +77,45 @@ static void calendar_probe_cb(lv_event_t * e)
     }
 }
 
+static int plain_fill_seen;
+static int plain_fill_opaque;
+static int plain_border_opaque;
+
+static void calendar_plain_cb(lv_event_t * e)
+{
+    lv_obj_t * days = lv_event_get_current_target_obj(e);
+    lv_draw_task_t * task = lv_event_get_draw_task(e);
+    lv_draw_dsc_base_t * base = lv_draw_task_get_draw_dsc(task);
+    if(base->part != LV_PART_ITEMS) return;
+    if(lv_buttonmatrix_has_button_ctrl(days, base->id1, LV_BUTTONMATRIX_CTRL_CUSTOM_1)) return;
+    if(lv_buttonmatrix_has_button_ctrl(days, base->id1, LV_BUTTONMATRIX_CTRL_CUSTOM_2)) return;
+    lv_draw_fill_dsc_t * fill = lv_draw_task_get_fill_dsc(task);
+    lv_draw_border_dsc_t * border = lv_draw_task_get_border_dsc(task);
+    if(fill) {
+        plain_fill_seen++;
+        if(fill->opa != LV_OPA_TRANSP) plain_fill_opaque++;
+    }
+    if(border && border->opa != LV_OPA_TRANSP) plain_border_opaque++;
+}
+
+static void calendar_plain_transparent(void)
+{
+    lv_obj_t * cal = lv_calendar_create(lv_screen_active());
+    lv_obj_set_size(cal, 300, 300);
+    lv_theme_shadcn_set_surface(cal, LV_THEME_SHADCN_SURFACE_BACKGROUND);
+    lv_obj_t * days = lv_calendar_get_btnmatrix(cal);
+    lv_calendar_set_today_date(cal, 2026, 10, 14);
+    lv_calendar_set_month_shown(cal, 2026, 10);
+    lv_obj_add_event_cb(days, calendar_plain_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
+    plain_fill_seen = 0;
+    plain_fill_opaque = 0;
+    plain_border_opaque = 0;
+    lv_refr_now(harness_display());
+    CHECK(plain_fill_seen > 0);
+    CHECK_INT(plain_fill_opaque, 0);
+    CHECK_INT(plain_border_opaque, 0);
+}
+
 static void calendar_days(void)
 {
     lv_obj_t * cal = lv_calendar_create(lv_screen_active());
@@ -111,6 +150,14 @@ static void chart_frame(void)
     CHECK_COLOR(lv_obj_get_style_border_color(ch, LV_PART_MAIN), dark()->border);
 }
 
+static void chart_series_visible(void)
+{
+    lv_obj_t * ch = lv_chart_create(lv_screen_active());
+    CHECK(lv_obj_get_style_line_width(ch, LV_PART_ITEMS) > 0);
+    CHECK(lv_obj_get_style_width(ch, LV_PART_INDICATOR) > 0);
+    CHECK(lv_obj_get_style_height(ch, LV_PART_INDICATOR) > 0);
+}
+
 int main(void)
 {
     RUN(list_rows);
@@ -118,5 +165,7 @@ int main(void)
     RUN(table_cells);
     RUN(calendar_days);
     RUN(chart_frame);
+    RUN(chart_series_visible);
+    RUN(calendar_plain_transparent);
     return harness_result();
 }

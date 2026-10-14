@@ -344,6 +344,11 @@ static void build_collections(lv_theme_shadcn_state_t * st)
     lv_style_set_radius(&s->calendar_day, m->radius_sm);
 
     lv_style_set_line_color(&s->chart, p->border);
+
+    lv_style_set_line_width(&s->chart_series, dp(st, 3));
+    lv_style_set_radius(&s->chart_series, dp(st, 3));
+    lv_style_set_size(&s->chart_series, dp(st, 8), dp(st, 8));
+    lv_style_set_pad_column(&s->chart_series, dp(st, 2));
 }
 
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)

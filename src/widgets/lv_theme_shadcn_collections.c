@@ -1,10 +1,12 @@
 #include "../lv_theme_shadcn_private.h"
 
+#if LV_USE_LIST || LV_USE_TABLE || LV_USE_CHART
 static void add_scrollbar(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
 {
     lv_obj_add_style(obj, &S(st)->scrollbar, LV_PART_SCROLLBAR);
     lv_obj_add_style(obj, &S(st)->scrollbar_scrolled, LV_PART_SCROLLBAR | LV_STATE_SCROLLED);
 }
+#endif
 
 #if LV_USE_CALENDAR
 static void calendar_draw_cb(lv_event_t * e)
@@ -19,7 +21,16 @@ static void calendar_draw_cb(lv_event_t * e)
     lv_draw_fill_dsc_t * fill = lv_draw_task_get_fill_dsc(task);
     lv_draw_border_dsc_t * border = lv_draw_task_get_border_dsc(task);
     lv_draw_label_dsc_t * label = lv_draw_task_get_label_dsc(task);
-    if(lv_buttonmatrix_has_button_ctrl(days, id, LV_BUTTONMATRIX_CTRL_CUSTOM_2)) {
+    bool today = lv_buttonmatrix_has_button_ctrl(days, id, LV_BUTTONMATRIX_CTRL_CUSTOM_1);
+    bool highlighted = lv_buttonmatrix_has_button_ctrl(days, id, LV_BUTTONMATRIX_CTRL_CUSTOM_2);
+    bool active = lv_buttonmatrix_get_selected_button(days) == id
+                  && (lv_obj_has_state(days, LV_STATE_PRESSED) || lv_obj_has_state(days, LV_STATE_FOCUS_KEY));
+    if(!today && !highlighted && !active) {
+        if(fill) fill->opa = LV_OPA_TRANSP;
+        if(border) border->opa = LV_OPA_TRANSP;
+        return;
+    }
+    if(highlighted) {
         if(fill) {
             fill->color = st->palette.primary;
             fill->opa = LV_OPA_COVER;
@@ -27,7 +38,7 @@ static void calendar_draw_cb(lv_event_t * e)
         if(border) border->color = st->palette.primary;
         if(label) label->color = st->palette.primary_fg;
     }
-    if(lv_buttonmatrix_has_button_ctrl(days, id, LV_BUTTONMATRIX_CTRL_CUSTOM_1) && border) {
+    if(today && border) {
         border->color = st->palette.ring;
     }
 }
@@ -144,6 +155,9 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
         lv_obj_add_style(obj, &S(st)->container, 0);
         lv_obj_add_style(obj, &S(st)->pad_md, 0);
         lv_obj_add_style(obj, &S(st)->chart, 0);
+        lv_obj_add_style(obj, &S(st)->chart_series, LV_PART_ITEMS);
+        lv_obj_add_style(obj, &S(st)->chart_series, LV_PART_INDICATOR);
+        lv_obj_add_style(obj, &S(st)->chart_series, LV_PART_CURSOR);
         add_scrollbar(st, obj);
         return true;
     }
