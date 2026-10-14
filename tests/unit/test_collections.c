@@ -43,6 +43,46 @@ static void tabview_segmented(void)
     CHECK_INT(lv_obj_get_style_pad_left(page, LV_PART_MAIN), lv_display_dpx(harness_display(), 16));
 }
 
+static uint32_t list_rows_bordered;
+static uint32_t list_last_row_bordered;
+
+static void list_probe_cb(lv_event_t * e)
+{
+    lv_obj_t * btn = lv_event_get_current_target_obj(e);
+    lv_draw_task_t * task = lv_event_get_draw_task(e);
+    lv_draw_border_dsc_t * border = lv_draw_task_get_border_dsc(task);
+    if(border == NULL || border->opa == LV_OPA_TRANSP) return;
+    lv_obj_t * list = lv_obj_get_parent(btn);
+    if(lv_obj_get_index(btn) + 1 == (int32_t)lv_obj_get_child_count(list)) list_last_row_bordered++;
+    else list_rows_bordered++;
+}
+
+static void list_last_row_has_no_divider(void)
+{
+    lv_obj_t * list = lv_list_create(lv_screen_active());
+    lv_obj_set_size(list, 200, LV_SIZE_CONTENT);
+    for(int i = 0; i < 3; i++) {
+        lv_obj_t * btn = lv_list_add_button(list, NULL, "Row");
+        lv_obj_add_event_cb(btn, list_probe_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
+        lv_obj_set_send_draw_task_events(btn, true);
+    }
+    list_rows_bordered = 0;
+    list_last_row_bordered = 0;
+    lv_refr_now(harness_display());
+    CHECK(list_rows_bordered > 0);
+    CHECK_INT(list_last_row_bordered, 0);
+}
+
+static void list_rows_stay_inside_rounded_frame(void)
+{
+    lv_obj_t * list = lv_list_create(lv_screen_active());
+    lv_obj_set_size(list, 200, LV_SIZE_CONTENT);
+    lv_list_add_button(list, NULL, "First");
+    lv_list_add_button(list, NULL, "Last");
+    CHECK(lv_obj_get_style_radius(list, LV_PART_MAIN) > 0);
+    CHECK(lv_obj_get_style_clip_corner(list, LV_PART_MAIN));
+}
+
 static void table_cells(void)
 {
     lv_obj_t * t = lv_table_create(lv_screen_active());
@@ -240,6 +280,8 @@ int main(void)
 {
     RUN(list_rows);
     RUN(tabview_segmented);
+    RUN(list_rows_stay_inside_rounded_frame);
+    RUN(list_last_row_has_no_divider);
     RUN(table_cells);
     RUN(table_last_row_has_no_divider);
     RUN(table_single_row_has_no_divider);

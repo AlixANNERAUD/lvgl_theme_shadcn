@@ -320,7 +320,7 @@ static void build_collections(lv_theme_shadcn_state_t * st)
     lv_style_set_pad_gap(&s->list_button, m->space_md);
     lv_style_set_min_height(&s->list_button, m->touch_target);
 
-    lv_style_set_clip_corner(&s->table, true);
+    lv_style_set_clip_corner(&s->clip_corner, true);
 
     lv_style_set_bg_opa(&s->table_cell, LV_OPA_TRANSP);
     lv_style_set_text_color(&s->table_cell, p->foreground);

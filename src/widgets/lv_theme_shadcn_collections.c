@@ -22,6 +22,18 @@ static void table_draw_cb(lv_event_t * e)
 }
 #endif
 
+#if LV_USE_LIST
+static void list_button_draw_cb(lv_event_t * e)
+{
+    lv_obj_t * btn = lv_event_get_current_target_obj(e);
+    if(lv_theme_shadcn_state_from_obj(btn) == NULL) return;
+    lv_obj_t * list = lv_obj_get_parent(btn);
+    if(list == NULL || lv_obj_get_index(btn) + 1 != (int32_t)lv_obj_get_child_count(list)) return;
+    lv_draw_border_dsc_t * border = lv_draw_task_get_border_dsc(lv_event_get_draw_task(e));
+    if(border != NULL && border->side == LV_BORDER_SIDE_BOTTOM) border->opa = LV_OPA_TRANSP;
+}
+#endif
+
 #if LV_USE_CALENDAR
 static void calendar_draw_cb(lv_event_t * e)
 {
@@ -111,6 +123,7 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
         lv_obj_add_style(obj, &S(st)->surface[LV_THEME_SHADCN_SURFACE_CARD], 0);
         lv_obj_add_style(obj, &S(st)->container, 0);
         lv_obj_add_style(obj, &S(st)->pad_none, 0);
+        lv_obj_add_style(obj, &S(st)->clip_corner, 0);
         add_scrollbar(st, obj);
         return true;
     }
@@ -123,6 +136,9 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
         lv_obj_add_style(obj, &S(st)->accent, LV_STATE_PRESSED);
         lv_obj_add_style(obj, &S(st)->accent, LV_STATE_CHECKED);
         lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+        lv_obj_remove_event_cb(obj, list_button_draw_cb);
+        lv_obj_add_event_cb(obj, list_button_draw_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
+        lv_obj_set_send_draw_task_events(obj, true);
         return true;
     }
 #endif
@@ -131,7 +147,7 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
         lv_obj_add_style(obj, &S(st)->surface[LV_THEME_SHADCN_SURFACE_BACKGROUND], 0);
         lv_obj_add_style(obj, &S(st)->container, 0);
         lv_obj_add_style(obj, &S(st)->pad_none, 0);
-        lv_obj_add_style(obj, &S(st)->table, 0);
+        lv_obj_add_style(obj, &S(st)->clip_corner, 0);
         lv_obj_add_style(obj, &S(st)->table_cell, LV_PART_ITEMS);
         lv_obj_add_style(obj, &S(st)->accent, LV_PART_ITEMS | LV_STATE_PRESSED);
         lv_obj_add_style(obj, &S(st)->focus_ring, LV_STATE_FOCUS_KEY);
