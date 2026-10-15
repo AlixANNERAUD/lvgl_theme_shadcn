@@ -5,13 +5,15 @@ use core::ffi::c_void;
 use core::ffi::CStr;
 
 use lvgl_theme_shadcn::{
-    Accent, Base, Color, Display, Flags, Fonts, Object, Palette, Surface, Theme, Variant,
-    set_error, set_surface, set_variant, sys,
+    Accent, Base, Color, Display, Flags, Fonts, Object, Palette, Radius, Size, Surface, Theme,
+    Variant, set_error, set_size, set_surface, set_variant, sys,
 };
 
 const LV_PART_MAIN: u32 = 0;
 /// Probed from LVGL 9.6 with the `rust/ci` `lv_conf.h`; the value depends on the LVGL version.
 const LV_STYLE_BG_COLOR: u8 = 73;
+/// Probed from LVGL 9.6 like [`LV_STYLE_BG_COLOR`].
+const LV_STYLE_RADIUS: u8 = 120;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -27,6 +29,24 @@ unsafe extern "C" {
     fn lv_display_get_screen_active(display: *mut sys::lv_display_t) -> *mut sys::lv_obj_t;
     fn lv_button_create(parent: *mut sys::lv_obj_t) -> *mut sys::lv_obj_t;
     fn lv_obj_get_style_prop(obj: *const sys::lv_obj_t, part: u32, prop: u8) -> StyleValue;
+    fn lv_obj_create(parent: *mut sys::lv_obj_t) -> *mut sys::lv_obj_t;
+    fn lv_obj_update_layout(obj: *const sys::lv_obj_t);
+    fn lv_obj_get_width(obj: *const sys::lv_obj_t) -> i32;
+    fn lv_obj_get_height(obj: *const sys::lv_obj_t) -> i32;
+}
+
+fn radius(object: &Object) -> i32 {
+    unsafe { lv_obj_get_style_prop(object.as_ptr(), LV_PART_MAIN, LV_STYLE_RADIUS).num }
+}
+
+fn size(object: &Object) -> (i32, i32) {
+    unsafe {
+        lv_obj_update_layout(object.as_ptr());
+        (
+            lv_obj_get_width(object.as_ptr()),
+            lv_obj_get_height(object.as_ptr()),
+        )
+    }
 }
 
 fn bg_color(object: &Object) -> Color {
@@ -141,6 +161,21 @@ fn names_match_c() {
 }
 
 #[test]
+fn radius_and_size_convert() {
+    assert_eq!(Radius::default(), Radius::Default);
+    assert_eq!(Size::default(), Size::Default);
+    for (index, radius) in Radius::ALL.into_iter().enumerate() {
+        let raw = sys::lv_theme_shadcn_radius_t::from(radius);
+        assert_eq!(raw.0 as usize, index);
+        assert_eq!(Radius::from_raw(raw), Some(radius));
+    }
+    assert_eq!(Radius::from_raw(sys::lv_theme_shadcn_radius_t(42)), None);
+    for (index, size) in Size::ALL.into_iter().enumerate() {
+        assert_eq!(sys::lv_theme_shadcn_size_t::from(size).0 as usize, index);
+    }
+}
+
+#[test]
 fn flags_combine() {
     assert_eq!(Flags::NONE | Flags::COMPACT, Flags::COMPACT);
     assert!(Flags::COMPACT.contains(Flags::NONE));
@@ -190,6 +225,24 @@ fn theme_lifecycle_and_helpers() {
     assert!(!theme.palette().expect("palette").is_dark());
     assert_eq!(theme.palette(), Some(Palette::zinc_light()));
     assert_eq!(bg_color(&button), Palette::zinc_light().primary());
+
+    let card = unsafe { Object::from_ptr(lv_obj_create(screen)) }.expect("card");
+    assert_eq!(theme.radius(), Radius::Default);
+    assert_eq!((radius(&button), radius(&card)), (8, 14));
+    theme.set_radius(Radius::None);
+    assert_eq!(theme.radius(), Radius::None);
+    assert_eq!((radius(&button), radius(&card)), (0, 0));
+    theme.set_radius(Radius::Xl);
+    assert_eq!(theme.radius(), Radius::Xl);
+    assert_eq!((radius(&button), radius(&card)), (13, 22));
+    theme.set_radius(Radius::Default);
+
+    unsafe { set_size(&button, Size::Sm) };
+    assert_eq!(size(&button).1, 32);
+    unsafe { set_size(&button, Size::IconLg) };
+    assert_eq!(size(&button), (48, 48));
+    unsafe { set_size(&button, Size::Default) };
+    assert_eq!(size(&button).1, 40);
 
     let screen_object = unsafe { Object::from_ptr(screen) }.expect("screen");
     for base in Base::ALL {

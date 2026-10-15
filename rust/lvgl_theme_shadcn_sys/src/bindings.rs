@@ -134,6 +134,29 @@ impl lv_theme_shadcn_surface_t {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct lv_theme_shadcn_surface_t(pub ::core::ffi::c_uint);
+impl lv_theme_shadcn_radius_t {
+    pub const LV_THEME_SHADCN_RADIUS_NONE: lv_theme_shadcn_radius_t = lv_theme_shadcn_radius_t(0);
+    pub const LV_THEME_SHADCN_RADIUS_SM: lv_theme_shadcn_radius_t = lv_theme_shadcn_radius_t(1);
+    pub const LV_THEME_SHADCN_RADIUS_MD: lv_theme_shadcn_radius_t = lv_theme_shadcn_radius_t(2);
+    pub const LV_THEME_SHADCN_RADIUS_DEFAULT: lv_theme_shadcn_radius_t =
+        lv_theme_shadcn_radius_t(3);
+    pub const LV_THEME_SHADCN_RADIUS_LG: lv_theme_shadcn_radius_t = lv_theme_shadcn_radius_t(4);
+    pub const LV_THEME_SHADCN_RADIUS_XL: lv_theme_shadcn_radius_t = lv_theme_shadcn_radius_t(5);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct lv_theme_shadcn_radius_t(pub ::core::ffi::c_uint);
+impl lv_theme_shadcn_size_t {
+    pub const LV_THEME_SHADCN_SIZE_DEFAULT: lv_theme_shadcn_size_t = lv_theme_shadcn_size_t(0);
+    pub const LV_THEME_SHADCN_SIZE_SM: lv_theme_shadcn_size_t = lv_theme_shadcn_size_t(1);
+    pub const LV_THEME_SHADCN_SIZE_LG: lv_theme_shadcn_size_t = lv_theme_shadcn_size_t(2);
+    pub const LV_THEME_SHADCN_SIZE_ICON: lv_theme_shadcn_size_t = lv_theme_shadcn_size_t(3);
+    pub const LV_THEME_SHADCN_SIZE_ICON_SM: lv_theme_shadcn_size_t = lv_theme_shadcn_size_t(4);
+    pub const LV_THEME_SHADCN_SIZE_ICON_LG: lv_theme_shadcn_size_t = lv_theme_shadcn_size_t(5);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct lv_theme_shadcn_size_t(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     pub fn lv_theme_shadcn_init(
         disp: *mut lv_display_t,
@@ -157,6 +180,12 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub fn lv_theme_shadcn_get_palette(disp: *mut lv_display_t)
         -> *const lv_theme_shadcn_palette_t;
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_set_radius(disp: *mut lv_display_t, radius: lv_theme_shadcn_radius_t);
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_get_radius(disp: *mut lv_display_t) -> lv_theme_shadcn_radius_t;
 }
 unsafe extern "C" {
     pub fn lv_theme_shadcn_palette_zinc_dark() -> *const lv_theme_shadcn_palette_t;
@@ -190,6 +219,9 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn lv_theme_shadcn_set_variant(obj: *mut lv_obj_t, variant: lv_theme_shadcn_variant_t);
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_set_size(obj: *mut lv_obj_t, size: lv_theme_shadcn_size_t);
 }
 unsafe extern "C" {
     pub fn lv_theme_shadcn_set_surface(obj: *mut lv_obj_t, surface: lv_theme_shadcn_surface_t);

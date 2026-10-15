@@ -63,6 +63,20 @@
 //! }
 //! ```
 //!
+//! # Radius and sizes
+//!
+//! [`Theme::set_radius`] picks one of shadcn/ui's `--radius` options and restyles existing widgets in place.
+//! [`set_size`] picks a shadcn/ui button size; small sizes keep a 48 dp touch target through an extended click area:
+//!
+//! ```no_run
+//! use lvgl_theme_shadcn::{Object, Radius, Size, Theme, set_size};
+//!
+//! fn tweak(theme: &Theme, button: &Object) {
+//!     theme.set_radius(Radius::Lg);
+//!     unsafe { set_size(button, Size::IconSm) };
+//! }
+//! ```
+//!
 //! # Interoperability with another LVGL binding
 //!
 //! With a binding such as `lvgl_rust_sys`, pointers are passed directly and converted back with `.cast()`:
@@ -658,6 +672,111 @@ impl From<Surface> for sys::lv_theme_shadcn_surface_t {
     }
 }
 
+/// Corner radius scale, mirroring shadcn/ui's `--radius` options.
+///
+/// With `r` the selected radius, widgets use shadcn/ui's derived radii: small elements such as checkboxes `0.6 r`,
+/// controls such as buttons and inputs `0.8 r`, dialogs `r` and cards `1.4 r`. One rem is 16 dp.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum Radius {
+    /// Square corners (`0`).
+    None,
+    /// `0.3rem`.
+    Sm,
+    /// `0.5rem`.
+    Md,
+    /// `0.625rem`, shadcn/ui's default.
+    #[default]
+    Default,
+    /// `0.75rem`.
+    Lg,
+    /// `1rem`.
+    Xl,
+}
+
+impl Radius {
+    /// Every radius, from square to roundest.
+    pub const ALL: [Radius; 6] = [
+        Radius::None,
+        Radius::Sm,
+        Radius::Md,
+        Radius::Default,
+        Radius::Lg,
+        Radius::Xl,
+    ];
+
+    /// Converts a raw radius, returning `None` for unknown values.
+    pub const fn from_raw(raw: sys::lv_theme_shadcn_radius_t) -> Option<Self> {
+        match raw {
+            sys::lv_theme_shadcn_radius_t::LV_THEME_SHADCN_RADIUS_NONE => Some(Radius::None),
+            sys::lv_theme_shadcn_radius_t::LV_THEME_SHADCN_RADIUS_SM => Some(Radius::Sm),
+            sys::lv_theme_shadcn_radius_t::LV_THEME_SHADCN_RADIUS_MD => Some(Radius::Md),
+            sys::lv_theme_shadcn_radius_t::LV_THEME_SHADCN_RADIUS_DEFAULT => Some(Radius::Default),
+            sys::lv_theme_shadcn_radius_t::LV_THEME_SHADCN_RADIUS_LG => Some(Radius::Lg),
+            sys::lv_theme_shadcn_radius_t::LV_THEME_SHADCN_RADIUS_XL => Some(Radius::Xl),
+            _ => None,
+        }
+    }
+}
+
+impl From<Radius> for sys::lv_theme_shadcn_radius_t {
+    fn from(radius: Radius) -> Self {
+        match radius {
+            Radius::None => Self::LV_THEME_SHADCN_RADIUS_NONE,
+            Radius::Sm => Self::LV_THEME_SHADCN_RADIUS_SM,
+            Radius::Md => Self::LV_THEME_SHADCN_RADIUS_MD,
+            Radius::Default => Self::LV_THEME_SHADCN_RADIUS_DEFAULT,
+            Radius::Lg => Self::LV_THEME_SHADCN_RADIUS_LG,
+            Radius::Xl => Self::LV_THEME_SHADCN_RADIUS_XL,
+        }
+    }
+}
+
+/// Size of a control such as a button, mirroring shadcn/ui's button sizes.
+///
+/// Heights are 32, 40 and 48 dp for small, default and large (8 dp less with [`Flags::COMPACT`]). Small sizes use
+/// the small font, and icon sizes are square. Controls smaller than the touch target get an extended click area.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum Size {
+    /// The theme's default control height.
+    #[default]
+    Default,
+    /// Shorter, with tighter padding and the small font.
+    Sm,
+    /// Taller, with wider padding.
+    Lg,
+    /// Square, at the default height.
+    Icon,
+    /// Square, at the small height.
+    IconSm,
+    /// Square, at the large height.
+    IconLg,
+}
+
+impl Size {
+    /// Every size, in declaration order.
+    pub const ALL: [Size; 6] = [
+        Size::Default,
+        Size::Sm,
+        Size::Lg,
+        Size::Icon,
+        Size::IconSm,
+        Size::IconLg,
+    ];
+}
+
+impl From<Size> for sys::lv_theme_shadcn_size_t {
+    fn from(size: Size) -> Self {
+        match size {
+            Size::Default => Self::LV_THEME_SHADCN_SIZE_DEFAULT,
+            Size::Sm => Self::LV_THEME_SHADCN_SIZE_SM,
+            Size::Lg => Self::LV_THEME_SHADCN_SIZE_LG,
+            Size::Icon => Self::LV_THEME_SHADCN_SIZE_ICON,
+            Size::IconSm => Self::LV_THEME_SHADCN_SIZE_ICON_SM,
+            Size::IconLg => Self::LV_THEME_SHADCN_SIZE_ICON_LG,
+        }
+    }
+}
+
 /// The shadcn theme applied to a display; dropping it restores the previous theme.
 #[derive(Debug)]
 pub struct Theme {
@@ -719,6 +838,17 @@ impl Theme {
         }
     }
 
+    /// Replaces the corner radius scale and restyles every object on the display.
+    pub fn set_radius(&self, radius: Radius) {
+        unsafe { sys::lv_theme_shadcn_set_radius(self.display.as_ptr(), radius.into()) }
+    }
+
+    /// Returns the current corner radius scale.
+    pub fn radius(&self) -> Radius {
+        let raw = unsafe { sys::lv_theme_shadcn_get_radius(self.display.as_ptr()) };
+        Radius::from_raw(raw).unwrap_or_default()
+    }
+
     /// Whether the shadcn theme is the active theme of `display`.
     pub fn is_active(display: &Display) -> bool {
         unsafe { sys::lv_theme_shadcn_is_active(display.as_ptr()) }
@@ -738,6 +868,16 @@ impl Drop for Theme {
 /// `object` must be a live LVGL object, used on the thread running LVGL.
 pub unsafe fn set_variant(object: &Object, variant: Variant) {
     unsafe { sys::lv_theme_shadcn_set_variant(object.as_ptr(), variant.into()) }
+}
+
+/// Sets the size of a control such as a button or dropdown, replacing any previous size; ignored if its display has
+/// no shadcn theme.
+///
+/// # Safety
+///
+/// `object` must be a live LVGL object, used on the thread running LVGL.
+pub unsafe fn set_size(object: &Object, size: Size) {
+    unsafe { sys::lv_theme_shadcn_set_size(object.as_ptr(), size.into()) }
 }
 
 /// Sets the background surface of a container; ignored if its display has no shadcn theme.
