@@ -1,7 +1,10 @@
-import math
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from shadcn_colors import parse, to_hex
 
 BASES = ["neutral", "stone", "zinc", "gray", "slate", "mauve", "olive", "mist", "taupe"]
 LEGACY_BASES = {"gray", "slate"}
@@ -41,7 +44,6 @@ ACCENT_FIELDS = [
     ("secondary_fg", "secondary-foreground"),
 ]
 CHARTS = ["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"]
-OKLCH = re.compile(r"oklch\(\s*([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s*(?:/\s*([0-9.]+)(%?))?\s*\)")
 ENTRY = re.compile(r'^\s*"?([A-Za-z0-9-]+)"?\s*:\s*"([^"]*)"', re.MULTILINE)
 
 
@@ -84,43 +86,6 @@ def legacy_vars(text, name):
     if match is None:
         raise ValueError("legacy base %s not found" % name)
     return modes(block_after(body, match.start()))
-
-
-def parse(value):
-    match = OKLCH.fullmatch(value.strip())
-    if match is None:
-        raise ValueError("unsupported colour %r" % value)
-    alpha = 1.0
-    if match.group(4) is not None:
-        alpha = float(match.group(4)) / (100.0 if match.group(5) else 1.0)
-    return float(match.group(1)), float(match.group(2)), float(match.group(3)), alpha
-
-
-def to_linear(lightness, chroma, hue):
-    a = chroma * math.cos(math.radians(hue))
-    b = chroma * math.sin(math.radians(hue))
-    l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
-    m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
-    s = (lightness - 0.0894841775 * a - 1.2914855480 * b) ** 3
-    return (
-        4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
-        -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
-        -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s,
-    )
-
-
-def encode(channel):
-    channel = min(max(channel, 0.0), 1.0)
-    if channel <= 0.0031308:
-        return 12.92 * channel
-    return 1.055 * channel ** (1.0 / 2.4) - 0.055
-
-
-def to_hex(value):
-    lightness, chroma, hue, alpha = parse(value)
-    if alpha != 1.0:
-        raise ValueError("translucent colour %r needs an opaque substitute" % value)
-    return "".join("%02x" % int(round(encode(c) * 255.0)) for c in to_linear(lightness, chroma, hue))
 
 
 def opaque(name, base_dark, mode_vars, key):
