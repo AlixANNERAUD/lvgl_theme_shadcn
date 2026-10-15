@@ -5,6 +5,7 @@
 
 #define LV_THEME_SHADCN_VARIANT_COUNT 5
 #define LV_THEME_SHADCN_SURFACE_COUNT 4
+#define LV_THEME_SHADCN_RADIUS_COUNT 6
 #define LV_THEME_SHADCN_PRESS_MIX 26
 #define LV_THEME_SHADCN_DISABLED_OPA LV_OPA_50
 #define LV_THEME_SHADCN_TRANSITION_MS 150
@@ -31,6 +32,7 @@ typedef struct {
     int32_t radius_sm;
     int32_t radius_md;
     int32_t radius_lg;
+    int32_t radius_xl;
     int32_t border_width;
     int32_t ring_width;
     int32_t ring_gap;
@@ -48,6 +50,7 @@ typedef struct {
     lv_style_t disabled;
     lv_style_t surface[LV_THEME_SHADCN_SURFACE_COUNT];
     lv_style_t container;
+    lv_style_t card;
     lv_style_t transparent;
     lv_style_t pad_none;
     lv_style_t pad_xs;
@@ -110,6 +113,7 @@ typedef struct lv_theme_shadcn_state_t {
     lv_theme_shadcn_palette_t palette;
     lv_theme_shadcn_fonts_t fonts;
     lv_theme_shadcn_flags_t flags;
+    lv_theme_shadcn_radius_t radius;
     lv_theme_shadcn_metrics_t metrics;
     lv_style_transition_dsc_t transition_dsc;
     bool styles_ready;

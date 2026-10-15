@@ -98,6 +98,7 @@ lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_pal
         LV_ASSERT_MALLOC(st);
         if(st == NULL) return NULL;
         st->disp = disp;
+        st->radius = LV_THEME_SHADCN_RADIUS_DEFAULT;
         st->theme = lv_theme_create();
         lv_theme_set_apply_cb(st->theme, lv_theme_shadcn_apply_cb);
         lv_theme_set_user_data(st->theme, st);
@@ -149,6 +150,23 @@ const lv_theme_shadcn_palette_t * lv_theme_shadcn_get_palette(lv_display_t * dis
     if(disp == NULL) disp = lv_display_get_default();
     lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_find(disp);
     return st ? &st->palette : NULL;
+}
+
+void lv_theme_shadcn_set_radius(lv_display_t * disp, lv_theme_shadcn_radius_t radius)
+{
+    if(disp == NULL) disp = lv_display_get_default();
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_find(disp);
+    if(st == NULL || (int)radius < 0 || radius >= LV_THEME_SHADCN_RADIUS_COUNT) return;
+    if(st->radius == radius) return;
+    st->radius = radius;
+    rebuild(st);
+}
+
+lv_theme_shadcn_radius_t lv_theme_shadcn_get_radius(lv_display_t * disp)
+{
+    if(disp == NULL) disp = lv_display_get_default();
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_find(disp);
+    return st ? st->radius : LV_THEME_SHADCN_RADIUS_DEFAULT;
 }
 
 static void remove_styles(lv_obj_t * obj, lv_style_t * styles, size_t count)

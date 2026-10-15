@@ -107,12 +107,23 @@ typedef enum {
     LV_THEME_SHADCN_SURFACE_MUTED,
 } lv_theme_shadcn_surface_t;
 
+typedef enum {
+    LV_THEME_SHADCN_RADIUS_NONE,
+    LV_THEME_SHADCN_RADIUS_SM,
+    LV_THEME_SHADCN_RADIUS_MD,
+    LV_THEME_SHADCN_RADIUS_DEFAULT,
+    LV_THEME_SHADCN_RADIUS_LG,
+    LV_THEME_SHADCN_RADIUS_XL,
+} lv_theme_shadcn_radius_t;
+
 lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_palette_t * palette,
                                   const lv_theme_shadcn_fonts_t * fonts, lv_theme_shadcn_flags_t flags);
 void lv_theme_shadcn_deinit(lv_display_t * disp);
 bool lv_theme_shadcn_is_active(lv_display_t * disp);
 void lv_theme_shadcn_set_palette(lv_display_t * disp, const lv_theme_shadcn_palette_t * palette);
 const lv_theme_shadcn_palette_t * lv_theme_shadcn_get_palette(lv_display_t * disp);
+void lv_theme_shadcn_set_radius(lv_display_t * disp, lv_theme_shadcn_radius_t radius);
+lv_theme_shadcn_radius_t lv_theme_shadcn_get_radius(lv_display_t * disp);
 
 const lv_theme_shadcn_palette_t * lv_theme_shadcn_palette_zinc_dark(void);
 const lv_theme_shadcn_palette_t * lv_theme_shadcn_palette_zinc_light(void);

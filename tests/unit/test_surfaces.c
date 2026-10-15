@@ -12,7 +12,7 @@ static void plain_obj_is_a_card(void)
     CHECK_COLOR(lv_obj_get_style_text_color(card, LV_PART_MAIN), dark()->card_fg);
     CHECK_COLOR(lv_obj_get_style_border_color(card, LV_PART_MAIN), dark()->border);
     CHECK_INT(lv_obj_get_style_border_width(card, LV_PART_MAIN), lv_display_dpx(harness_display(), 1));
-    CHECK_INT(lv_obj_get_style_radius(card, LV_PART_MAIN), lv_display_dpx(harness_display(), 8));
+    CHECK_INT(lv_obj_get_style_radius(card, LV_PART_MAIN), lv_display_dpx(harness_display(), 14));
     CHECK_INT(lv_obj_get_style_pad_left(card, LV_PART_MAIN), lv_display_dpx(harness_display(), 16));
 }
 

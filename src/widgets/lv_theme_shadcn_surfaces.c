@@ -10,6 +10,7 @@ static void add_card(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
 {
     lv_obj_add_style(obj, &S(st)->surface[LV_THEME_SHADCN_SURFACE_CARD], 0);
     lv_obj_add_style(obj, &S(st)->container, 0);
+    lv_obj_add_style(obj, &S(st)->card, 0);
     lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
     add_scrollbar(st, obj);
 }

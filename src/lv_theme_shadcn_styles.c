@@ -4,9 +4,17 @@ static const lv_style_prop_t transition_props[] = {
     LV_STYLE_BG_COLOR, LV_STYLE_BORDER_COLOR, LV_STYLE_OPA, LV_STYLE_PROP_INV
 };
 
+static const int32_t radius_centi_dp[LV_THEME_SHADCN_RADIUS_COUNT] = { 0, 480, 800, 1000, 1200, 1600 };
+
 static int32_t dp(const lv_theme_shadcn_state_t * st, int32_t value)
 {
     return lv_display_dpx(st->disp, value);
+}
+
+static int32_t radius_dp(const lv_theme_shadcn_state_t * st, int32_t scale_percent)
+{
+    int32_t centi = radius_centi_dp[st->radius] * scale_percent / 100;
+    return (dp(st, centi) + 50) / 100;
 }
 
 void lv_theme_shadcn_metrics_resolve(lv_theme_shadcn_state_t * st)
@@ -18,9 +26,10 @@ void lv_theme_shadcn_metrics_resolve(lv_theme_shadcn_state_t * st)
     m->space_md = dp(st, compact ? 8 : 12);
     m->space_lg = dp(st, compact ? 12 : 16);
     m->space_xl = dp(st, compact ? 16 : 24);
-    m->radius_sm = dp(st, 6);
-    m->radius_md = dp(st, 8);
-    m->radius_lg = dp(st, 10);
+    m->radius_sm = radius_dp(st, 60);
+    m->radius_md = radius_dp(st, 80);
+    m->radius_lg = radius_dp(st, 100);
+    m->radius_xl = radius_dp(st, 140);
     m->border_width = dp(st, 1);
     m->ring_width = dp(st, 2);
     m->ring_gap = dp(st, compact ? 1 : 2);
@@ -91,6 +100,8 @@ static void build_surfaces(lv_theme_shadcn_state_t * st)
     lv_style_set_radius(&s->container, m->radius_md);
     lv_style_set_pad_all(&s->container, m->space_lg);
     lv_style_set_pad_gap(&s->container, m->space_md);
+
+    lv_style_set_radius(&s->card, m->radius_xl);
 
     lv_style_set_bg_opa(&s->transparent, LV_OPA_TRANSP);
     lv_style_set_border_width(&s->transparent, 0);
