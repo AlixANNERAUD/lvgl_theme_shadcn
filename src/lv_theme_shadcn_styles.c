@@ -254,6 +254,10 @@ static void build_ranges(lv_theme_shadcn_state_t * st)
     lv_style_set_line_width(&s->scale_ticks, m->ring_width);
     lv_style_set_length(&s->scale_ticks, m->space_sm);
     lv_style_set_text_color(&s->scale_ticks, p->muted_fg);
+
+    lv_style_set_line_color(&s->line, p->foreground);
+    lv_style_set_line_width(&s->line, m->ring_width);
+    lv_style_set_line_rounded(&s->line, true);
 }
 
 static void build_inputs(lv_theme_shadcn_state_t * st)

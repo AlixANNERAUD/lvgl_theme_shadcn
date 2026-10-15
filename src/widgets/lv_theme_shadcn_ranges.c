@@ -46,5 +46,11 @@ bool lv_theme_shadcn_apply_ranges(lv_theme_shadcn_state_t * st, lv_obj_t * obj, 
         return true;
     }
 #endif
+#if LV_USE_LINE
+    if(lv_obj_check_type(obj, &lv_line_class)) {
+        lv_obj_add_style(obj, &S(st)->line, 0);
+        return true;
+    }
+#endif
     return false;
 }

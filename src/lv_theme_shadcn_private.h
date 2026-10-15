@@ -76,6 +76,7 @@ typedef struct {
     lv_style_t scale_main;
     lv_style_t scale_minor;
     lv_style_t scale_ticks;
+    lv_style_t line;
     lv_style_t input;
     lv_style_t placeholder;
     lv_style_t cursor;

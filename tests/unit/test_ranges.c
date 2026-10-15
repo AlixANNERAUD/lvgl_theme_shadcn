@@ -62,6 +62,25 @@ static void scale_parts(void)
     CHECK(lv_obj_get_style_length(sc, LV_PART_INDICATOR) > lv_obj_get_style_length(sc, LV_PART_ITEMS));
 }
 
+static void line_style(void)
+{
+    lv_obj_t * l = lv_line_create(lv_screen_active());
+    CHECK_INT(lv_obj_get_style_line_width(l, LV_PART_MAIN), lv_display_dpx(harness_display(), 2));
+    CHECK_COLOR(lv_obj_get_style_line_color(l, LV_PART_MAIN), dark()->foreground);
+    CHECK(lv_obj_get_style_line_rounded(l, LV_PART_MAIN));
+    lv_theme_shadcn_set_palette(harness_display(), lv_theme_shadcn_palette_zinc_light());
+    CHECK_COLOR(lv_obj_get_style_line_color(l, LV_PART_MAIN), lv_theme_shadcn_palette_zinc_light()->foreground);
+    lv_theme_shadcn_set_palette(harness_display(), dark());
+}
+
+static void scale_needle_visible(void)
+{
+    lv_obj_t * sc = lv_scale_create(lv_screen_active());
+    lv_obj_t * needle = lv_line_create(sc);
+    lv_scale_set_line_needle_value(sc, needle, 40, 50);
+    CHECK(lv_obj_get_style_line_width(needle, LV_PART_MAIN) > 0);
+}
+
 static void slider_disabled_dims(void)
 {
     lv_obj_t * s = lv_slider_create(lv_screen_active());
@@ -78,6 +97,8 @@ int main(void)
     RUN(arc_parts);
     RUN(spinner_parts);
     RUN(scale_parts);
+    RUN(line_style);
+    RUN(scale_needle_visible);
     RUN(slider_disabled_dims);
     return harness_result();
 }
