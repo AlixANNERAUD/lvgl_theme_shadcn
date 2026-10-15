@@ -93,6 +93,7 @@ typedef struct {
 typedef enum {
     LV_THEME_SHADCN_FLAG_NONE = 0,
     LV_THEME_SHADCN_FLAG_COMPACT = 1 << 0,
+    LV_THEME_SHADCN_FLAG_REDUCED_MOTION = 1 << 1,
 } lv_theme_shadcn_flags_t;
 
 typedef enum {
@@ -142,6 +143,24 @@ typedef enum {
     LV_THEME_SHADCN_TEXT_CODE,
 } lv_theme_shadcn_text_t;
 
+typedef enum {
+    LV_THEME_SHADCN_ROLE_NONE,
+    LV_THEME_SHADCN_ROLE_BADGE,
+    LV_THEME_SHADCN_ROLE_BADGE_SECONDARY,
+    LV_THEME_SHADCN_ROLE_BADGE_OUTLINE,
+    LV_THEME_SHADCN_ROLE_BADGE_DESTRUCTIVE,
+    LV_THEME_SHADCN_ROLE_ALERT,
+    LV_THEME_SHADCN_ROLE_ALERT_DESTRUCTIVE,
+    LV_THEME_SHADCN_ROLE_SEPARATOR,
+    LV_THEME_SHADCN_ROLE_SEPARATOR_VERTICAL,
+    LV_THEME_SHADCN_ROLE_SKELETON,
+    LV_THEME_SHADCN_ROLE_CARD_HEADER,
+    LV_THEME_SHADCN_ROLE_CARD_TITLE,
+    LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION,
+    LV_THEME_SHADCN_ROLE_CARD_CONTENT,
+    LV_THEME_SHADCN_ROLE_CARD_FOOTER,
+} lv_theme_shadcn_role_t;
+
 lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_palette_t * palette,
                                   const lv_theme_shadcn_fonts_t * fonts, lv_theme_shadcn_flags_t flags);
 void lv_theme_shadcn_deinit(lv_display_t * disp);
@@ -165,6 +184,7 @@ void lv_theme_shadcn_set_size(lv_obj_t * obj, lv_theme_shadcn_size_t size);
 void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface);
 void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error);
 void lv_theme_shadcn_set_text_role(lv_obj_t * obj, lv_theme_shadcn_text_t role);
+void lv_theme_shadcn_set_role(lv_obj_t * obj, lv_theme_shadcn_role_t role);
 
 #ifdef __cplusplus
 }

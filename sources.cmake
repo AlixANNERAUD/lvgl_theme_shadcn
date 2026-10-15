@@ -3,6 +3,7 @@ set(LV_THEME_SHADCN_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/src/lv_theme_shadcn_apply.c
   ${CMAKE_CURRENT_LIST_DIR}/src/lv_theme_shadcn_palette.c
   ${CMAKE_CURRENT_LIST_DIR}/src/lv_theme_shadcn_palettes.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/lv_theme_shadcn_roles.c
   ${CMAKE_CURRENT_LIST_DIR}/src/lv_theme_shadcn_styles.c
   ${CMAKE_CURRENT_LIST_DIR}/src/widgets/lv_theme_shadcn_actions.c
   ${CMAKE_CURRENT_LIST_DIR}/src/widgets/lv_theme_shadcn_collections.c

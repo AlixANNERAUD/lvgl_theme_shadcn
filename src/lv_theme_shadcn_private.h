@@ -8,6 +8,8 @@
 #define LV_THEME_SHADCN_RADIUS_COUNT 6
 #define LV_THEME_SHADCN_SIZE_COUNT 6
 #define LV_THEME_SHADCN_TEXT_COUNT 11
+#define LV_THEME_SHADCN_ROLE_COUNT 15
+#define LV_THEME_SHADCN_PULSE_MS 1000
 #define LV_THEME_SHADCN_PRESS_MIX 26
 #define LV_THEME_SHADCN_HOVER_OPA LV_OPA_90
 #define LV_THEME_SHADCN_HOVER_SECONDARY_OPA LV_OPA_80
@@ -115,6 +117,7 @@ typedef struct {
     lv_style_t variant_hovered[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t size[LV_THEME_SHADCN_SIZE_COUNT - 1];
     lv_style_t text[LV_THEME_SHADCN_TEXT_COUNT - 1];
+    lv_style_t role[LV_THEME_SHADCN_ROLE_COUNT - 1];
 } lv_theme_shadcn_styles_t;
 
 typedef struct lv_theme_shadcn_state_t {
@@ -154,5 +157,6 @@ bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, 
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj);
 int32_t lv_theme_shadcn_size_height(const lv_theme_shadcn_state_t * st, lv_theme_shadcn_size_t size);
 void lv_theme_shadcn_set_toggle_touch_target(lv_obj_t * obj);
+void lv_theme_shadcn_stop_pulse(lv_obj_t * obj);
 
 #endif

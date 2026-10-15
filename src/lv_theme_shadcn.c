@@ -53,6 +53,7 @@ static lv_obj_tree_walk_res_t detach_cb(lv_obj_t * obj, void * user_data)
 {
     lv_theme_shadcn_state_t * st = user_data;
     if(lv_obj_get_display(obj) != st->disp) return LV_OBJ_TREE_WALK_SKIP_CHILDREN;
+    lv_theme_shadcn_stop_pulse(obj);
     lv_style_t * styles = (lv_style_t *)S(st);
     size_t count = sizeof(lv_theme_shadcn_styles_t) / sizeof(lv_style_t);
     for(size_t i = 0; i < count; i++) {

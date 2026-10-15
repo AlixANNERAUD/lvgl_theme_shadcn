@@ -500,6 +500,141 @@ static void build_text(lv_theme_shadcn_state_t * st)
     lv_style_set_pad_ver(code, m->space_xs / 2);
 }
 
+static lv_style_t * role_style(lv_theme_shadcn_state_t * st, lv_theme_shadcn_role_t role)
+{
+    return &S(st)->role[role - 1];
+}
+
+static void set_flex(lv_style_t * style, lv_flex_flow_t flow, lv_flex_align_t cross)
+{
+#if LV_USE_FLEX
+    lv_style_set_layout(style, LV_LAYOUT_FLEX);
+    lv_style_set_flex_flow(style, flow);
+    lv_style_set_flex_main_place(style, LV_FLEX_ALIGN_START);
+    lv_style_set_flex_cross_place(style, cross);
+    lv_style_set_flex_track_place(style, LV_FLEX_ALIGN_START);
+#else
+    LV_UNUSED(style);
+    LV_UNUSED(flow);
+    LV_UNUSED(cross);
+#endif
+}
+
+static void set_plain(lv_style_t * style)
+{
+    lv_style_set_border_width(style, 0);
+    lv_style_set_shadow_width(style, 0);
+    lv_style_set_outline_width(style, 0);
+    set_pad(style, 0);
+}
+
+static void set_badge(lv_theme_shadcn_state_t * st, lv_theme_shadcn_role_t role, lv_color_t bg, lv_opa_t bg_opa,
+                      lv_color_t fg, lv_color_t border, lv_opa_t border_opa)
+{
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_style_t * style = role_style(st, role);
+    lv_style_set_bg_color(style, bg);
+    lv_style_set_bg_opa(style, bg_opa);
+    lv_style_set_text_color(style, fg);
+    lv_style_set_text_font(style, st->fonts.small);
+    lv_style_set_border_width(style, m->border_width);
+    lv_style_set_border_color(style, border);
+    lv_style_set_border_opa(style, border_opa);
+    lv_style_set_radius(style, LV_RADIUS_CIRCLE);
+    lv_style_set_shadow_width(style, 0);
+    lv_style_set_pad_hor(style, m->space_sm);
+    lv_style_set_pad_ver(style, m->space_xs / 2);
+    lv_style_set_pad_gap(style, m->space_xs);
+    lv_style_set_width(style, LV_SIZE_CONTENT);
+    lv_style_set_height(style, LV_SIZE_CONTENT);
+    lv_style_set_min_height(style, 0);
+    set_flex(style, LV_FLEX_FLOW_ROW, LV_FLEX_ALIGN_CENTER);
+}
+
+static void set_alert(lv_theme_shadcn_state_t * st, lv_theme_shadcn_role_t role, lv_color_t fg)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    lv_style_t * style = role_style(st, role);
+    set_surface(style, p->card, fg);
+    lv_style_set_border_width(style, m->border_width);
+    lv_style_set_border_color(style, p->border);
+    lv_style_set_border_opa(style, LV_OPA_COVER);
+    lv_style_set_radius(style, m->radius_lg);
+    lv_style_set_shadow_width(style, 0);
+    lv_style_set_pad_hor(style, m->space_lg);
+    lv_style_set_pad_ver(style, m->space_md);
+    lv_style_set_pad_row(style, m->space_xs / 2);
+    lv_style_set_pad_column(style, m->space_md);
+    lv_style_set_width(style, lv_pct(100));
+    lv_style_set_height(style, LV_SIZE_CONTENT);
+    set_flex(style, LV_FLEX_FLOW_COLUMN, LV_FLEX_ALIGN_START);
+}
+
+static void set_separator(lv_theme_shadcn_state_t * st, lv_theme_shadcn_role_t role, int32_t w, int32_t h)
+{
+    lv_style_t * style = role_style(st, role);
+    lv_style_set_bg_color(style, st->palette.border);
+    lv_style_set_bg_opa(style, LV_OPA_COVER);
+    lv_style_set_radius(style, 0);
+    set_plain(style);
+    lv_style_set_width(style, w);
+    lv_style_set_height(style, h);
+    lv_style_set_min_width(style, 0);
+    lv_style_set_min_height(style, 0);
+}
+
+static void set_card_part(lv_theme_shadcn_state_t * st, lv_theme_shadcn_role_t role, lv_flex_flow_t flow,
+                          lv_flex_align_t cross, int32_t gap)
+{
+    lv_style_t * style = role_style(st, role);
+    lv_style_set_bg_opa(style, LV_OPA_TRANSP);
+    lv_style_set_radius(style, 0);
+    set_plain(style);
+    lv_style_set_pad_gap(style, gap);
+    lv_style_set_width(style, lv_pct(100));
+    lv_style_set_height(style, LV_SIZE_CONTENT);
+    set_flex(style, flow, cross);
+}
+
+static void build_roles(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+
+    set_badge(st, LV_THEME_SHADCN_ROLE_BADGE, p->primary, LV_OPA_COVER, p->primary_fg, p->primary, LV_OPA_TRANSP);
+    set_badge(st, LV_THEME_SHADCN_ROLE_BADGE_SECONDARY, p->secondary, LV_OPA_COVER, p->secondary_fg, p->secondary,
+              LV_OPA_TRANSP);
+    set_badge(st, LV_THEME_SHADCN_ROLE_BADGE_OUTLINE, p->background, LV_OPA_TRANSP, p->foreground, p->border,
+              LV_OPA_COVER);
+    set_badge(st, LV_THEME_SHADCN_ROLE_BADGE_DESTRUCTIVE, p->destructive, p->dark ? LV_OPA_60 : LV_OPA_COVER,
+              p->destructive_fg, p->destructive, LV_OPA_TRANSP);
+
+    set_alert(st, LV_THEME_SHADCN_ROLE_ALERT, p->card_fg);
+    set_alert(st, LV_THEME_SHADCN_ROLE_ALERT_DESTRUCTIVE, p->destructive);
+
+    set_separator(st, LV_THEME_SHADCN_ROLE_SEPARATOR, lv_pct(100), m->border_width);
+    set_separator(st, LV_THEME_SHADCN_ROLE_SEPARATOR_VERTICAL, m->border_width, lv_pct(100));
+
+    lv_style_t * skeleton = role_style(st, LV_THEME_SHADCN_ROLE_SKELETON);
+    lv_style_set_bg_color(skeleton, p->muted);
+    lv_style_set_bg_opa(skeleton, LV_OPA_COVER);
+    lv_style_set_radius(skeleton, m->radius_md);
+    set_plain(skeleton);
+
+    set_card_part(st, LV_THEME_SHADCN_ROLE_CARD_HEADER, LV_FLEX_FLOW_COLUMN, LV_FLEX_ALIGN_START, m->space_xs);
+    set_card_part(st, LV_THEME_SHADCN_ROLE_CARD_CONTENT, LV_FLEX_FLOW_COLUMN, LV_FLEX_ALIGN_START, m->space_md);
+    set_card_part(st, LV_THEME_SHADCN_ROLE_CARD_FOOTER, LV_FLEX_FLOW_ROW, LV_FLEX_ALIGN_CENTER, m->space_sm);
+
+    lv_style_t * title = role_style(st, LV_THEME_SHADCN_ROLE_CARD_TITLE);
+    lv_style_set_text_font(title, st->fonts.large);
+    lv_style_set_text_line_space(title, 0);
+
+    lv_style_t * description = role_style(st, LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION);
+    lv_style_set_text_font(description, st->fonts.small);
+    lv_style_set_text_color(description, p->muted_fg);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -524,4 +659,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_collections(st);
     build_overlays(st);
     build_text(st);
+    build_roles(st);
 }
