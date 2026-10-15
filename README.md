@@ -20,9 +20,10 @@ Switch between dark and light at runtime, plug in your brand colour, and keep wr
 
 ## Why lvgl_theme_shadcn?
 
-- **Every widget, every state.** Buttons, switches, checkboxes, sliders, arcs, bars, scales, text areas, dropdowns,
+- **Every widget, every state.** Buttons, switches, checkboxes, sliders, arcs, bars, scales, lines, text areas, dropdowns,
   rollers, spinboxes, tables, lists, tab views, calendars, charts, keyboards, message boxes and more are styled for
-  default, pressed, checked, focused, keyboard-focused and disabled states. No more default-theme leftovers.
+  default, pressed, checked, focused, keyboard-focused and disabled states. No more default-theme leftovers. Media widgets (image, canvas, gif, lottie, ffmpeg, gstreamer,
+  3dtexture) and qrcode/barcode are intentionally left unstyled.
 - **Every shadcn palette, switchable at runtime.** All 9 shadcn/ui base colours times 18 accents (including none), in
   dark and light; `lv_theme_shadcn_set_palette` restyles every existing widget in place, no screen rebuild needed.
 - **Touch-first.** Controls are 40 dp tall with 48 dp touch targets, clear pressed feedback and a visible focus ring
