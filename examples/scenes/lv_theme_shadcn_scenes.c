@@ -8,6 +8,7 @@
 #define HALF_W ((CONTENT_W - SCENE_PAD) / 2)
 #define QUARTER_W ((CONTENT_W - 3 * SCENE_PAD) / 4)
 #define CARD_PAD 12
+#define CARD_GAP 10
 
 static const lv_theme_shadcn_palette_t * palette_of(lv_obj_t * obj)
 {
@@ -56,29 +57,40 @@ static lv_obj_t * text(lv_obj_t * parent, const char * str)
     return label;
 }
 
-static lv_obj_t * small_text(lv_obj_t * parent, const char * str)
+static lv_obj_t * styled_text(lv_obj_t * parent, const char * str, lv_theme_shadcn_text_t role)
 {
     lv_obj_t * label = text(parent, str);
-#if LV_FONT_MONTSERRAT_12
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_12, 0);
-#endif
+    lv_theme_shadcn_set_text_role(label, role);
     return label;
+}
+
+static lv_obj_t * small_text(lv_obj_t * parent, const char * str)
+{
+    return styled_text(parent, str, LV_THEME_SHADCN_TEXT_SMALL);
 }
 
 static lv_obj_t * muted_text(lv_obj_t * parent, const char * str)
 {
-    lv_obj_t * label = small_text(parent, str);
-    const lv_theme_shadcn_palette_t * palette = palette_of(parent);
-    if(palette) lv_obj_set_style_text_color(label, palette->muted_fg, 0);
-    return label;
+    return styled_text(parent, str, LV_THEME_SHADCN_TEXT_MUTED);
 }
 
 static lv_obj_t * heading(lv_obj_t * parent, const char * str)
 {
+    return styled_text(parent, str, LV_THEME_SHADCN_TEXT_H4);
+}
+
+static lv_obj_t * role_obj(lv_obj_t * parent, lv_theme_shadcn_role_t role)
+{
+    lv_obj_t * obj = lv_obj_create(parent);
+    lv_obj_set_scrollable(obj, false);
+    lv_theme_shadcn_set_role(obj, role);
+    return obj;
+}
+
+static lv_obj_t * role_text(lv_obj_t * parent, const char * str, lv_theme_shadcn_role_t role)
+{
     lv_obj_t * label = text(parent, str);
-#if LV_FONT_MONTSERRAT_20
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_20, 0);
-#endif
+    lv_theme_shadcn_set_role(label, role);
     return label;
 }
 
@@ -86,7 +98,7 @@ static void page_header(lv_obj_t * parent, const char * title, const char * desc
 {
     lv_obj_t * row = box(parent, LV_FLEX_FLOW_ROW, SCENE_PAD);
     lv_obj_set_flex_align(row, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_END);
-    heading(row, title);
+    styled_text(row, title, LV_THEME_SHADCN_TEXT_H3);
     lv_obj_t * desc = muted_text(row, description);
     lv_obj_set_style_pad_bottom(desc, 2, 0);
 }
@@ -97,12 +109,12 @@ static lv_obj_t * card(lv_obj_t * parent, int32_t w, const char * title, const c
     lv_obj_set_size(c, w, LV_SIZE_CONTENT);
     lv_obj_set_flex_flow(c, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_style_pad_all(c, CARD_PAD, 0);
-    lv_obj_set_style_pad_gap(c, CARD_PAD, 0);
+    lv_obj_set_style_pad_gap(c, CARD_GAP, 0);
     lv_obj_set_scrollable(c, false);
     if(title) {
-        lv_obj_t * head = box(c, LV_FLEX_FLOW_COLUMN, 2);
-        text(head, title);
-        if(description) muted_text(head, description);
+        lv_obj_t * head = role_obj(c, LV_THEME_SHADCN_ROLE_CARD_HEADER);
+        role_text(head, title, LV_THEME_SHADCN_ROLE_CARD_TITLE);
+        if(description) role_text(head, description, LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION);
     }
     return c;
 }
@@ -119,7 +131,7 @@ static void equalize(lv_obj_t * a, lv_obj_t * b)
 
 static lv_obj_t * labelled(lv_obj_t * parent, const char * title, const char * value)
 {
-    lv_obj_t * group = box(parent, LV_FLEX_FLOW_COLUMN, 10);
+    lv_obj_t * group = box(parent, LV_FLEX_FLOW_COLUMN, 8);
     lv_obj_t * row = spread_row(group);
     text(row, title);
     muted_text(row, value);
@@ -147,7 +159,7 @@ static lv_obj_t * small_spinner(lv_obj_t * parent, int32_t size, int32_t arc_wid
 
 static lv_obj_t * field(lv_obj_t * parent, const char * label)
 {
-    lv_obj_t * f = box(parent, LV_FLEX_FLOW_COLUMN, 6);
+    lv_obj_t * f = box(parent, LV_FLEX_FLOW_COLUMN, 4);
     small_text(f, label);
     return f;
 }
@@ -187,7 +199,7 @@ static void build_showcase(lv_obj_t * parent)
     lv_obj_t * header = spread_row(parent);
     lv_obj_t * titles = box(header, LV_FLEX_FLOW_COLUMN, 0);
     lv_obj_set_width(titles, LV_SIZE_CONTENT);
-    heading(titles, "Living room");
+    styled_text(titles, "Living room", LV_THEME_SHADCN_TEXT_H3);
     muted_text(titles, "4 devices online");
 #if LV_USE_DROPDOWN
     lv_obj_t * scene = lv_dropdown_create(header);
@@ -247,7 +259,7 @@ static void build_showcase(lv_obj_t * parent)
 static void build_buttons(lv_obj_t * parent)
 {
     prepare(parent, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_style_pad_row(parent, 10, 0);
+    lv_obj_set_style_pad_row(parent, SCENE_PAD, 0);
     page_header(parent, "Buttons", "Variants, sizes and states");
 
 #if LV_USE_BUTTON
@@ -328,7 +340,6 @@ static void build_toggles(lv_obj_t * parent)
     page_header(parent, "Toggles", "Switches, checkboxes and LEDs");
 
     lv_obj_t * notifications = card(parent, HALF_W, "Notifications", "How should we reach you?");
-    lv_obj_set_style_pad_row(notifications, 16, 0);
 #if LV_USE_SWITCH
     switch_row(notifications, NULL, "Push", LV_STATE_CHECKED);
     switch_row(notifications, NULL, "Email digest", LV_STATE_DEFAULT);
@@ -336,7 +347,6 @@ static void build_toggles(lv_obj_t * parent)
 #endif
 
     lv_obj_t * privacy = card(parent, HALF_W, "Privacy", "Choose what you share.");
-    lv_obj_set_style_pad_row(privacy, 16, 0);
 #if LV_USE_CHECKBOX
     lv_obj_t * analytics = lv_checkbox_create(privacy);
     lv_checkbox_set_text_static(analytics, "Usage analytics");
@@ -389,9 +399,7 @@ static void build_ranges(lv_obj_t * parent)
     lv_obj_set_style_pad_hor(scale, 10, 0);
     lv_scale_set_total_tick_count(scale, 21);
     lv_scale_set_major_tick_every(scale, 5);
-#if LV_FONT_MONTSERRAT_12
-    lv_obj_set_style_text_font(scale, &lv_font_montserrat_12, 0);
-#endif
+    lv_theme_shadcn_set_text_role(scale, LV_THEME_SHADCN_TEXT_SMALL);
 #endif
 
     lv_obj_t * round = card(parent, HALF_W, "Upload", "Syncing your library.");
@@ -577,6 +585,76 @@ static void build_overlays(lv_obj_t * parent)
 #endif
 }
 
+static void badge(lv_obj_t * parent, const char * str, lv_theme_shadcn_role_t role)
+{
+    role_text(parent, str, role);
+}
+
+#if LV_USE_FLEX
+static lv_obj_t * alert(lv_obj_t * parent, const char * icon, const char * title, const char * description,
+                        lv_theme_shadcn_role_t role)
+{
+    lv_obj_t * a = role_obj(parent, role);
+    lv_obj_set_flex_flow(a, LV_FLEX_FLOW_ROW);
+    lv_obj_t * glyph = text(a, icon);
+    lv_obj_set_style_pad_top(glyph, 1, 0);
+    lv_obj_t * body = box(a, LV_FLEX_FLOW_COLUMN, 2);
+    lv_obj_set_width(body, LV_SIZE_CONTENT);
+    lv_obj_set_flex_grow(body, 1);
+    text(body, title);
+    lv_obj_t * desc = small_text(body, description);
+    lv_obj_set_width(desc, lv_pct(100));
+    if(role == LV_THEME_SHADCN_ROLE_ALERT) lv_theme_shadcn_set_text_role(desc, LV_THEME_SHADCN_TEXT_MUTED);
+    return a;
+}
+#endif
+
+static void skeleton(lv_obj_t * parent, int32_t w, int32_t h, int32_t radius)
+{
+    lv_obj_t * block = role_obj(parent, LV_THEME_SHADCN_ROLE_SKELETON);
+    lv_obj_set_size(block, w, h);
+    if(radius >= 0) lv_obj_set_style_radius(block, radius, 0);
+}
+
+static void build_display(lv_obj_t * parent)
+{
+    prepare(parent, LV_FLEX_FLOW_ROW_WRAP);
+    page_header(parent, "Display", "Typography, badges and feedback");
+
+    lv_obj_t * article = card(parent, HALF_W, NULL, NULL);
+    lv_obj_set_style_pad_row(article, 8, 0);
+    styled_text(article, "Release notes", LV_THEME_SHADCN_TEXT_H3);
+    styled_text(article, "Version 2.4 is here.", LV_THEME_SHADCN_TEXT_LEAD);
+    lv_obj_t * body = styled_text(article, "Faster sync, fewer taps and a calmer dark mode for every screen.",
+                                  LV_THEME_SHADCN_TEXT_P);
+    lv_obj_set_width(body, lv_pct(100));
+    role_obj(article, LV_THEME_SHADCN_ROLE_SEPARATOR);
+    lv_obj_t * install = inline_group(article, 8, LV_FLEX_ALIGN_CENTER);
+    styled_text(install, "Install", LV_THEME_SHADCN_TEXT_SMALL);
+    styled_text(install, "pio pkg install", LV_THEME_SHADCN_TEXT_CODE);
+    styled_text(article, "Published 3 days ago", LV_THEME_SHADCN_TEXT_MUTED);
+
+    lv_obj_t * status = card(parent, HALF_W, NULL, NULL);
+    lv_obj_t * badges = box(status, LV_FLEX_FLOW_ROW_WRAP, 4);
+    badge(badges, "New", LV_THEME_SHADCN_ROLE_BADGE);
+    badge(badges, "Beta", LV_THEME_SHADCN_ROLE_BADGE_SECONDARY);
+    badge(badges, "v2", LV_THEME_SHADCN_ROLE_BADGE_OUTLINE);
+    badge(badges, "Error", LV_THEME_SHADCN_ROLE_BADGE_DESTRUCTIVE);
+#if LV_USE_FLEX
+    alert(status, LV_SYMBOL_OK, "Backup complete", "Your files are safe.", LV_THEME_SHADCN_ROLE_ALERT);
+    alert(status, LV_SYMBOL_WARNING, "Sync failed", "Check your network.", LV_THEME_SHADCN_ROLE_ALERT_DESTRUCTIVE);
+#endif
+    lv_obj_t * loading = box(status, LV_FLEX_FLOW_ROW, 12);
+    lv_obj_set_flex_align(loading, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    skeleton(loading, 36, 36, LV_RADIUS_CIRCLE);
+    lv_obj_t * lines = box(loading, LV_FLEX_FLOW_COLUMN, 6);
+    lv_obj_set_flex_grow(lines, 1);
+    lv_obj_set_width(lines, LV_SIZE_CONTENT);
+    skeleton(lines, lv_pct(90), 12, -1);
+    skeleton(lines, lv_pct(60), 12, -1);
+    equalize(article, status);
+}
+
 const lv_theme_shadcn_scene_t * lv_theme_shadcn_scenes(uint32_t * count)
 {
     static const lv_theme_shadcn_scene_t scenes[] = {
@@ -587,6 +665,7 @@ const lv_theme_shadcn_scene_t * lv_theme_shadcn_scenes(uint32_t * count)
         { "inputs", build_inputs },
         { "collections", build_collections },
         { "overlays", build_overlays },
+        { "display", build_display },
     };
     if(count) *count = sizeof(scenes) / sizeof(scenes[0]);
     return scenes;

@@ -195,7 +195,7 @@ int main(int argc, char ** argv)
         &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL,
         &lv_font_montserrat_32, &lv_font_montserrat_28, &lv_font_montserrat_24
     };
-    lv_theme_shadcn_init(display, lv_theme_shadcn_palette_zinc_dark(), &fonts, LV_THEME_SHADCN_FLAG_NONE);
+    lv_theme_shadcn_init(display, lv_theme_shadcn_palette_zinc_dark(), &fonts, LV_THEME_SHADCN_FLAG_REDUCED_MOTION);
 
     uint32_t count = 0;
     const lv_theme_shadcn_scene_t * scenes = lv_theme_shadcn_scenes(&count);

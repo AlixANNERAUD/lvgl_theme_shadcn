@@ -14,13 +14,13 @@ static bool children_inside(lv_obj_t * parent)
     return true;
 }
 
-static void every_scene_fits_the_screen(void)
+static void scenes_fit(void)
 {
-    static const char * const names[] = { "showcase", "buttons", "toggles", "ranges", "inputs", "collections", "overlays" };
+    static const char * const names[] = { "showcase", "buttons", "toggles", "ranges", "inputs", "collections", "overlays", "display" };
     uint32_t count = 0;
     const lv_theme_shadcn_scene_t * scenes = lv_theme_shadcn_scenes(&count);
-    CHECK_INT(count, 7);
-    if(count != 7) return;
+    CHECK_INT(count, 8);
+    if(count != 8) return;
     for(uint32_t i = 0; i < count; i++) {
         CHECK(strcmp(scenes[i].name, names[i]) == 0);
         lv_obj_t * screen = lv_obj_create(NULL);
@@ -40,8 +40,24 @@ static void every_scene_fits_the_screen(void)
     }
 }
 
+static void every_scene_fits_the_screen(void)
+{
+    scenes_fit();
+}
+
+static void every_scene_fits_with_heading_fonts(void)
+{
+    static const lv_theme_shadcn_fonts_t fonts = {
+        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL,
+        &lv_font_montserrat_32, &lv_font_montserrat_28, &lv_font_montserrat_24
+    };
+    lv_theme_shadcn_init(harness_display(), lv_theme_shadcn_palette_zinc_dark(), &fonts, LV_THEME_SHADCN_FLAG_NONE);
+    scenes_fit();
+}
+
 int main(void)
 {
     RUN(every_scene_fits_the_screen);
+    RUN(every_scene_fits_with_heading_fonts);
     return harness_result();
 }
