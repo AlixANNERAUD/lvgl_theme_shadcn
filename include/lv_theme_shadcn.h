@@ -116,6 +116,15 @@ typedef enum {
     LV_THEME_SHADCN_RADIUS_XL,
 } lv_theme_shadcn_radius_t;
 
+typedef enum {
+    LV_THEME_SHADCN_SIZE_DEFAULT,
+    LV_THEME_SHADCN_SIZE_SM,
+    LV_THEME_SHADCN_SIZE_LG,
+    LV_THEME_SHADCN_SIZE_ICON,
+    LV_THEME_SHADCN_SIZE_ICON_SM,
+    LV_THEME_SHADCN_SIZE_ICON_LG,
+} lv_theme_shadcn_size_t;
+
 lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_palette_t * palette,
                                   const lv_theme_shadcn_fonts_t * fonts, lv_theme_shadcn_flags_t flags);
 void lv_theme_shadcn_deinit(lv_display_t * disp);
@@ -135,6 +144,7 @@ const char * lv_theme_shadcn_base_name(lv_theme_shadcn_base_t base);
 const char * lv_theme_shadcn_accent_name(lv_theme_shadcn_accent_t accent);
 
 void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t variant);
+void lv_theme_shadcn_set_size(lv_obj_t * obj, lv_theme_shadcn_size_t size);
 void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface);
 void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error);
 

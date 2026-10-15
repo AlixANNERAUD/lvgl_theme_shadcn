@@ -247,8 +247,8 @@ static void build_showcase(lv_obj_t * parent)
 static void build_buttons(lv_obj_t * parent)
 {
     prepare(parent, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_style_pad_row(parent, 12, 0);
-    page_header(parent, "Buttons", "Variants, icons and states");
+    lv_obj_set_style_pad_row(parent, 10, 0);
+    page_header(parent, "Buttons", "Variants, sizes and states");
 
 #if LV_USE_BUTTON
     lv_obj_t * variants = box(parent, LV_FLEX_FLOW_ROW_WRAP, SCENE_PAD);
@@ -260,8 +260,37 @@ static void build_buttons(lv_obj_t * parent)
     button(variants, "Ghost", LV_THEME_SHADCN_VARIANT_GHOST, QUARTER_W);
     button(variants, "Destructive", LV_THEME_SHADCN_VARIANT_DESTRUCTIVE, QUARTER_W);
     button(variants, LV_SYMBOL_DOWNLOAD "  Download", LV_THEME_SHADCN_VARIANT_DEFAULT, QUARTER_W);
-    button(variants, LV_SYMBOL_UPLOAD "  Upload", LV_THEME_SHADCN_VARIANT_OUTLINE, QUARTER_W);
-    button(variants, LV_SYMBOL_SETTINGS "  Settings", LV_THEME_SHADCN_VARIANT_SECONDARY, QUARTER_W);
+#if LV_USE_BUTTONMATRIX
+    static const char * map[] = { "Day", "Week", "Month", "" };
+    lv_obj_t * matrix = lv_buttonmatrix_create(variants);
+    lv_buttonmatrix_set_map(matrix, map);
+    lv_obj_set_size(matrix, 2 * QUARTER_W + SCENE_PAD, 40);
+    lv_obj_set_style_pad_all(matrix, 0, 0);
+    lv_obj_set_style_pad_gap(matrix, SCENE_PAD, 0);
+    lv_buttonmatrix_set_button_ctrl_all(matrix, LV_BUTTONMATRIX_CTRL_CHECKABLE);
+    lv_buttonmatrix_set_one_checked(matrix, true);
+    lv_buttonmatrix_set_button_ctrl(matrix, 1, LV_BUTTONMATRIX_CTRL_CHECKED);
+#endif
+
+    lv_obj_t * sizes = box(parent, LV_FLEX_FLOW_ROW_WRAP, SCENE_PAD);
+    lv_obj_set_flex_align(sizes, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_t * sizes_label = muted_text(sizes, "Sizes");
+    lv_obj_set_width(sizes_label, lv_pct(100));
+    static const struct {
+        const char * text;
+        lv_theme_shadcn_size_t size;
+    } sized[] = {
+        { "Small", LV_THEME_SHADCN_SIZE_SM },
+        { "Default", LV_THEME_SHADCN_SIZE_DEFAULT },
+        { "Large", LV_THEME_SHADCN_SIZE_LG },
+        { LV_SYMBOL_PLUS, LV_THEME_SHADCN_SIZE_ICON_SM },
+        { LV_SYMBOL_PLUS, LV_THEME_SHADCN_SIZE_ICON },
+        { LV_SYMBOL_PLUS, LV_THEME_SHADCN_SIZE_ICON_LG },
+    };
+    for(size_t i = 0; i < sizeof(sized) / sizeof(sized[0]); i++) {
+        lv_obj_t * btn = button(sizes, sized[i].text, LV_THEME_SHADCN_VARIANT_OUTLINE, LV_SIZE_CONTENT);
+        lv_theme_shadcn_set_size(btn, sized[i].size);
+    }
 
     lv_obj_t * states = box(parent, LV_FLEX_FLOW_ROW_WRAP, SCENE_PAD);
     lv_obj_set_style_pad_bottom(states, 4, 0);
@@ -278,20 +307,6 @@ static void build_buttons(lv_obj_t * parent)
     if(palette) lv_obj_set_style_arc_color(spinner, palette->secondary_fg, LV_PART_INDICATOR);
 #endif
     text(loading, "Loading");
-#endif
-
-#if LV_USE_BUTTONMATRIX
-    lv_obj_t * segmented = box(parent, LV_FLEX_FLOW_COLUMN, SCENE_PAD);
-    muted_text(segmented, "Button matrix");
-    static const char * map[] = { "Day", "Week", "Month", "Year", "" };
-    lv_obj_t * matrix = lv_buttonmatrix_create(segmented);
-    lv_buttonmatrix_set_map(matrix, map);
-    lv_obj_set_size(matrix, CONTENT_W, 40);
-    lv_obj_set_style_pad_all(matrix, 0, 0);
-    lv_obj_set_style_pad_gap(matrix, SCENE_PAD, 0);
-    lv_buttonmatrix_set_button_ctrl_all(matrix, LV_BUTTONMATRIX_CTRL_CHECKABLE);
-    lv_buttonmatrix_set_one_checked(matrix, true);
-    lv_buttonmatrix_set_button_ctrl(matrix, 1, LV_BUTTONMATRIX_CTRL_CHECKED);
 #endif
 }
 

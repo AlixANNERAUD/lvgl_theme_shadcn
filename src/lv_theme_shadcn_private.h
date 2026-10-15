@@ -6,6 +6,7 @@
 #define LV_THEME_SHADCN_VARIANT_COUNT 5
 #define LV_THEME_SHADCN_SURFACE_COUNT 4
 #define LV_THEME_SHADCN_RADIUS_COUNT 6
+#define LV_THEME_SHADCN_SIZE_COUNT 6
 #define LV_THEME_SHADCN_PRESS_MIX 26
 #define LV_THEME_SHADCN_DISABLED_OPA LV_OPA_50
 #define LV_THEME_SHADCN_TRANSITION_MS 150
@@ -37,6 +38,8 @@ typedef struct {
     int32_t ring_width;
     int32_t ring_gap;
     int32_t control_height;
+    int32_t control_height_sm;
+    int32_t control_height_lg;
     int32_t touch_target;
     int32_t scrollbar_width;
 } lv_theme_shadcn_metrics_t;
@@ -103,6 +106,7 @@ typedef struct {
     lv_style_t msgbox_footer;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
+    lv_style_t size[LV_THEME_SHADCN_SIZE_COUNT - 1];
 } lv_theme_shadcn_styles_t;
 
 typedef struct lv_theme_shadcn_state_t {
@@ -138,6 +142,7 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
 bool lv_theme_shadcn_apply_overlays(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj);
+int32_t lv_theme_shadcn_size_height(const lv_theme_shadcn_state_t * st, lv_theme_shadcn_size_t size);
 void lv_theme_shadcn_set_toggle_touch_target(lv_obj_t * obj);
 
 #endif

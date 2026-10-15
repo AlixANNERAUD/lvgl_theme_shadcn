@@ -34,6 +34,8 @@ void lv_theme_shadcn_metrics_resolve(lv_theme_shadcn_state_t * st)
     m->ring_width = dp(st, 2);
     m->ring_gap = dp(st, compact ? 1 : 2);
     m->control_height = dp(st, compact ? 32 : 40);
+    m->control_height_sm = dp(st, compact ? 24 : 32);
+    m->control_height_lg = dp(st, compact ? 40 : 48);
     m->touch_target = dp(st, compact ? 40 : 48);
     m->scrollbar_width = dp(st, compact ? 3 : 4);
 }
@@ -174,6 +176,48 @@ static void build_actions(lv_theme_shadcn_state_t * st)
 
     set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_OUTLINE], p->accent, p->accent_fg);
     set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_GHOST], p->accent, p->accent_fg);
+}
+
+int32_t lv_theme_shadcn_size_height(const lv_theme_shadcn_state_t * st, lv_theme_shadcn_size_t size)
+{
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    switch(size) {
+        case LV_THEME_SHADCN_SIZE_SM:
+        case LV_THEME_SHADCN_SIZE_ICON_SM:
+            return m->control_height_sm;
+        case LV_THEME_SHADCN_SIZE_LG:
+        case LV_THEME_SHADCN_SIZE_ICON_LG:
+            return m->control_height_lg;
+        default:
+            return m->control_height;
+    }
+}
+
+static void set_size(lv_theme_shadcn_state_t * st, lv_theme_shadcn_size_t size, int32_t pad_hor, int32_t gap,
+                     const lv_font_t * font)
+{
+    lv_style_t * style = &S(st)->size[size - 1];
+    int32_t h = lv_theme_shadcn_size_height(st, size);
+    lv_style_set_height(style, h);
+    lv_style_set_min_height(style, h);
+    lv_style_set_pad_hor(style, pad_hor);
+    lv_style_set_pad_gap(style, gap);
+    if(size >= LV_THEME_SHADCN_SIZE_ICON) {
+        lv_style_set_width(style, h);
+        lv_style_set_min_width(style, h);
+    }
+    if(font) lv_style_set_text_font(style, font);
+}
+
+static void build_sizes(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    int32_t gap_sm = (m->space_xs + m->space_sm) / 2;
+    set_size(st, LV_THEME_SHADCN_SIZE_SM, m->space_md, gap_sm, st->fonts.small);
+    set_size(st, LV_THEME_SHADCN_SIZE_LG, m->space_xl, m->space_sm, NULL);
+    set_size(st, LV_THEME_SHADCN_SIZE_ICON, 0, m->space_sm, NULL);
+    set_size(st, LV_THEME_SHADCN_SIZE_ICON_SM, 0, gap_sm, st->fonts.small);
+    set_size(st, LV_THEME_SHADCN_SIZE_ICON_LG, 0, m->space_sm, NULL);
 }
 
 static void build_toggles(lv_theme_shadcn_state_t * st)
@@ -415,6 +459,7 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_base(st);
     build_surfaces(st);
     build_actions(st);
+    build_sizes(st);
     build_toggles(st);
     build_ranges(st);
     build_inputs(st);

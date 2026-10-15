@@ -174,6 +174,16 @@ static void remove_styles(lv_obj_t * obj, lv_style_t * styles, size_t count)
     for(size_t i = 0; i < count; i++) lv_obj_remove_style(obj, &styles[i], LV_PART_MAIN | LV_STATE_ANY);
 }
 
+void lv_theme_shadcn_set_size(lv_obj_t * obj, lv_theme_shadcn_size_t size)
+{
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
+    if(st == NULL || (int)size < 0 || size >= LV_THEME_SHADCN_SIZE_COUNT) return;
+    remove_styles(obj, S(st)->size, LV_THEME_SHADCN_SIZE_COUNT - 1);
+    if(size != LV_THEME_SHADCN_SIZE_DEFAULT) lv_obj_add_style(obj, &S(st)->size[size - 1], 0);
+    int32_t extra = (st->metrics.touch_target - lv_theme_shadcn_size_height(st, size)) / 2;
+    lv_obj_set_ext_click_area(obj, extra > 0 ? extra : 0);
+}
+
 void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface)
 {
     lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
