@@ -23,8 +23,8 @@ Switch between dark and light at runtime, plug in your brand colour, and keep wr
 - **Every widget, every state.** Buttons, switches, checkboxes, sliders, arcs, bars, scales, text areas, dropdowns,
   rollers, spinboxes, tables, lists, tab views, calendars, charts, keyboards, message boxes and more are styled for
   default, pressed, checked, focused, keyboard-focused and disabled states. No more default-theme leftovers.
-- **Dark and light, switchable at runtime.** Ships the shadcn zinc dark and light palettes; `lv_theme_shadcn_set_palette`
-  restyles every existing widget in place, no screen rebuild needed.
+- **Every shadcn palette, switchable at runtime.** All 9 shadcn/ui base colours times 18 accents (including none), in
+  dark and light; `lv_theme_shadcn_set_palette` restyles every existing widget in place, no screen rebuild needed.
 - **Touch-first.** Controls are 40 dp tall with 48 dp touch targets, clear pressed feedback and a visible focus ring
   for keypad and encoder navigation. A compact flag tightens everything for small screens.
 - **Cheap to render.** No shadows, blur or gradients: flat fills and 1 dp borders that stay fast on MCUs with small
@@ -50,6 +50,51 @@ Every image below is a reference from the screenshot test suite, rendered at 480
 | Inputs: text, selects and pickers | ![Inputs, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/inputs-dark.png) | ![Inputs, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/inputs-light.png) |
 | Collections: tabs, tables, charts, calendar and lists | ![Collections, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/collections-dark.png) | ![Collections, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/collections-light.png) |
 | Overlays: message box and keyboard | ![Overlays, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/overlays-dark.png) | ![Overlays, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/overlays-light.png) |
+
+## Colours
+
+Every shadcn/ui base colour can be combined with every accent, in light or dark mode, with one call. The tables are
+generated from the shadcn/ui registry by [`scripts/generate-palettes.py`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/blob/main/scripts/generate-palettes.py) and live in flash as `const` data.
+
+```c
+lv_theme_shadcn_palette_t palette;
+lv_theme_shadcn_palette_make(&palette, LV_THEME_SHADCN_BASE_SLATE, LV_THEME_SHADCN_ACCENT_BLUE, true);
+lv_theme_shadcn_set_palette(display, &palette);
+```
+
+The base (`lv_theme_shadcn_base_t`) sets backgrounds, surfaces, borders and text. The accent
+(`lv_theme_shadcn_accent_t`) replaces `primary`, `secondary` and the chart colours; `LV_THEME_SHADCN_ACCENT_NONE`
+keeps the base's monochrome primary and charts. `lv_theme_shadcn_base_name` and `lv_theme_shadcn_accent_name` return
+the shadcn/ui names, handy for a settings menu. Shadcn's translucent dark `border` and `input` are replaced with opaque
+tones of the same base, since LVGL composites them against whatever surface lies beneath.
+
+### Bases, light
+
+| | | |
+| --- | --- | --- |
+| `neutral` | `stone` | `zinc` |
+| ![Neutral, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-neutral-light.png) | ![Stone, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-stone-light.png) | ![Zinc, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-zinc-light.png) |
+| `gray` | `slate` | `mauve` |
+| ![Gray, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-gray-light.png) | ![Slate, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-slate-light.png) | ![Mauve, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-mauve-light.png) |
+| `olive` | `mist` | `taupe` |
+| ![Olive, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-olive-light.png) | ![Mist, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-mist-light.png) | ![Taupe, light](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-base-taupe-light.png) |
+
+### Accents on zinc, dark
+
+| | | |
+| --- | --- | --- |
+| `amber` | `blue` | `cyan` |
+| ![Amber, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-amber-dark.png) | ![Blue, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-blue-dark.png) | ![Cyan, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-cyan-dark.png) |
+| `emerald` | `fuchsia` | `green` |
+| ![Emerald, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-emerald-dark.png) | ![Fuchsia, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-fuchsia-dark.png) | ![Green, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-green-dark.png) |
+| `indigo` | `lime` | `orange` |
+| ![Indigo, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-indigo-dark.png) | ![Lime, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-lime-dark.png) | ![Orange, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-orange-dark.png) |
+| `pink` | `purple` | `red` |
+| ![Pink, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-pink-dark.png) | ![Purple, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-purple-dark.png) | ![Red, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-red-dark.png) |
+| `rose` | `sky` | `teal` |
+| ![Rose, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-rose-dark.png) | ![Sky, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-sky-dark.png) | ![Teal, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-teal-dark.png) |
+| `violet` | `yellow` |
+| ![Violet, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-violet-dark.png) | ![Yellow, dark](https://raw.githubusercontent.com/AlixANNERAUD/lvgl_theme_shadcn/main/tests/screenshots/ref/palette-accent-yellow-dark.png) |
 
 ## Quick start
 
@@ -190,8 +235,8 @@ touch targets to 40 dp, for dense screens or pointer input.
 
 ## Gallery app
 
-[`examples/gallery`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/examples/gallery) is an SDL2 desktop app with one tab per scene and a light switch in the header
-that flips the palette live. It is a standalone CMake project that fetches LVGL 9.6.0:
+[`examples/gallery`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/examples/gallery) is an SDL2 desktop app with one tab per scene and, in the header, base and accent
+dropdowns plus a light switch that change the palette live. It is a standalone CMake project that fetches LVGL 9.6.0:
 
 ```sh
 cmake -S examples/gallery -B build-gallery
@@ -210,8 +255,8 @@ ctest --test-dir build --output-on-failure
 Building the repository at the top level fetches LVGL 9.6.0 and runs two kinds of tests:
 
 - **Unit tests** in [`tests/unit`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/tests/unit) check palettes, lifecycle and the styles applied to each widget family.
-- **Screenshot tests** in [`tests/screenshots`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/tests/screenshots) render every scene in both palettes at 480x320,
-  check that rendering is deterministic, and compare each image against `tests/screenshots/ref`. Renders land in
+- **Screenshot tests** in [`tests/screenshots`](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/tree/main/tests/screenshots) render every scene in both zinc palettes at 480x320,
+  plus the showcase scene for every accent and every base, check that rendering is deterministic, and compare each image against `tests/screenshots/ref`. Renders land in
   `build/screenshots`, with a `-diff.png` highlighting the pixels that changed when a scene fails.
 
 After an intentional visual change, regenerate the references and review them in your diff:
@@ -252,7 +297,7 @@ Handles are built from raw pointers of any type, so the `lv_display_t` and `lv_o
 binding (for example `lvgl_rust_sys`) go straight in, and `as_ptr().cast()` takes them back out:
 
 ```rust
-use lvgl_theme_shadcn::{Color, Display, Flags, Fonts, Object, Palette, Theme, Variant};
+use lvgl_theme_shadcn::{Accent, Base, Color, Display, Flags, Fonts, Object, Palette, Theme, Variant};
 
 let brand = Palette::zinc_dark().with_primary(Color::hex(0x2563eb), Color::hex(0xffffff));
 let theme = unsafe {
@@ -263,7 +308,7 @@ let theme = unsafe {
 let button = unsafe { Object::from_ptr(button_ptr) }.expect("button");
 unsafe { lvgl_theme_shadcn::set_variant(&button, Variant::Destructive) };
 
-theme.set_palette(&Palette::zinc_light());
+theme.set_palette(&Palette::new(Base::Slate, Accent::Blue, false));
 assert!(!theme.palette().expect("active theme").is_dark());
 ```
 
