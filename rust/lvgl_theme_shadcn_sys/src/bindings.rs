@@ -98,10 +98,15 @@ pub struct lv_theme_shadcn_fonts_t {
     pub normal: *const lv_font_t,
     pub large: *const lv_font_t,
     pub mono: *const lv_font_t,
+    pub h1: *const lv_font_t,
+    pub h2: *const lv_font_t,
+    pub h3: *const lv_font_t,
 }
 impl lv_theme_shadcn_flags_t {
     pub const LV_THEME_SHADCN_FLAG_NONE: lv_theme_shadcn_flags_t = lv_theme_shadcn_flags_t(0);
     pub const LV_THEME_SHADCN_FLAG_COMPACT: lv_theme_shadcn_flags_t = lv_theme_shadcn_flags_t(1);
+    pub const LV_THEME_SHADCN_FLAG_REDUCED_MOTION: lv_theme_shadcn_flags_t =
+        lv_theme_shadcn_flags_t(2);
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
@@ -157,6 +162,49 @@ impl lv_theme_shadcn_size_t {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct lv_theme_shadcn_size_t(pub ::core::ffi::c_uint);
+impl lv_theme_shadcn_text_t {
+    pub const LV_THEME_SHADCN_TEXT_DEFAULT: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(0);
+    pub const LV_THEME_SHADCN_TEXT_H1: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(1);
+    pub const LV_THEME_SHADCN_TEXT_H2: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(2);
+    pub const LV_THEME_SHADCN_TEXT_H3: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(3);
+    pub const LV_THEME_SHADCN_TEXT_H4: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(4);
+    pub const LV_THEME_SHADCN_TEXT_P: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(5);
+    pub const LV_THEME_SHADCN_TEXT_LEAD: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(6);
+    pub const LV_THEME_SHADCN_TEXT_LARGE: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(7);
+    pub const LV_THEME_SHADCN_TEXT_SMALL: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(8);
+    pub const LV_THEME_SHADCN_TEXT_MUTED: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(9);
+    pub const LV_THEME_SHADCN_TEXT_CODE: lv_theme_shadcn_text_t = lv_theme_shadcn_text_t(10);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct lv_theme_shadcn_text_t(pub ::core::ffi::c_uint);
+impl lv_theme_shadcn_role_t {
+    pub const LV_THEME_SHADCN_ROLE_NONE: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(0);
+    pub const LV_THEME_SHADCN_ROLE_BADGE: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(1);
+    pub const LV_THEME_SHADCN_ROLE_BADGE_SECONDARY: lv_theme_shadcn_role_t =
+        lv_theme_shadcn_role_t(2);
+    pub const LV_THEME_SHADCN_ROLE_BADGE_OUTLINE: lv_theme_shadcn_role_t =
+        lv_theme_shadcn_role_t(3);
+    pub const LV_THEME_SHADCN_ROLE_BADGE_DESTRUCTIVE: lv_theme_shadcn_role_t =
+        lv_theme_shadcn_role_t(4);
+    pub const LV_THEME_SHADCN_ROLE_ALERT: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(5);
+    pub const LV_THEME_SHADCN_ROLE_ALERT_DESTRUCTIVE: lv_theme_shadcn_role_t =
+        lv_theme_shadcn_role_t(6);
+    pub const LV_THEME_SHADCN_ROLE_SEPARATOR: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(7);
+    pub const LV_THEME_SHADCN_ROLE_SEPARATOR_VERTICAL: lv_theme_shadcn_role_t =
+        lv_theme_shadcn_role_t(8);
+    pub const LV_THEME_SHADCN_ROLE_SKELETON: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(9);
+    pub const LV_THEME_SHADCN_ROLE_CARD_HEADER: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(10);
+    pub const LV_THEME_SHADCN_ROLE_CARD_TITLE: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(11);
+    pub const LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION: lv_theme_shadcn_role_t =
+        lv_theme_shadcn_role_t(12);
+    pub const LV_THEME_SHADCN_ROLE_CARD_CONTENT: lv_theme_shadcn_role_t =
+        lv_theme_shadcn_role_t(13);
+    pub const LV_THEME_SHADCN_ROLE_CARD_FOOTER: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(14);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct lv_theme_shadcn_role_t(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     pub fn lv_theme_shadcn_init(
         disp: *mut lv_display_t,
@@ -228,4 +276,10 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn lv_theme_shadcn_set_error(obj: *mut lv_obj_t, error: bool);
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_set_text_role(obj: *mut lv_obj_t, role: lv_theme_shadcn_text_t);
+}
+unsafe extern "C" {
+    pub fn lv_theme_shadcn_set_role(obj: *mut lv_obj_t, role: lv_theme_shadcn_role_t);
 }

@@ -5,8 +5,9 @@ use core::ffi::c_void;
 use core::ffi::CStr;
 
 use lvgl_theme_shadcn::{
-    Accent, Base, Color, Display, Flags, Fonts, Object, Palette, Radius, Size, Surface, Theme,
-    Variant, set_error, set_size, set_surface, set_variant, sys,
+    Accent, Base, Color, Display, Flags, Font, Fonts, Object, Palette, Radius, Role, Size, Surface,
+    TextRole, Theme, Variant, set_error, set_role, set_size, set_surface, set_text_role,
+    set_variant, sys,
 };
 
 const LV_PART_MAIN: u32 = 0;
@@ -14,6 +15,10 @@ const LV_PART_MAIN: u32 = 0;
 const LV_STYLE_BG_COLOR: u8 = 73;
 /// Probed from LVGL 9.6 like [`LV_STYLE_BG_COLOR`].
 const LV_STYLE_RADIUS: u8 = 120;
+/// Probed from LVGL 9.6 like [`LV_STYLE_BG_COLOR`].
+const LV_STYLE_TEXT_COLOR: u8 = 92;
+/// Probed from LVGL 9.6 like [`LV_STYLE_BG_COLOR`].
+const LV_STYLE_TEXT_FONT: u8 = 77;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -33,6 +38,10 @@ unsafe extern "C" {
     fn lv_obj_update_layout(obj: *const sys::lv_obj_t);
     fn lv_obj_get_width(obj: *const sys::lv_obj_t) -> i32;
     fn lv_obj_get_height(obj: *const sys::lv_obj_t) -> i32;
+    fn lv_label_create(parent: *mut sys::lv_obj_t) -> *mut sys::lv_obj_t;
+    fn lv_obj_delete(obj: *mut sys::lv_obj_t);
+    fn lv_anim_count_running() -> u16;
+    static lv_font_montserrat_14: u8;
 }
 
 fn radius(object: &Object) -> i32 {
@@ -52,6 +61,32 @@ fn size(object: &Object) -> (i32, i32) {
 fn bg_color(object: &Object) -> Color {
     let value = unsafe { lv_obj_get_style_prop(object.as_ptr(), LV_PART_MAIN, LV_STYLE_BG_COLOR) };
     Color::from(unsafe { value.color })
+}
+
+fn text_color(object: &Object) -> Color {
+    let value =
+        unsafe { lv_obj_get_style_prop(object.as_ptr(), LV_PART_MAIN, LV_STYLE_TEXT_COLOR) };
+    Color::from(unsafe { value.color })
+}
+
+fn text_font(object: &Object) -> *const c_void {
+    unsafe { lv_obj_get_style_prop(object.as_ptr(), LV_PART_MAIN, LV_STYLE_TEXT_FONT).ptr }
+}
+
+#[test]
+fn role_enums_list_every_value() {
+    assert_eq!(TextRole::ALL.len(), 11);
+    assert_eq!(TextRole::default(), TextRole::Default);
+    assert_eq!(Role::ALL.len(), 15);
+    assert_eq!(Role::default(), Role::None);
+    for (index, role) in TextRole::ALL.into_iter().enumerate() {
+        assert_eq!(sys::lv_theme_shadcn_text_t::from(role).0 as usize, index);
+    }
+    for (index, role) in Role::ALL.into_iter().enumerate() {
+        assert_eq!(sys::lv_theme_shadcn_role_t::from(role).0 as usize, index);
+    }
+    assert!(Flags::REDUCED_MOTION.contains(Flags::NONE));
+    assert_eq!((Flags::COMPACT | Flags::REDUCED_MOTION).bits(), 3);
 }
 
 #[test]
@@ -257,8 +292,53 @@ fn theme_lifecycle_and_helpers() {
         }
     }
 
+    theme.set_palette(&Palette::zinc_dark());
+    let label = unsafe { Object::from_ptr(lv_label_create(screen)) }.expect("label");
+    unsafe { set_text_role(&label, TextRole::Muted) };
+    assert_eq!(text_color(&label), Palette::zinc_dark().muted_fg());
+    unsafe { set_text_role(&label, TextRole::H1) };
+    assert_eq!(text_color(&label), Palette::zinc_dark().foreground());
+    for role in TextRole::ALL {
+        unsafe { set_text_role(&label, role) };
+    }
+
+    let badge = unsafe { Object::from_ptr(lv_obj_create(screen)) }.expect("badge");
+    unsafe { set_role(&badge, Role::BadgeDestructive) };
+    assert_eq!(bg_color(&badge), Palette::zinc_dark().destructive());
+    assert_eq!(radius(&badge), 0x7fff);
+    unsafe { set_role(&badge, Role::Separator) };
+    assert_eq!(bg_color(&badge), Palette::zinc_dark().border());
+    assert_eq!(size(&badge).1, 1);
+    theme.set_palette(&Palette::zinc_light());
+    assert_eq!(bg_color(&badge), Palette::zinc_light().border());
+    unsafe { set_role(&badge, Role::None) };
+    assert_eq!(bg_color(&badge), Palette::zinc_light().card());
+
+    let running = unsafe { lv_anim_count_running() };
+    let skeleton = unsafe { Object::from_ptr(lv_obj_create(screen)) }.expect("skeleton");
+    unsafe { set_role(&skeleton, Role::Skeleton) };
+    assert_eq!(unsafe { lv_anim_count_running() }, running + 1);
+    unsafe { lv_obj_delete(skeleton.as_ptr()) };
+    assert_eq!(unsafe { lv_anim_count_running() }, running);
+    for role in Role::ALL {
+        unsafe { set_role(&badge, role) };
+    }
+    unsafe { set_role(&badge, Role::None) };
+
     drop(theme);
     assert!(!Theme::is_active(&display));
+
+    let normal = unsafe { Font::from_const_ptr(&raw const lv_font_montserrat_14) };
+    let heading_fonts = Fonts {
+        normal,
+        h3: normal,
+        ..Fonts::default()
+    };
+    let theme = unsafe { Theme::init(display, &Palette::zinc_dark(), &heading_fonts, Flags::NONE) }
+        .expect("theme");
+    unsafe { set_text_role(&label, TextRole::H1) };
+    assert_eq!(text_font(&label), normal.expect("font").as_ptr().cast());
+    drop(theme);
 
     let theme = unsafe {
         Theme::init(

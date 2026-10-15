@@ -20,3 +20,13 @@ size_t lv_theme_shadcn_probe_palette_dark_offset(void)
 {
     return offsetof(lv_theme_shadcn_palette_t, dark);
 }
+
+size_t lv_theme_shadcn_probe_fonts_size(void)
+{
+    return sizeof(lv_theme_shadcn_fonts_t);
+}
+
+size_t lv_theme_shadcn_probe_fonts_h1_offset(void)
+{
+    return offsetof(lv_theme_shadcn_fonts_t, h1);
+}

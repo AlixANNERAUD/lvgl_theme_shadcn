@@ -11,6 +11,8 @@ unsafe extern "C" {
     fn lv_theme_shadcn_probe_palette_primary_offset() -> usize;
     fn lv_theme_shadcn_probe_palette_chart_offset() -> usize;
     fn lv_theme_shadcn_probe_palette_dark_offset() -> usize;
+    fn lv_theme_shadcn_probe_fonts_size() -> usize;
+    fn lv_theme_shadcn_probe_fonts_h1_offset() -> usize;
 }
 
 unsafe extern "C" {
@@ -50,6 +52,20 @@ fn palette_layout_matches_c() {
         assert_eq!(
             offset_of!(lv_theme_shadcn_palette_t, dark),
             lv_theme_shadcn_probe_palette_dark_offset()
+        );
+    }
+}
+
+#[test]
+fn fonts_layout_matches_c() {
+    unsafe {
+        assert_eq!(
+            size_of::<lv_theme_shadcn_fonts_t>(),
+            lv_theme_shadcn_probe_fonts_size()
+        );
+        assert_eq!(
+            offset_of!(lv_theme_shadcn_fonts_t, h1),
+            lv_theme_shadcn_probe_fonts_h1_offset()
         );
     }
 }

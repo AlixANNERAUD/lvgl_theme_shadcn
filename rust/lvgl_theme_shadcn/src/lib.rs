@@ -77,6 +77,24 @@
 //! }
 //! ```
 //!
+//! # Text and component roles
+//!
+//! [`set_text_role`] gives a label shadcn/ui's typography: headings, lead, muted text or inline code.
+//! [`set_role`] turns a plain object or label into a badge, alert, separator, skeleton or card part. Both replace
+//! the previous role of the same kind and follow palette and radius changes:
+//!
+//! ```no_run
+//! use lvgl_theme_shadcn::{Object, Role, TextRole, set_role, set_text_role};
+//!
+//! fn decorate(title: &Object, status: &Object, divider: &Object) {
+//!     unsafe {
+//!         set_text_role(title, TextRole::H2);
+//!         set_role(status, Role::BadgeSecondary);
+//!         set_role(divider, Role::Separator);
+//!     }
+//! }
+//! ```
+//!
 //! # Interoperability with another LVGL binding
 //!
 //! With a binding such as `lvgl_rust_sys`, pointers are passed directly and converted back with `.cast()`:
@@ -560,6 +578,9 @@ impl From<Palette> for sys::lv_theme_shadcn_palette_t {
 }
 
 /// Fonts used by the theme; `None` falls back to `normal`, then to `LV_FONT_DEFAULT`.
+///
+/// Heading fonts fall back down the chain `h1` → `h2` → `h3` → `large` → `normal`, so setting only `h3` gives
+/// every heading that font.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Fonts {
     /// Font for captions and secondary text.
@@ -570,6 +591,12 @@ pub struct Fonts {
     pub large: Option<Font>,
     /// Monospace font.
     pub mono: Option<Font>,
+    /// Font for [`TextRole::H1`].
+    pub h1: Option<Font>,
+    /// Font for [`TextRole::H2`].
+    pub h2: Option<Font>,
+    /// Font for [`TextRole::H3`].
+    pub h3: Option<Font>,
 }
 
 impl Fonts {
@@ -580,6 +607,9 @@ impl Fonts {
             normal: raw(self.normal),
             large: raw(self.large),
             mono: raw(self.mono),
+            h1: raw(self.h1),
+            h2: raw(self.h2),
+            h3: raw(self.h3),
         }
     }
 }
@@ -593,6 +623,8 @@ impl Flags {
     pub const NONE: Self = Self(0);
     /// Smaller paddings and sizes for small displays.
     pub const COMPACT: Self = Self(1);
+    /// Disables decorative animations such as the [`Role::Skeleton`] pulse.
+    pub const REDUCED_MOTION: Self = Self(2);
 
     /// Returns the raw bits.
     pub const fn bits(self) -> u32 {
@@ -777,6 +809,151 @@ impl From<Size> for sys::lv_theme_shadcn_size_t {
     }
 }
 
+/// Typography role of a label, mirroring shadcn/ui's typography.
+///
+/// Roles set the font and, for some, the colour and spacing; text properties are inherited, so a role set on a
+/// container applies to the labels inside it.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum TextRole {
+    /// The inherited body text.
+    #[default]
+    Default,
+    /// Page title, with [`Fonts::h1`].
+    H1,
+    /// Section title, with [`Fonts::h2`].
+    H2,
+    /// Subsection title, with [`Fonts::h3`].
+    H3,
+    /// Minor title, with [`Fonts::large`].
+    H4,
+    /// Paragraph: the normal font with relaxed line spacing.
+    P,
+    /// Introductory text: the large font in the muted foreground colour.
+    Lead,
+    /// Emphasised text, with the large font.
+    Large,
+    /// Fine print, with the small font.
+    Small,
+    /// Secondary text: the small font in the muted foreground colour.
+    Muted,
+    /// Inline code: the monospace font on a muted, rounded background.
+    Code,
+}
+
+impl TextRole {
+    /// Every text role, in declaration order.
+    pub const ALL: [TextRole; 11] = [
+        TextRole::Default,
+        TextRole::H1,
+        TextRole::H2,
+        TextRole::H3,
+        TextRole::H4,
+        TextRole::P,
+        TextRole::Lead,
+        TextRole::Large,
+        TextRole::Small,
+        TextRole::Muted,
+        TextRole::Code,
+    ];
+}
+
+impl From<TextRole> for sys::lv_theme_shadcn_text_t {
+    fn from(role: TextRole) -> Self {
+        match role {
+            TextRole::Default => Self::LV_THEME_SHADCN_TEXT_DEFAULT,
+            TextRole::H1 => Self::LV_THEME_SHADCN_TEXT_H1,
+            TextRole::H2 => Self::LV_THEME_SHADCN_TEXT_H2,
+            TextRole::H3 => Self::LV_THEME_SHADCN_TEXT_H3,
+            TextRole::H4 => Self::LV_THEME_SHADCN_TEXT_H4,
+            TextRole::P => Self::LV_THEME_SHADCN_TEXT_P,
+            TextRole::Lead => Self::LV_THEME_SHADCN_TEXT_LEAD,
+            TextRole::Large => Self::LV_THEME_SHADCN_TEXT_LARGE,
+            TextRole::Small => Self::LV_THEME_SHADCN_TEXT_SMALL,
+            TextRole::Muted => Self::LV_THEME_SHADCN_TEXT_MUTED,
+            TextRole::Code => Self::LV_THEME_SHADCN_TEXT_CODE,
+        }
+    }
+}
+
+/// Component role of a plain object or label, mirroring shadcn/ui components that have no LVGL widget.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum Role {
+    /// No role: the widget's own style.
+    #[default]
+    None,
+    /// Pill-shaped badge filled with the primary colour, sized to its content with the small font.
+    Badge,
+    /// Badge filled with the secondary colour.
+    BadgeSecondary,
+    /// Badge with a border and a transparent background.
+    BadgeOutline,
+    /// Badge filled with the destructive colour.
+    BadgeDestructive,
+    /// Full-width bordered box for a title and a description.
+    Alert,
+    /// Alert with destructive text.
+    AlertDestructive,
+    /// Full-width 1 dp line in the border colour.
+    Separator,
+    /// Full-height 1 dp line in the border colour.
+    SeparatorVertical,
+    /// Muted placeholder block that pulses unless [`Flags::REDUCED_MOTION`] is set; size it yourself.
+    Skeleton,
+    /// Transparent column holding a card title and description.
+    CardHeader,
+    /// Card title, with the large font.
+    CardTitle,
+    /// Card description: the small font in the muted foreground colour.
+    CardDescription,
+    /// Transparent column holding the body of a card.
+    CardContent,
+    /// Transparent row of vertically centred card actions.
+    CardFooter,
+}
+
+impl Role {
+    /// Every role, in declaration order.
+    pub const ALL: [Role; 15] = [
+        Role::None,
+        Role::Badge,
+        Role::BadgeSecondary,
+        Role::BadgeOutline,
+        Role::BadgeDestructive,
+        Role::Alert,
+        Role::AlertDestructive,
+        Role::Separator,
+        Role::SeparatorVertical,
+        Role::Skeleton,
+        Role::CardHeader,
+        Role::CardTitle,
+        Role::CardDescription,
+        Role::CardContent,
+        Role::CardFooter,
+    ];
+}
+
+impl From<Role> for sys::lv_theme_shadcn_role_t {
+    fn from(role: Role) -> Self {
+        match role {
+            Role::None => Self::LV_THEME_SHADCN_ROLE_NONE,
+            Role::Badge => Self::LV_THEME_SHADCN_ROLE_BADGE,
+            Role::BadgeSecondary => Self::LV_THEME_SHADCN_ROLE_BADGE_SECONDARY,
+            Role::BadgeOutline => Self::LV_THEME_SHADCN_ROLE_BADGE_OUTLINE,
+            Role::BadgeDestructive => Self::LV_THEME_SHADCN_ROLE_BADGE_DESTRUCTIVE,
+            Role::Alert => Self::LV_THEME_SHADCN_ROLE_ALERT,
+            Role::AlertDestructive => Self::LV_THEME_SHADCN_ROLE_ALERT_DESTRUCTIVE,
+            Role::Separator => Self::LV_THEME_SHADCN_ROLE_SEPARATOR,
+            Role::SeparatorVertical => Self::LV_THEME_SHADCN_ROLE_SEPARATOR_VERTICAL,
+            Role::Skeleton => Self::LV_THEME_SHADCN_ROLE_SKELETON,
+            Role::CardHeader => Self::LV_THEME_SHADCN_ROLE_CARD_HEADER,
+            Role::CardTitle => Self::LV_THEME_SHADCN_ROLE_CARD_TITLE,
+            Role::CardDescription => Self::LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION,
+            Role::CardContent => Self::LV_THEME_SHADCN_ROLE_CARD_CONTENT,
+            Role::CardFooter => Self::LV_THEME_SHADCN_ROLE_CARD_FOOTER,
+        }
+    }
+}
+
 /// The shadcn theme applied to a display; dropping it restores the previous theme.
 #[derive(Debug)]
 pub struct Theme {
@@ -896,4 +1073,27 @@ pub unsafe fn set_surface(object: &Object, surface: Surface) {
 /// `object` must be a live LVGL object, used on the thread running LVGL.
 pub unsafe fn set_error(object: &Object, error: bool) {
     unsafe { sys::lv_theme_shadcn_set_error(object.as_ptr(), error) }
+}
+
+/// Sets the typography role of a label or container, replacing any previous text role; ignored if its display has
+/// no shadcn theme.
+///
+/// # Safety
+///
+/// `object` must be a live LVGL object, used on the thread running LVGL.
+pub unsafe fn set_text_role(object: &Object, role: TextRole) {
+    unsafe { sys::lv_theme_shadcn_set_text_role(object.as_ptr(), role.into()) }
+}
+
+/// Sets the component role of a plain object or label, replacing any previous role; ignored if its display has no
+/// shadcn theme.
+///
+/// A [`Role::Skeleton`] pulse animation is bound to the object and stops when the role is replaced, the object is
+/// deleted or the theme is removed.
+///
+/// # Safety
+///
+/// `object` must be a live LVGL object, used on the thread running LVGL.
+pub unsafe fn set_role(object: &Object, role: Role) {
+    unsafe { sys::lv_theme_shadcn_set_role(object.as_ptr(), role.into()) }
 }
