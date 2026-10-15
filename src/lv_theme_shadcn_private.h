@@ -7,6 +7,7 @@
 #define LV_THEME_SHADCN_SURFACE_COUNT 4
 #define LV_THEME_SHADCN_RADIUS_COUNT 6
 #define LV_THEME_SHADCN_SIZE_COUNT 6
+#define LV_THEME_SHADCN_TEXT_COUNT 11
 #define LV_THEME_SHADCN_PRESS_MIX 26
 #define LV_THEME_SHADCN_HOVER_OPA LV_OPA_90
 #define LV_THEME_SHADCN_HOVER_SECONDARY_OPA LV_OPA_80
@@ -113,6 +114,7 @@ typedef struct {
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_hovered[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t size[LV_THEME_SHADCN_SIZE_COUNT - 1];
+    lv_style_t text[LV_THEME_SHADCN_TEXT_COUNT - 1];
 } lv_theme_shadcn_styles_t;
 
 typedef struct lv_theme_shadcn_state_t {

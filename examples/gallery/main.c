@@ -128,7 +128,8 @@ int main(void)
     lv_sdl_keyboard_create();
 
     static const lv_theme_shadcn_fonts_t fonts = {
-        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL
+        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL,
+        &lv_font_montserrat_32, &lv_font_montserrat_28, &lv_font_montserrat_24
     };
     lv_theme_shadcn_init(display, lv_theme_shadcn_palette_zinc_dark(), &fonts, LV_THEME_SHADCN_FLAG_NONE);
 

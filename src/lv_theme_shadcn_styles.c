@@ -459,6 +459,47 @@ static void build_overlays(lv_theme_shadcn_state_t * st)
     lv_style_set_pad_column(&s->msgbox_footer, m->space_sm);
 }
 
+static lv_style_t * text_style(lv_theme_shadcn_state_t * st, lv_theme_shadcn_text_t role)
+{
+    return &S(st)->text[role - 1];
+}
+
+static void build_text(lv_theme_shadcn_state_t * st)
+{
+    const lv_theme_shadcn_palette_t * p = &st->palette;
+    const lv_theme_shadcn_metrics_t * m = &st->metrics;
+    const lv_theme_shadcn_fonts_t * f = &st->fonts;
+
+    lv_style_set_text_font(text_style(st, LV_THEME_SHADCN_TEXT_H1), f->h1);
+    lv_style_set_text_font(text_style(st, LV_THEME_SHADCN_TEXT_H2), f->h2);
+    lv_style_set_text_font(text_style(st, LV_THEME_SHADCN_TEXT_H3), f->h3);
+    lv_style_set_text_font(text_style(st, LV_THEME_SHADCN_TEXT_H4), f->large);
+
+    lv_style_t * paragraph = text_style(st, LV_THEME_SHADCN_TEXT_P);
+    lv_style_set_text_font(paragraph, f->normal);
+    lv_style_set_text_line_space(paragraph, lv_font_get_line_height(f->normal) / 2);
+
+    lv_style_t * lead = text_style(st, LV_THEME_SHADCN_TEXT_LEAD);
+    lv_style_set_text_font(lead, f->large);
+    lv_style_set_text_color(lead, p->muted_fg);
+    lv_style_set_text_line_space(lead, lv_font_get_line_height(f->large) / 4);
+
+    lv_style_set_text_font(text_style(st, LV_THEME_SHADCN_TEXT_LARGE), f->large);
+    lv_style_set_text_font(text_style(st, LV_THEME_SHADCN_TEXT_SMALL), f->small);
+
+    lv_style_t * muted = text_style(st, LV_THEME_SHADCN_TEXT_MUTED);
+    lv_style_set_text_font(muted, f->small);
+    lv_style_set_text_color(muted, p->muted_fg);
+
+    lv_style_t * code = text_style(st, LV_THEME_SHADCN_TEXT_CODE);
+    lv_style_set_text_font(code, f->mono);
+    lv_style_set_bg_color(code, p->muted);
+    lv_style_set_bg_opa(code, LV_OPA_COVER);
+    lv_style_set_radius(code, m->radius_sm);
+    lv_style_set_pad_hor(code, m->space_xs);
+    lv_style_set_pad_ver(code, m->space_xs / 2);
+}
+
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st)
 {
     lv_style_t * styles = (lv_style_t *)S(st);
@@ -482,4 +523,5 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st)
     build_inputs(st);
     build_collections(st);
     build_overlays(st);
+    build_text(st);
 }

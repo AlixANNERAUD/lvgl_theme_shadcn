@@ -23,7 +23,7 @@ lv_display_t * harness_create_display(void)
 const lv_theme_shadcn_fonts_t * harness_fonts(void)
 {
     static const lv_theme_shadcn_fonts_t fonts = {
-        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL
+        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL, NULL, NULL, NULL
     };
     return &fonts;
 }

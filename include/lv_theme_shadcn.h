@@ -85,6 +85,9 @@ typedef struct {
     const lv_font_t * normal;
     const lv_font_t * large;
     const lv_font_t * mono;
+    const lv_font_t * h1;
+    const lv_font_t * h2;
+    const lv_font_t * h3;
 } lv_theme_shadcn_fonts_t;
 
 typedef enum {
@@ -125,6 +128,20 @@ typedef enum {
     LV_THEME_SHADCN_SIZE_ICON_LG,
 } lv_theme_shadcn_size_t;
 
+typedef enum {
+    LV_THEME_SHADCN_TEXT_DEFAULT,
+    LV_THEME_SHADCN_TEXT_H1,
+    LV_THEME_SHADCN_TEXT_H2,
+    LV_THEME_SHADCN_TEXT_H3,
+    LV_THEME_SHADCN_TEXT_H4,
+    LV_THEME_SHADCN_TEXT_P,
+    LV_THEME_SHADCN_TEXT_LEAD,
+    LV_THEME_SHADCN_TEXT_LARGE,
+    LV_THEME_SHADCN_TEXT_SMALL,
+    LV_THEME_SHADCN_TEXT_MUTED,
+    LV_THEME_SHADCN_TEXT_CODE,
+} lv_theme_shadcn_text_t;
+
 lv_theme_t * lv_theme_shadcn_init(lv_display_t * disp, const lv_theme_shadcn_palette_t * palette,
                                   const lv_theme_shadcn_fonts_t * fonts, lv_theme_shadcn_flags_t flags);
 void lv_theme_shadcn_deinit(lv_display_t * disp);
@@ -147,6 +164,7 @@ void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t varia
 void lv_theme_shadcn_set_size(lv_obj_t * obj, lv_theme_shadcn_size_t size);
 void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface);
 void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error);
+void lv_theme_shadcn_set_text_role(lv_obj_t * obj, lv_theme_shadcn_text_t role);
 
 #ifdef __cplusplus
 }

@@ -23,12 +23,15 @@ lv_theme_shadcn_state_t * lv_theme_shadcn_state_from_obj(const lv_obj_t * obj)
 
 static void resolve_fonts(lv_theme_shadcn_state_t * st, const lv_theme_shadcn_fonts_t * fonts)
 {
-    lv_theme_shadcn_fonts_t f = { NULL, NULL, NULL, NULL };
+    lv_theme_shadcn_fonts_t f = { NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     if(fonts) f = *fonts;
     if(f.normal == NULL) f.normal = LV_FONT_DEFAULT;
     if(f.small == NULL) f.small = f.normal;
     if(f.large == NULL) f.large = f.normal;
     if(f.mono == NULL) f.mono = f.normal;
+    if(f.h3 == NULL) f.h3 = f.large;
+    if(f.h2 == NULL) f.h2 = f.h3;
+    if(f.h1 == NULL) f.h1 = f.h2;
     st->fonts = f;
 }
 
@@ -202,6 +205,14 @@ void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error)
     lv_obj_add_style(obj, &S(st)->error, LV_STATE_FOCUSED);
     lv_obj_add_style(obj, &S(st)->error, LV_STATE_FOCUS_KEY);
     lv_obj_add_style(obj, &S(st)->error, LV_STATE_CHECKED);
+}
+
+void lv_theme_shadcn_set_text_role(lv_obj_t * obj, lv_theme_shadcn_text_t role)
+{
+    lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
+    if(st == NULL || (int)role < 0 || role >= LV_THEME_SHADCN_TEXT_COUNT) return;
+    remove_styles(obj, S(st)->text, LV_THEME_SHADCN_TEXT_COUNT - 1);
+    if(role != LV_THEME_SHADCN_TEXT_DEFAULT) lv_obj_add_style(obj, &S(st)->text[role - 1], 0);
 }
 
 void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t variant)

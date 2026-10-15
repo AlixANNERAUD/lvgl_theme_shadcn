@@ -23,7 +23,7 @@ void app_main(void)
     lv_display_set_flush_cb(display, flush_cb);
 
     static const lv_theme_shadcn_fonts_t fonts = {
-        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL
+        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL, NULL, NULL, NULL
     };
     lv_theme_shadcn_init(display, lv_theme_shadcn_palette_zinc_dark(), &fonts, LV_THEME_SHADCN_FLAG_NONE);
 

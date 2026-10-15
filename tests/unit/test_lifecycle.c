@@ -41,7 +41,7 @@ static void partial_fonts_fall_back_to_normal(void)
 {
     lv_init();
     lv_display_t * disp = harness_create_display();
-    lv_theme_shadcn_fonts_t fonts = { NULL, &lv_font_montserrat_20, NULL, NULL };
+    lv_theme_shadcn_fonts_t fonts = { NULL, &lv_font_montserrat_20, NULL, NULL, NULL, NULL, NULL };
     lv_theme_shadcn_init(disp, lv_theme_shadcn_palette_zinc_dark(), &fonts, LV_THEME_SHADCN_FLAG_NONE);
     lv_obj_t * scr = lv_obj_create(NULL);
     CHECK(lv_obj_get_style_text_font(scr, LV_PART_MAIN) == &lv_font_montserrat_20);
