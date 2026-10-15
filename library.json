@@ -40,7 +40,8 @@
       "docs",
       "build*",
       ".github",
-      ".superpowers"
+      ".superpowers",
+      "codecov.yml"
     ]
   },
   "frameworks": "*",

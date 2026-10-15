@@ -10,3 +10,4 @@
 /examples/esp_idf/sdkconfig.old
 /examples/esp_idf/dependencies.lock
 *.tar.gz
+/coverage.xml

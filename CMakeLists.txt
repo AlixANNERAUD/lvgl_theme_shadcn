@@ -21,6 +21,7 @@ option(LV_THEME_SHADCN_BUILD_TESTS "Build unit tests" ${LV_THEME_SHADCN_TOP_LEVE
 option(LV_THEME_SHADCN_BUILD_EXAMPLES "Build demo scenes used by tests and the gallery" ${LV_THEME_SHADCN_TOP_LEVEL})
 option(LV_THEME_SHADCN_WERROR "Treat warnings as errors" OFF)
 option(LV_THEME_SHADCN_SANITIZE "Build with address and undefined sanitizers" OFF)
+option(LV_THEME_SHADCN_COVERAGE "Instrument the theme for code coverage" OFF)
 
 if(LV_THEME_SHADCN_SANITIZE)
   add_compile_options(-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer)
@@ -42,6 +43,11 @@ target_link_libraries(lvgl_theme_shadcn PUBLIC lvgl)
 set_target_properties(lvgl_theme_shadcn PROPERTIES C_STANDARD 99 C_STANDARD_REQUIRED ON)
 if(NOT MSVC)
   target_compile_options(lvgl_theme_shadcn PRIVATE -Wall -Wextra $<$<BOOL:${LV_THEME_SHADCN_WERROR}>:-Werror>)
+endif()
+
+if(LV_THEME_SHADCN_COVERAGE)
+  target_compile_options(lvgl_theme_shadcn PRIVATE --coverage -O0)
+  target_link_options(lvgl_theme_shadcn PUBLIC --coverage)
 endif()
 
 if(LV_THEME_SHADCN_BUILD_TESTS)
