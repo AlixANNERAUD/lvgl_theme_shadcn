@@ -1,6 +1,6 @@
 {
   "name": "lvgl_theme_shadcn",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Beautiful shadcn/ui-inspired theme for LVGL 9: every widget styled, dark and light palettes switchable at runtime, touch-first, MCU-friendly.",
   "keywords": "lvgl, theme, shadcn, gui, ui, display, touch, embedded",
   "repository": {

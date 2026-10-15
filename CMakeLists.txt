@@ -9,7 +9,7 @@ if(ESP_PLATFORM)
   return()
 endif()
 
-project(lvgl_theme_shadcn VERSION 0.1.1 LANGUAGES C)
+project(lvgl_theme_shadcn VERSION 0.2.0 LANGUAGES C)
 
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   set(LV_THEME_SHADCN_TOP_LEVEL ON)
