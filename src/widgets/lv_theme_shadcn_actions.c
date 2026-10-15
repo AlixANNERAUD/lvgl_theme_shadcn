@@ -1,10 +1,17 @@
 #include "../lv_theme_shadcn_private.h"
 
+void lv_theme_shadcn_add_variant(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_theme_shadcn_variant_t variant)
+{
+    lv_obj_add_style(obj, &S(st)->variant[variant], 0);
+    lv_obj_add_style(obj, &S(st)->variant_hovered[variant], LV_STATE_HOVERED);
+    lv_obj_add_style(obj, &S(st)->variant_pressed[variant], LV_STATE_PRESSED);
+    lv_theme_shadcn_add_hover_filter(obj);
+}
+
 void lv_theme_shadcn_add_button(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_theme_shadcn_variant_t variant)
 {
     lv_obj_add_style(obj, &S(st)->control, 0);
-    lv_obj_add_style(obj, &S(st)->variant[variant], 0);
-    lv_obj_add_style(obj, &S(st)->variant_pressed[variant], LV_STATE_PRESSED);
+    lv_theme_shadcn_add_variant(st, obj, variant);
     lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
     lv_theme_shadcn_set_touch_target(st, obj);
 }

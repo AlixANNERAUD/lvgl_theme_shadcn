@@ -19,6 +19,7 @@ lv_theme_shadcn_add_test(test_overlays)
 lv_theme_shadcn_add_test(test_coverage)
 lv_theme_shadcn_add_test(test_radius)
 lv_theme_shadcn_add_test(test_sizes)
+lv_theme_shadcn_add_test(test_hover)
 
 if(TARGET lv_theme_shadcn_scenes)
   lv_theme_shadcn_add_test(test_scenes)

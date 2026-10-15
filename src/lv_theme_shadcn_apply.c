@@ -8,6 +8,20 @@ void lv_theme_shadcn_add_interaction(lv_theme_shadcn_state_t * st, lv_obj_t * ob
     lv_obj_add_style(obj, &S(st)->disabled, part | LV_STATE_DISABLED);
 }
 
+static void hover_filter_cb(lv_event_t * e)
+{
+    lv_indev_t * indev = lv_event_get_param(e);
+    if(indev == NULL || lv_indev_get_state(indev) != LV_INDEV_STATE_PRESSED) return;
+    lv_obj_t * obj = lv_event_get_current_target_obj(e);
+    if(lv_theme_shadcn_state_from_obj(obj) != NULL) lv_obj_remove_state(obj, LV_STATE_HOVERED);
+}
+
+void lv_theme_shadcn_add_hover_filter(lv_obj_t * obj)
+{
+    lv_obj_remove_event_cb_with_user_data(obj, hover_filter_cb, NULL);
+    lv_obj_add_event_cb(obj, hover_filter_cb, LV_EVENT_HOVER_OVER, NULL);
+}
+
 void lv_theme_shadcn_set_touch_target(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
 {
     int32_t extra = (st->metrics.touch_target - st->metrics.control_height) / 2;

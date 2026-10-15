@@ -176,6 +176,15 @@ static void build_actions(lv_theme_shadcn_state_t * st)
 
     set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_OUTLINE], p->accent, p->accent_fg);
     set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_GHOST], p->accent, p->accent_fg);
+
+    lv_style_set_bg_color(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_DEFAULT],
+                          lv_color_mix(p->primary, p->background, LV_THEME_SHADCN_HOVER_OPA));
+    lv_style_set_bg_color(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_SECONDARY],
+                          lv_color_mix(p->secondary, p->background, LV_THEME_SHADCN_HOVER_SECONDARY_OPA));
+    lv_style_set_bg_color(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_DESTRUCTIVE],
+                          lv_color_mix(p->destructive, p->background, LV_THEME_SHADCN_HOVER_OPA));
+    set_surface(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_OUTLINE], p->accent, p->accent_fg);
+    set_surface(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_GHOST], p->accent, p->accent_fg);
 }
 
 int32_t lv_theme_shadcn_size_height(const lv_theme_shadcn_state_t * st, lv_theme_shadcn_size_t size)
@@ -242,6 +251,12 @@ static void build_toggles(lv_theme_shadcn_state_t * st)
 
     lv_style_set_bg_color(&s->switch_knob_checked, p->primary_fg);
 
+    lv_style_set_bg_color(&s->switch_track_hovered, lv_color_mix(p->input, p->foreground, LV_THEME_SHADCN_HOVER_OPA));
+
+    lv_color_t primary_hovered = lv_color_mix(p->primary, p->background, LV_THEME_SHADCN_HOVER_OPA);
+    lv_style_set_bg_color(&s->fill_primary_hovered, primary_hovered);
+    lv_style_set_border_color(&s->fill_primary_hovered, primary_hovered);
+
     lv_style_set_pad_all(&s->checkbox_main, 0);
     lv_style_set_pad_column(&s->checkbox_main, m->space_sm);
 
@@ -258,6 +273,8 @@ static void build_toggles(lv_theme_shadcn_state_t * st)
     lv_style_set_border_color(&s->checkbox_marker_checked, p->primary);
     lv_style_set_text_color(&s->checkbox_marker_checked, p->primary_fg);
     lv_style_set_bg_image_src(&s->checkbox_marker_checked, LV_SYMBOL_OK);
+
+    lv_style_set_bg_color(&s->checkbox_marker_hovered, p->accent);
 
     lv_style_set_bg_color(&s->led, lv_color_white());
     lv_style_set_bg_opa(&s->led, LV_OPA_COVER);

@@ -92,7 +92,9 @@ bool lv_theme_shadcn_apply_surfaces(lv_theme_shadcn_state_t * st, lv_obj_t * obj
         lv_obj_add_style(obj, &S(st)->pad_md, 0);
         lv_obj_add_style(obj, &S(st)->accent, LV_STATE_PRESSED);
         lv_obj_add_style(obj, &S(st)->accent, LV_STATE_CHECKED);
+        lv_obj_add_style(obj, &S(st)->accent, LV_STATE_HOVERED);
         lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+        lv_theme_shadcn_add_hover_filter(obj);
         return true;
     }
     if(lv_obj_check_type(obj, &lv_menu_separator_class)

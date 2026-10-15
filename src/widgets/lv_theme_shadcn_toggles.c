@@ -21,7 +21,10 @@ bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj,
         lv_obj_add_style(obj, &S(st)->fill_primary, LV_PART_INDICATOR | LV_STATE_CHECKED);
         lv_obj_add_style(obj, &S(st)->switch_knob, LV_PART_KNOB);
         lv_obj_add_style(obj, &S(st)->switch_knob_checked, LV_PART_KNOB | LV_STATE_CHECKED);
+        lv_obj_add_style(obj, &S(st)->switch_track_hovered, LV_STATE_HOVERED);
+        lv_obj_add_style(obj, &S(st)->fill_primary_hovered, LV_PART_INDICATOR | LV_STATE_CHECKED | LV_STATE_HOVERED);
         lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+        lv_theme_shadcn_add_hover_filter(obj);
         lv_theme_shadcn_set_toggle_touch_target(obj);
         return true;
     }
@@ -31,7 +34,10 @@ bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj,
         lv_obj_add_style(obj, &S(st)->checkbox_main, 0);
         lv_obj_add_style(obj, &S(st)->checkbox_marker, LV_PART_INDICATOR);
         lv_obj_add_style(obj, &S(st)->checkbox_marker_checked, LV_PART_INDICATOR | LV_STATE_CHECKED);
+        lv_obj_add_style(obj, &S(st)->checkbox_marker_hovered, LV_PART_INDICATOR | LV_STATE_HOVERED);
+        lv_obj_add_style(obj, &S(st)->fill_primary_hovered, LV_PART_INDICATOR | LV_STATE_CHECKED | LV_STATE_HOVERED);
         lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+        lv_theme_shadcn_add_hover_filter(obj);
         lv_theme_shadcn_set_toggle_touch_target(obj);
         return true;
     }

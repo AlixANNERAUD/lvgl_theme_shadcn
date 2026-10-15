@@ -8,6 +8,8 @@
 #define LV_THEME_SHADCN_RADIUS_COUNT 6
 #define LV_THEME_SHADCN_SIZE_COUNT 6
 #define LV_THEME_SHADCN_PRESS_MIX 26
+#define LV_THEME_SHADCN_HOVER_OPA LV_OPA_90
+#define LV_THEME_SHADCN_HOVER_SECONDARY_OPA LV_OPA_80
 #define LV_THEME_SHADCN_DISABLED_OPA LV_OPA_50
 #define LV_THEME_SHADCN_TRANSITION_MS 150
 
@@ -71,9 +73,12 @@ typedef struct {
     lv_style_t switch_track;
     lv_style_t switch_knob;
     lv_style_t switch_knob_checked;
+    lv_style_t switch_track_hovered;
+    lv_style_t fill_primary_hovered;
     lv_style_t checkbox_main;
     lv_style_t checkbox_marker;
     lv_style_t checkbox_marker_checked;
+    lv_style_t checkbox_marker_hovered;
     lv_style_t led;
     lv_style_t track;
     lv_style_t knob;
@@ -106,6 +111,7 @@ typedef struct {
     lv_style_t msgbox_footer;
     lv_style_t variant[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t variant_pressed[LV_THEME_SHADCN_VARIANT_COUNT];
+    lv_style_t variant_hovered[LV_THEME_SHADCN_VARIANT_COUNT];
     lv_style_t size[LV_THEME_SHADCN_SIZE_COUNT - 1];
 } lv_theme_shadcn_styles_t;
 
@@ -133,6 +139,8 @@ void lv_theme_shadcn_styles_build(lv_theme_shadcn_state_t * st);
 void lv_theme_shadcn_styles_reset(lv_theme_shadcn_state_t * st);
 void lv_theme_shadcn_apply_cb(lv_theme_t * th, lv_obj_t * obj);
 void lv_theme_shadcn_add_interaction(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_style_selector_t part);
+void lv_theme_shadcn_add_hover_filter(lv_obj_t * obj);
+void lv_theme_shadcn_add_variant(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_theme_shadcn_variant_t variant);
 bool lv_theme_shadcn_apply_actions(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);
 void lv_theme_shadcn_add_button(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_theme_shadcn_variant_t variant);
 bool lv_theme_shadcn_apply_toggles(lv_theme_shadcn_state_t * st, lv_obj_t * obj, lv_obj_t * parent);

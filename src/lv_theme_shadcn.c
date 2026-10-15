@@ -210,6 +210,6 @@ void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t varia
     if(st == NULL || (int)variant < 0 || variant >= LV_THEME_SHADCN_VARIANT_COUNT) return;
     remove_styles(obj, S(st)->variant, LV_THEME_SHADCN_VARIANT_COUNT);
     remove_styles(obj, S(st)->variant_pressed, LV_THEME_SHADCN_VARIANT_COUNT);
-    lv_obj_add_style(obj, &S(st)->variant[variant], 0);
-    lv_obj_add_style(obj, &S(st)->variant_pressed[variant], LV_STATE_PRESSED);
+    remove_styles(obj, S(st)->variant_hovered, LV_THEME_SHADCN_VARIANT_COUNT);
+    lv_theme_shadcn_add_variant(st, obj, variant);
 }

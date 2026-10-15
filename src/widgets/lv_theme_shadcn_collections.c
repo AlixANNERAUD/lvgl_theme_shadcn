@@ -135,7 +135,9 @@ bool lv_theme_shadcn_apply_collections(lv_theme_shadcn_state_t * st, lv_obj_t * 
         lv_obj_add_style(obj, &S(st)->list_button, 0);
         lv_obj_add_style(obj, &S(st)->accent, LV_STATE_PRESSED);
         lv_obj_add_style(obj, &S(st)->accent, LV_STATE_CHECKED);
+        lv_obj_add_style(obj, &S(st)->accent, LV_STATE_HOVERED);
         lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+        lv_theme_shadcn_add_hover_filter(obj);
         lv_obj_remove_event_cb(obj, list_button_draw_cb);
         lv_obj_add_event_cb(obj, list_button_draw_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
         lv_obj_set_send_draw_task_events(obj, true);
