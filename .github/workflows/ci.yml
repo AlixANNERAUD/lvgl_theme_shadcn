@@ -56,7 +56,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -80,7 +79,9 @@ jobs:
       - name: Upload
         uses: codecov/codecov-action@v5
         with:
-          use_oidc: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          plugins: noop
           files: coverage.xml
           flags: c
           fail_ci_if_error: true
