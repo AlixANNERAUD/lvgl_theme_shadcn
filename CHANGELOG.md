@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/compare/v0.2.0...v0.3.0) - 2026-10-15
 
+### Breaking
+
+- `lv_theme_shadcn_fonts_t` gains `h1`, `h2` and `h3` heading fonts at the end of the struct. Positional initialisers with four fields still compile but warn under `-Wmissing-field-initializers`; use designated initialisers (`.small`, `.normal`, `.large`, `.mono`, `.h1`, ...). In Rust, `Fonts` has the new `h1`, `h2` and `h3` fields.
+- Plain containers (cards) now use shadcn's larger card radius.
+
 ### Added
 
 - add shadcn radius setting
@@ -16,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add badge, alert, separator, skeleton and card roles
 - expose radius and sizes in the rust crate
 - expose text and component roles in the rust crate
+- import any shadcn theme css into a palette
+- reduced motion flag to disable the skeleton pulse
+- pick radius in the gallery
+- use text and component roles in the demo scenes, with a new display scene
 
 ### Documentation
 
