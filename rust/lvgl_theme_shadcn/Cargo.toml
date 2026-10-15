@@ -16,4 +16,4 @@ authors.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-lvgl_theme_shadcn_sys = { version = "=0.1.1", path = "../.." }
+lvgl_theme_shadcn_sys = { version = "=0.1.2", path = "../.." }
