@@ -12,6 +12,8 @@ static lv_obj_t * base_dropdown;
 static lv_obj_t * accent_dropdown;
 static lv_obj_t * light_switch;
 
+static const char * const radius_names[] = { "0", "0.3", "0.5", "0.625", "0.75", "1.0" };
+
 static void palette_changed_cb(lv_event_t * e)
 {
     (void)e;
@@ -22,8 +24,14 @@ static void palette_changed_cb(lv_event_t * e)
     lv_theme_shadcn_set_palette(display, &palette);
 }
 
+static void radius_changed_cb(lv_event_t * e)
+{
+    lv_obj_t * dropdown = lv_event_get_target_obj(e);
+    lv_theme_shadcn_set_radius(display, (lv_theme_shadcn_radius_t)lv_dropdown_get_selected(dropdown));
+}
+
 static lv_obj_t * add_dropdown(lv_obj_t * parent, const char * caption, int count, const char * (*name)(int),
-                               int selected)
+                               int selected, lv_event_cb_t cb, int32_t width)
 {
     char options[256] = "";
     size_t used = 0;
@@ -39,8 +47,8 @@ static lv_obj_t * add_dropdown(lv_obj_t * parent, const char * caption, int coun
     lv_obj_t * dropdown = lv_dropdown_create(parent);
     lv_dropdown_set_options(dropdown, options);
     lv_dropdown_set_selected(dropdown, (uint32_t)selected);
-    lv_obj_set_width(dropdown, 120);
-    lv_obj_add_event_cb(dropdown, palette_changed_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_set_width(dropdown, width);
+    lv_obj_add_event_cb(dropdown, cb, LV_EVENT_VALUE_CHANGED, NULL);
     return dropdown;
 }
 
@@ -54,21 +62,30 @@ static const char * accent_name(int index)
     return lv_theme_shadcn_accent_name((lv_theme_shadcn_accent_t)index);
 }
 
+static const char * radius_name(int index)
+{
+    return radius_names[index];
+}
+
 static void build_header(lv_obj_t * screen)
 {
     lv_obj_t * header = lv_obj_create(screen);
     lv_obj_set_size(header, LV_PCT(100), LV_SIZE_CONTENT);
     lv_obj_set_flex_flow(header, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(header, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_column(header, 8, 0);
     lv_obj_set_scrollable(header, false);
 
     lv_obj_t * title = lv_label_create(header);
     lv_label_set_text(title, "lvgl_theme_shadcn");
     lv_obj_set_flex_grow(title, 1);
 
-    base_dropdown = add_dropdown(header, "Base", LV_THEME_SHADCN_BASE_COUNT, base_name, LV_THEME_SHADCN_BASE_ZINC);
+    base_dropdown = add_dropdown(header, "Base", LV_THEME_SHADCN_BASE_COUNT, base_name, LV_THEME_SHADCN_BASE_ZINC,
+                                 palette_changed_cb, 110);
     accent_dropdown = add_dropdown(header, "Accent", LV_THEME_SHADCN_ACCENT_COUNT, accent_name,
-                                   LV_THEME_SHADCN_ACCENT_NONE);
+                                   LV_THEME_SHADCN_ACCENT_NONE, palette_changed_cb, 110);
+    add_dropdown(header, "Radius", (int)(sizeof(radius_names) / sizeof(radius_names[0])), radius_name,
+                 LV_THEME_SHADCN_RADIUS_DEFAULT, radius_changed_cb, 88);
 
     lv_obj_t * caption = lv_label_create(header);
     lv_label_set_text(caption, "Light");
