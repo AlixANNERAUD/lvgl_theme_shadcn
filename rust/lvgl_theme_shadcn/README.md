@@ -4,7 +4,9 @@ Safe `no_std` Rust bindings to [`lvgl_theme_shadcn`](https://github.com/AlixANNE
 shadcn/ui-inspired theme for LVGL 9.6+. No allocation, no dependency on any LVGL Rust crate.
 
 ```rust,ignore
-use lvgl_theme_shadcn::{Color, Display, Flags, Fonts, Object, Palette, Theme, Variant};
+use lvgl_theme_shadcn::{
+    Color, Display, Flags, Fonts, Object, Palette, Radius, Role, Size, TextRole, Theme, Variant,
+};
 
 let palette = Palette::zinc_dark().with_primary(Color::hex(0x2563eb), Color::hex(0xffffff));
 let theme = unsafe {
@@ -12,9 +14,42 @@ let theme = unsafe {
     Theme::init(display, &palette, &Fonts::default(), Flags::NONE).unwrap()
 };
 let button = unsafe { Object::from_ptr(lv_button_create(lv_screen_active())).unwrap() };
-unsafe { lvgl_theme_shadcn::set_variant(&button, Variant::Destructive) };
+let badge = unsafe { Object::from_ptr(lv_obj_create(lv_screen_active())).unwrap() };
+let title = unsafe { Object::from_ptr(lv_label_create(lv_screen_active())).unwrap() };
+unsafe {
+    lvgl_theme_shadcn::set_variant(&button, Variant::Destructive);
+    lvgl_theme_shadcn::set_size(&button, Size::Lg);
+    lvgl_theme_shadcn::set_role(&badge, Role::BadgeSecondary);
+    lvgl_theme_shadcn::set_text_role(&title, TextRole::H1);
+}
+theme.set_radius(Radius::Lg);
 theme.set_palette(&Palette::zinc_light());
 ```
+
+## Features
+
+- `Palette::new(Base, Accent, dark)` builds any of the 9 shadcn/ui base colours times 18 accents; `Palette::zinc_dark`,
+  `Palette::zinc_light`, `with_primary` and per-role setters cover custom palettes.
+- `Theme::set_radius` and `Theme::radius` with `Radius` (`None`, `Sm`, `Md`, `Default`, `Lg`, `Xl`).
+- `set_size` with `Size` (`Default`, `Sm`, `Lg`, `Icon`, `IconSm`, `IconLg`) for buttons.
+- `set_text_role` with `TextRole` (`H1` to `H4`, `P`, `Lead`, `Large`, `Small`, `Muted`, `Code`); `Fonts` carries
+  `small`, `normal`, `large`, `mono` and the heading fonts `h1`, `h2` and `h3`.
+- `set_role` with `Role`: badge variants, alert and destructive alert, separators, skeleton and card parts.
+- `Flags::COMPACT` and `Flags::REDUCED_MOTION` (keeps skeletons still).
+- `set_variant`, `set_surface` and `set_error` for variants, surfaces and error states.
+
+## Importing a shadcn theme
+
+`scripts/import-theme.py` in the
+[repository](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/blob/main/scripts/import-theme.py) converts the CSS
+of a shadcn/ui or tweakcn theme (oklch, hsl, rgb or hex) into Rust `Palette` constructors:
+
+```sh
+python3 scripts/import-theme.py theme.css --lang rust --name brand -o brand.rs
+```
+
+The output defines `brand_light()` and `brand_dark()`. Dark translucent `border` and `input` colours are composited
+over the background, so they may look fainter than the built-in palettes.
 
 ## Interoperability
 

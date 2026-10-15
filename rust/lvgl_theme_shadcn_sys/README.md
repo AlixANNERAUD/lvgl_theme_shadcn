@@ -7,6 +7,10 @@ shadcn/ui-inspired theme for LVGL 9.6+. Most users want the safe
 The build script compiles the theme's C sources with [`cc`](https://crates.io/crates/cc). LVGL itself is not built
 or linked here: it is provided by whatever crate or build system already supplies LVGL to your application.
 
+The bindings cover the whole C API, including `lv_theme_shadcn_set_radius`, `lv_theme_shadcn_set_size`,
+`lv_theme_shadcn_set_text_role` and `lv_theme_shadcn_set_role`, and the `lv_theme_shadcn_fonts_t` struct with its
+heading fonts `h1`, `h2` and `h3`. Build the fonts struct with every field set, since Rust has no partial initialisers.
+
 ## Locating LVGL
 
 The build script looks for LVGL headers and `lv_conf.h` in this order:
