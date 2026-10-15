@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/ci.yml/badge.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/ci.yml)
 [![Rust](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/rust.yml/badge.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/actions/workflows/rust.yml)
+[![codecov](https://codecov.io/gh/AlixANNERAUD/lvgl_theme_shadcn/graph/badge.svg)](https://codecov.io/gh/AlixANNERAUD/lvgl_theme_shadcn)
 [![crates.io](https://img.shields.io/crates/v/lvgl_theme_shadcn.svg)](https://crates.io/crates/lvgl_theme_shadcn)
 [![docs.rs](https://img.shields.io/docsrs/lvgl_theme_shadcn)](https://docs.rs/lvgl_theme_shadcn)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/blob/main/LICENSE)

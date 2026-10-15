@@ -52,6 +52,39 @@ jobs:
       - name: Test
         run: ctest --test-dir build-asan --output-on-failure
 
+  coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install gcovr
+        run: pip install gcovr
+      - name: Configure
+        run: >
+          cmake -S . -B build-coverage
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Debug
+          -DLV_THEME_SHADCN_COVERAGE=ON
+          -DLV_THEME_SHADCN_TEST_COLOR_FORMAT=LV_COLOR_FORMAT_XRGB8888
+      - name: Build
+        run: cmake --build build-coverage --parallel
+      - name: Test
+        run: ctest --test-dir build-coverage --output-on-failure
+      - name: Report
+        run: gcovr --root . --filter src/ --xml coverage.xml --print-summary build-coverage
+      - name: Upload
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: coverage.xml
+          flags: c
+          fail_ci_if_error: true
+
   gallery:
     runs-on: ubuntu-latest
     steps:
