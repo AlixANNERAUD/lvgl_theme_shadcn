@@ -1,0 +1,54 @@
+name: Arduino
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ESP32_CORE_VERSION: 3.3.12
+  LVGL_VERSION: 9.6.0
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/arduino-lint-action@v2
+        with:
+          library-manager: submit
+          compliance: strict
+          project-type: library
+
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/setup-arduino-cli@v2
+      - name: Cache toolchains and libraries
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.arduino15
+            ~/Arduino/libraries
+          key: arduino-esp32-${{ env.ESP32_CORE_VERSION }}-lvgl-${{ env.LVGL_VERSION }}-${{ hashFiles('.github/arduino/lv_conf.h') }}
+      - name: Install the ESP32 core
+        run: |
+          arduino-cli config init --overwrite
+          arduino-cli core update-index
+          arduino-cli core install "esp32:esp32@${ESP32_CORE_VERSION}"
+      - name: Install LVGL
+        run: arduino-cli lib install "lvgl@${LVGL_VERSION}"
+      - name: Provide lv_conf.h
+        run: cp .github/arduino/lv_conf.h ~/Arduino/libraries/lv_conf.h
+      - name: Compile the Basic example
+        run: >
+          arduino-cli compile
+          --fqbn esp32:esp32:esp32
+          --library .
+          --warnings default
+          examples/Basic
