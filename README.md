@@ -195,8 +195,16 @@ a native project that renders a themed button headlessly.
 
 ### Arduino
 
-Download the repository as a ZIP and install it with **Sketch > Include Library > Add .ZIP Library**, next to the
-`lvgl` library and its `lv_conf.h`. Then `#include <lv_theme_shadcn.h>` in your sketch.
+Install **lvgl_theme_shadcn** from the Library Manager (**Sketch > Include Library > Manage Libraries**) once it is
+indexed, or download the repository as a ZIP and use **Sketch > Include Library > Add .ZIP Library**. The `lvgl` library
+(9.6 or newer) is installed as a dependency.
+
+LVGL needs an `lv_conf.h` placed next to the `libraries` folder of your sketchbook, as described in the
+[LVGL Arduino documentation](https://docs.lvgl.io/master/integration/framework/arduino.html). Enable the Montserrat
+fonts you pass to the theme, for example `LV_FONT_MONTSERRAT_12`, `14`, `16`, `20` and `24` for the Basic example.
+
+Then `#include <lv_theme_shadcn.h>` in your sketch. **File > Examples > lvgl_theme_shadcn > Basic** shows a themed card
+with a heading and two buttons; replace `flush_to_panel` with your display driver.
 
 ## Customising
 
