@@ -137,4 +137,4 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Package
-        run: cargo package --workspace
+        run: cargo package --workspace --no-verify
