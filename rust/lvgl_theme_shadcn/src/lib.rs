@@ -691,6 +691,9 @@ pub enum Surface {
     Popover,
     /// Muted surface.
     Muted,
+    /// No background, border, radius or padding, for layout containers such as rows, columns and toolbars; text
+    /// colour is inherited from the parent.
+    Transparent,
 }
 
 impl From<Surface> for sys::lv_theme_shadcn_surface_t {
@@ -700,6 +703,7 @@ impl From<Surface> for sys::lv_theme_shadcn_surface_t {
             Surface::Card => Self::LV_THEME_SHADCN_SURFACE_CARD,
             Surface::Popover => Self::LV_THEME_SHADCN_SURFACE_POPOVER,
             Surface::Muted => Self::LV_THEME_SHADCN_SURFACE_MUTED,
+            Surface::Transparent => Self::LV_THEME_SHADCN_SURFACE_TRANSPARENT,
         }
     }
 }
@@ -1057,7 +1061,11 @@ pub unsafe fn set_size(object: &Object, size: Size) {
     unsafe { sys::lv_theme_shadcn_set_size(object.as_ptr(), size.into()) }
 }
 
-/// Sets the background surface of a container; ignored if its display has no shadcn theme.
+/// Sets the background surface of a container, replacing any previous surface; ignored if its display has no
+/// shadcn theme.
+///
+/// [`Surface::Transparent`] also clears the border, radius and padding a plain container gets as a card, and
+/// switching back to another surface restores them.
 ///
 /// # Safety
 ///

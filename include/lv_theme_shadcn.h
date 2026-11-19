@@ -222,6 +222,11 @@ typedef enum {
     LV_THEME_SHADCN_SURFACE_POPOVER,
     /** Muted surface. */
     LV_THEME_SHADCN_SURFACE_MUTED,
+    /**
+     * No background, border, radius or padding, for layout containers such as rows, columns and toolbars. Text
+     * colour is inherited from the parent.
+     */
+    LV_THEME_SHADCN_SURFACE_TRANSPARENT,
 } lv_theme_shadcn_surface_t;
 
 /**
@@ -495,8 +500,9 @@ void lv_theme_shadcn_set_size(lv_obj_t * obj, lv_theme_shadcn_size_t size);
 /**
  * @brief Sets the background surface of a container.
  *
- * Replaces any previous surface. Ignored when @p obj is NULL, its display has no active shadcn theme or @p surface is
- * out of range.
+ * Replaces any previous surface. ::LV_THEME_SHADCN_SURFACE_TRANSPARENT also clears the border, radius and padding a
+ * plain container gets as a card, and switching back to another surface restores them. Ignored when @p obj is NULL,
+ * its display has no active shadcn theme or @p surface is out of range.
  *
  * @param obj Container to style.
  * @param surface New surface.
