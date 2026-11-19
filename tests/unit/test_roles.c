@@ -554,6 +554,10 @@ static void radio_role_is_for_checkboxes_and_can_be_removed(void)
 
     lv_obj_t * cb = radio(lv_screen_active());
     lv_obj_add_state(cb, LV_STATE_CHECKED);
+    lv_theme_shadcn_set_role(cb, LV_THEME_SHADCN_ROLE_RADIO);
+    CHECK(lv_obj_is_radio_button(cb));
+    CHECK_INT(lv_obj_get_style_radius(cb, LV_PART_INDICATOR), LV_RADIUS_CIRCLE);
+    CHECK(lv_obj_get_style_bg_image_src(cb, LV_PART_INDICATOR) == NULL);
     lv_theme_shadcn_set_role(cb, LV_THEME_SHADCN_ROLE_NONE);
     CHECK(!lv_obj_is_radio_button(cb));
     CHECK(lv_obj_get_style_radius(cb, LV_PART_INDICATOR) != LV_RADIUS_CIRCLE);
