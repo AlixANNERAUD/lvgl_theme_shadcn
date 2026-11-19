@@ -60,14 +60,35 @@ static void variants_replace_each_other(void)
     CHECK_COLOR(lv_obj_get_style_bg_color(btn, LV_PART_MAIN), pressed(dark()->secondary, dark()->secondary_fg));
 }
 
-static void ghost_pressed_uses_accent(void)
+static void check_accent_pressed(const lv_theme_shadcn_palette_t * palette, lv_theme_shadcn_variant_t variant)
 {
-    lv_obj_t * btn = lv_button_create(lv_screen_active());
-    lv_theme_shadcn_set_variant(btn, LV_THEME_SHADCN_VARIANT_GHOST);
+    lv_obj_t * muted = lv_obj_create(lv_screen_active());
+    lv_theme_shadcn_set_surface(muted, LV_THEME_SHADCN_SURFACE_MUTED);
+    lv_obj_t * btn = lv_button_create(muted);
+    lv_theme_shadcn_set_variant(btn, variant);
+    lv_obj_add_state(btn, LV_STATE_HOVERED);
+    harness_settle();
+    CHECK_COLOR(lv_obj_get_style_bg_color(btn, LV_PART_MAIN), palette->accent);
+    lv_obj_remove_state(btn, LV_STATE_HOVERED);
     lv_obj_add_state(btn, LV_STATE_PRESSED);
     harness_settle();
-    CHECK_COLOR(lv_obj_get_style_bg_color(btn, LV_PART_MAIN), dark()->accent);
+    lv_color_t bg = lv_obj_get_style_bg_color(btn, LV_PART_MAIN);
+    CHECK_COLOR(bg, lv_color_mix(palette->foreground, palette->accent, 38));
     CHECK_INT(lv_obj_get_style_bg_opa(btn, LV_PART_MAIN), LV_OPA_COVER);
+    CHECK_COLOR(lv_obj_get_style_text_color(btn, LV_PART_MAIN), palette->accent_fg);
+    /* zinc's accent is its muted colour: pressed must not blend into a muted surface. */
+    CHECK(!lv_color_eq(bg, lv_obj_get_style_bg_color(muted, LV_PART_MAIN)));
+    CHECK(!lv_color_eq(bg, palette->accent));
+    lv_obj_delete(muted);
+}
+
+static void ghost_and_outline_pressed_stand_out_on_muted(void)
+{
+    check_accent_pressed(dark(), LV_THEME_SHADCN_VARIANT_GHOST);
+    check_accent_pressed(dark(), LV_THEME_SHADCN_VARIANT_OUTLINE);
+    lv_theme_shadcn_set_palette(harness_display(), lv_theme_shadcn_palette_zinc_light());
+    check_accent_pressed(lv_theme_shadcn_palette_zinc_light(), LV_THEME_SHADCN_VARIANT_GHOST);
+    check_accent_pressed(lv_theme_shadcn_palette_zinc_light(), LV_THEME_SHADCN_VARIANT_OUTLINE);
 }
 
 static void destructive_variant(void)
@@ -131,7 +152,7 @@ int main(void)
     RUN(button_pressed_mixes_text_color);
     RUN(button_touch_target_is_48dp);
     RUN(variants_replace_each_other);
-    RUN(ghost_pressed_uses_accent);
+    RUN(ghost_and_outline_pressed_stand_out_on_muted);
     RUN(destructive_variant);
     RUN(helpers_ignore_foreign_display);
     RUN(buttonmatrix_items_are_outline);

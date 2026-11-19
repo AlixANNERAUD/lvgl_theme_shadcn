@@ -181,8 +181,9 @@ static void build_actions(lv_theme_shadcn_state_t * st)
     lv_style_set_border_width(ghost, 0);
     lv_style_set_text_color(ghost, p->foreground);
 
-    set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_OUTLINE], p->accent, p->accent_fg);
-    set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_GHOST], p->accent, p->accent_fg);
+    lv_color_t accent_pressed = lv_color_mix(p->foreground, p->accent, LV_THEME_SHADCN_PRESS_ACCENT_MIX);
+    set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_OUTLINE], accent_pressed, p->accent_fg);
+    set_surface(&s->variant_pressed[LV_THEME_SHADCN_VARIANT_GHOST], accent_pressed, p->accent_fg);
 
     lv_style_set_bg_color(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_DEFAULT],
                           lv_color_mix(p->primary, p->background, LV_THEME_SHADCN_HOVER_OPA));
@@ -373,7 +374,9 @@ static void build_inputs(lv_theme_shadcn_state_t * st)
     lv_style_set_border_color(&s->popover_frame, p->border);
     lv_style_set_border_opa(&s->popover_frame, LV_OPA_COVER);
     lv_style_set_radius(&s->popover_frame, m->radius_md);
-    lv_style_set_pad_all(&s->popover_frame, m->space_xs);
+    lv_style_set_pad_hor(&s->popover_frame, m->space_sm);
+    lv_style_set_pad_ver(&s->popover_frame, m->space_sm);
+    lv_style_set_text_line_space(&s->popover_frame, m->space_md);
 
     set_surface(&s->key, p->secondary, p->secondary_fg);
     lv_style_set_radius(&s->key, m->radius_md);

@@ -665,9 +665,10 @@ pub enum Variant {
     Default,
     /// Filled with the secondary colour.
     Secondary,
-    /// Bordered with a transparent background.
+    /// Bordered with a transparent background; accent colour when hovered, and the accent darkened or lightened
+    /// towards the foreground when pressed, so it shows on muted surfaces too.
     Outline,
-    /// Transparent background, accent colour when pressed.
+    /// Transparent background, with the same hover and pressed colours as [`Variant::Outline`].
     Ghost,
     /// Filled with the destructive colour.
     Destructive,

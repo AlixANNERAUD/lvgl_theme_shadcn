@@ -31,11 +31,12 @@ static lv_obj_t * test_label(lv_obj_t * parent, const char * str)
     return label;
 }
 
-static lv_obj_t * test_button(lv_obj_t * parent, const char * str, lv_theme_shadcn_variant_t variant)
+static lv_obj_t * test_button(lv_obj_t * parent, const char * str, lv_theme_shadcn_variant_t variant, lv_state_t state)
 {
     lv_obj_t * btn = lv_button_create(parent);
     test_label(btn, str);
     lv_theme_shadcn_set_variant(btn, variant);
+    lv_obj_add_state(btn, state);
     return btn;
 }
 
@@ -61,8 +62,8 @@ static void build_surface_transparent(lv_obj_t * parent)
     lv_obj_set_size(toolbar, lv_pct(100), LV_SIZE_CONTENT);
     lv_obj_set_flex_flow(toolbar, LV_FLEX_FLOW_ROW);
     lv_obj_set_style_pad_column(toolbar, 8, 0);
-    test_button(toolbar, "Save", LV_THEME_SHADCN_VARIANT_DEFAULT);
-    test_button(toolbar, "Cancel", LV_THEME_SHADCN_VARIANT_OUTLINE);
+    test_button(toolbar, "Save", LV_THEME_SHADCN_VARIANT_DEFAULT, LV_STATE_DEFAULT);
+    test_button(toolbar, "Cancel", LV_THEME_SHADCN_VARIANT_OUTLINE, LV_STATE_DEFAULT);
     lv_obj_t * details = test_column(card);
     lv_theme_shadcn_set_surface(details, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
     lv_obj_set_style_pad_row(details, 4, 0);
@@ -75,8 +76,52 @@ static void build_surface_transparent(lv_obj_t * parent)
     test_label(restored, "Switched back to a card");
 }
 
+static void build_dropdown_open(lv_obj_t * parent)
+{
+    lv_obj_t * overflowing = lv_dropdown_create(parent);
+    lv_dropdown_set_options_static(overflowing, "A very long option that overflows");
+    lv_obj_set_width(overflowing, 180);
+    lv_obj_set_pos(overflowing, 16, 16);
+
+    lv_obj_t * dropdown = lv_dropdown_create(parent);
+    lv_dropdown_set_options_static(dropdown, "Apple\nBanana\nBlueberry\nGrapes\nPineapple");
+    lv_dropdown_set_selected(dropdown, 1);
+    lv_obj_set_width(dropdown, 180);
+    lv_obj_set_pos(dropdown, 240, 16);
+    lv_dropdown_open(dropdown);
+}
+
+static lv_obj_t * test_row(lv_obj_t * parent, lv_theme_shadcn_surface_t surface)
+{
+    lv_obj_t * row = lv_obj_create(parent);
+    lv_theme_shadcn_set_surface(row, surface);
+    lv_obj_set_size(row, lv_pct(100), LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
+    lv_obj_set_scrollable(row, false);
+    return row;
+}
+
+static void build_pressed_on_surfaces(lv_obj_t * parent)
+{
+    static const lv_theme_shadcn_surface_t surfaces[] = {
+        LV_THEME_SHADCN_SURFACE_BACKGROUND, LV_THEME_SHADCN_SURFACE_CARD, LV_THEME_SHADCN_SURFACE_MUTED
+    };
+    lv_obj_set_flex_flow(parent, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_all(parent, 12, 0);
+    lv_obj_set_style_pad_gap(parent, 8, 0);
+    for(size_t i = 0; i < sizeof(surfaces) / sizeof(surfaces[0]); i++) {
+        lv_obj_t * row = test_row(parent, surfaces[i]);
+        test_button(row, "Ghost", LV_THEME_SHADCN_VARIANT_GHOST, LV_STATE_PRESSED);
+        test_button(row, "Outline", LV_THEME_SHADCN_VARIANT_OUTLINE, LV_STATE_PRESSED);
+        test_button(row, "Hover", LV_THEME_SHADCN_VARIANT_GHOST, LV_STATE_HOVERED);
+        test_button(row, "Idle", LV_THEME_SHADCN_VARIANT_OUTLINE, LV_STATE_DEFAULT);
+    }
+}
+
 static const lv_theme_shadcn_scene_t test_scenes[] = {
     { "surface-transparent", build_surface_transparent },
+    { "dropdown-open", build_dropdown_open },
+    { "pressed-on-surfaces", build_pressed_on_surfaces },
 };
 
 static unsigned char * to_rgba(const lv_draw_buf_t * snap)

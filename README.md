@@ -231,7 +231,9 @@ control fill an `lv_theme_shadcn_palette_t` yourself: it holds shadcn's colour r
 lv_theme_shadcn_set_variant(button, LV_THEME_SHADCN_VARIANT_DESTRUCTIVE);
 ```
 
-`DEFAULT`, `SECONDARY`, `OUTLINE`, `GHOST` and `DESTRUCTIVE`, each with its own pressed state.
+`DEFAULT`, `SECONDARY`, `OUTLINE`, `GHOST` and `DESTRUCTIVE`, each with its own pressed state. `OUTLINE` and `GHOST`
+take the accent colour on hover and mix 15 % of the foreground into it when pressed: shadcn's accent is the muted
+colour, so a plain accent would not show on muted surfaces.
 
 ### Surfaces
 

@@ -57,6 +57,40 @@ static void dropdown_and_list(void)
     lv_obj_t * list = lv_dropdown_get_list(dd);
     CHECK_COLOR(lv_obj_get_style_bg_color(list, LV_PART_MAIN), dark()->popover);
     CHECK_COLOR(lv_obj_get_style_bg_color(list, LV_PART_SELECTED), dark()->accent);
+    CHECK_COLOR(lv_obj_get_style_text_color(list, LV_PART_SELECTED), dark()->accent_fg);
+}
+
+static void dropdown_list_spaces_options(void)
+{
+    lv_obj_t * dd = lv_dropdown_create(lv_screen_active());
+    lv_dropdown_set_options_static(dd, "One\nTwo\nThree");
+    lv_dropdown_open(dd);
+    lv_obj_t * list = lv_dropdown_get_list(dd);
+    int32_t sm = lv_display_dpx(harness_display(), 8);
+    CHECK_INT(lv_obj_get_style_pad_left(list, LV_PART_MAIN), sm);
+    CHECK_INT(lv_obj_get_style_pad_right(list, LV_PART_MAIN), sm);
+    CHECK_INT(lv_obj_get_style_pad_top(list, LV_PART_MAIN), sm);
+    CHECK_INT(lv_obj_get_style_pad_bottom(list, LV_PART_MAIN), sm);
+    CHECK_INT(lv_obj_get_style_text_line_space(list, LV_PART_MAIN), lv_display_dpx(harness_display(), 12));
+    CHECK_INT(lv_obj_get_style_radius(list, LV_PART_SELECTED), lv_display_dpx(harness_display(), 6));
+    CHECK_INT(lv_obj_get_style_border_width(list, LV_PART_SELECTED), 0);
+    lv_dropdown_close(dd);
+
+    lv_theme_shadcn_init(harness_display(), dark(), harness_fonts(), LV_THEME_SHADCN_FLAG_COMPACT);
+    lv_dropdown_open(dd);
+    CHECK_INT(lv_obj_get_style_text_line_space(list, LV_PART_MAIN), lv_display_dpx(harness_display(), 8));
+    CHECK_INT(lv_obj_get_style_pad_left(list, LV_PART_MAIN), lv_display_dpx(harness_display(), 4));
+}
+
+static void dropdown_trigger_has_no_scrollbar(void)
+{
+    lv_obj_t * dd = lv_dropdown_create(lv_screen_active());
+    lv_dropdown_set_options_static(dd, "An option far wider than its dropdown");
+    lv_obj_set_width(dd, 80);
+    lv_obj_update_layout(dd);
+    CHECK_INT(lv_obj_get_style_bg_opa(dd, LV_PART_SCROLLBAR), LV_OPA_TRANSP);
+    lv_obj_t * ta = lv_textarea_create(lv_screen_active());
+    CHECK_INT(lv_obj_get_style_bg_opa(ta, LV_PART_SCROLLBAR), LV_OPA_40);
 }
 
 static void dropdown_padding_matches_textarea(void)
@@ -96,6 +130,8 @@ int main(void)
     RUN(dropdown_error_open);
     RUN(spinbox_matches_textarea);
     RUN(dropdown_and_list);
+    RUN(dropdown_list_spaces_options);
+    RUN(dropdown_trigger_has_no_scrollbar);
     RUN(dropdown_padding_matches_textarea);
     RUN(roller_selected_row);
     RUN(keyboard_keys);

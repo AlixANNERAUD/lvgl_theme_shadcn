@@ -1,11 +1,18 @@
 #include "../lv_theme_shadcn_private.h"
 
 #if LV_USE_TEXTAREA || LV_USE_SPINBOX || LV_USE_DROPDOWN || LV_USE_ROLLER
-static void add_input(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
+static void add_input_frame(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
 {
     lv_obj_add_style(obj, &S(st)->input, 0);
     lv_obj_add_style(obj, &S(st)->focused_input, LV_STATE_FOCUSED);
     lv_theme_shadcn_add_interaction(st, obj, LV_PART_MAIN);
+}
+#endif
+
+#if LV_USE_TEXTAREA || LV_USE_SPINBOX || LV_USE_ROLLER
+static void add_input(lv_theme_shadcn_state_t * st, lv_obj_t * obj)
+{
+    add_input_frame(st, obj);
     lv_obj_add_style(obj, &S(st)->scrollbar, LV_PART_SCROLLBAR);
     lv_obj_add_style(obj, &S(st)->scrollbar_scrolled, LV_PART_SCROLLBAR | LV_STATE_SCROLLED);
 }
@@ -41,7 +48,10 @@ bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, 
 #if LV_USE_DROPDOWN
     if(lv_obj_check_type(obj, &lv_dropdown_class)) {
         lv_obj_add_style(obj, &S(st)->control, 0);
-        add_input(st, obj);
+        /* No scrollbar style: the trigger's self size is its whole text, so a long option makes it scrollable and
+         * a styled scrollbar showed as a line under the text, which LVGL already clips. The theme runs before
+         * lv_obj's constructor sets the scrollable flag, so it cannot clear the flag itself. */
+        add_input_frame(st, obj);
         lv_obj_add_style(obj, &S(st)->focused_input, LV_STATE_CHECKED);
         lv_theme_shadcn_set_touch_target(st, obj);
         return true;
@@ -49,6 +59,8 @@ bool lv_theme_shadcn_apply_inputs(lv_theme_shadcn_state_t * st, lv_obj_t * obj, 
     if(lv_obj_check_type(obj, &lv_dropdownlist_class)) {
         lv_obj_add_style(obj, &S(st)->surface[LV_THEME_SHADCN_SURFACE_POPOVER], 0);
         lv_obj_add_style(obj, &S(st)->popover_frame, 0);
+        /* Only for its small radius: `accent`, added after it, overrides its colours. */
+        lv_obj_add_style(obj, &S(st)->tab_button, LV_PART_SELECTED);
         lv_obj_add_style(obj, &S(st)->accent, LV_PART_SELECTED);
         lv_obj_add_style(obj, &S(st)->accent, LV_PART_SELECTED | LV_STATE_CHECKED);
         lv_obj_add_style(obj, &S(st)->accent, LV_PART_SELECTED | LV_STATE_PRESSED);
