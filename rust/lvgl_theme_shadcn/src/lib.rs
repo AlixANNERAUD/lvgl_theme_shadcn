@@ -922,11 +922,14 @@ pub enum Role {
     CardContent,
     /// Transparent row of vertically centred card actions.
     CardFooter,
+    /// Radio button, for a checkbox only: a round indicator with a primary dot when checked; only one of its radio
+    /// siblings is checked at a time.
+    Radio,
 }
 
 impl Role {
     /// Every role, in declaration order.
-    pub const ALL: [Role; 15] = [
+    pub const ALL: [Role; 16] = [
         Role::None,
         Role::Badge,
         Role::BadgeSecondary,
@@ -942,6 +945,7 @@ impl Role {
         Role::CardDescription,
         Role::CardContent,
         Role::CardFooter,
+        Role::Radio,
     ];
 }
 
@@ -963,6 +967,7 @@ impl From<Role> for sys::lv_theme_shadcn_role_t {
             Role::CardDescription => Self::LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION,
             Role::CardContent => Self::LV_THEME_SHADCN_ROLE_CARD_CONTENT,
             Role::CardFooter => Self::LV_THEME_SHADCN_ROLE_CARD_FOOTER,
+            Role::Radio => Self::LV_THEME_SHADCN_ROLE_RADIO,
         }
     }
 }

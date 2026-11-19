@@ -35,7 +35,8 @@ theme.set_palette(&Palette::zinc_light());
 - `set_text_role` with `TextRole` (`H1` to `H4`, `P`, `Lead`, `Large`, `Small`, `Muted`, `Code`); `Fonts` carries
   `small`, `normal`, `large`, `mono`, the heading fonts `h1`, `h2` and `h3`, and `medium` (button labels, the
   checked tab and card titles).
-- `set_role` with `Role`: badge variants, alert and destructive alert, separators, skeleton and card parts.
+- `set_role` with `Role`: badge variants, alert and destructive alert, separators, skeleton, card parts and radio
+  buttons (`Role::Radio` on a checkbox).
 - `Flags::COMPACT` and `Flags::REDUCED_MOTION` (keeps skeletons still).
 - `set_variant`, `set_surface` and `set_error` for variants, surfaces and error states; `Surface::Transparent` turns
   a plain container into a layout row, column or toolbar without the card's background, border, radius or padding.

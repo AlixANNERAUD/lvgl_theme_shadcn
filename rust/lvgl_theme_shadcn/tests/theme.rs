@@ -84,7 +84,7 @@ fn text_font(object: &Object) -> *const c_void {
 fn role_enums_list_every_value() {
     assert_eq!(TextRole::ALL.len(), 11);
     assert_eq!(TextRole::default(), TextRole::Default);
-    assert_eq!(Role::ALL.len(), 15);
+    assert_eq!(Role::ALL.len(), 16);
     assert_eq!(Role::default(), Role::None);
     for (index, role) in TextRole::ALL.into_iter().enumerate() {
         assert_eq!(sys::lv_theme_shadcn_text_t::from(role).0 as usize, index);

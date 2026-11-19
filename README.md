@@ -344,10 +344,21 @@ lv_obj_set_size(skeleton, 160, 16);
 
 Roles turn plain LVGL objects into shadcn components: `BADGE`, `BADGE_SECONDARY`, `BADGE_OUTLINE`,
 `BADGE_DESTRUCTIVE`, `ALERT`, `ALERT_DESTRUCTIVE`, `SEPARATOR`, `SEPARATOR_VERTICAL`, `SKELETON` and the card parts
-`CARD_HEADER`, `CARD_TITLE`, `CARD_DESCRIPTION`, `CARD_CONTENT` and `CARD_FOOTER`; `NONE` clears the role. Combine card
+`CARD_HEADER`, `CARD_TITLE`, `CARD_DESCRIPTION`, `CARD_CONTENT` and `CARD_FOOTER`, plus `RADIO` for checkboxes;
+`NONE` clears the role. Combine card
 parts with `lv_theme_shadcn_set_surface(card, LV_THEME_SHADCN_SURFACE_CARD)` on the container. The `display` scene in
 the gallery above shows them all. Skeletons pulse to signal loading; pass `LV_THEME_SHADCN_FLAG_REDUCED_MOTION` to
 `lv_theme_shadcn_init` to keep them still.
+
+`RADIO` turns an `lv_checkbox` into shadcn's radio button: a round indicator with a primary dot when checked. It also
+marks it as a radio button (`lv_obj_set_radio_button`), so only one of its radio siblings is checked at a time: put
+each group in its own container.
+
+```c
+lv_obj_t * option = lv_checkbox_create(group);
+lv_checkbox_set_text(option, "Comfortable");
+lv_theme_shadcn_set_role(option, LV_THEME_SHADCN_ROLE_RADIO);
+```
 
 ### Compact mode
 

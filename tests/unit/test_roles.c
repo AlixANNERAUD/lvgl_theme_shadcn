@@ -493,6 +493,78 @@ static void without_medium_font_nothing_changes(void)
     CHECK(font_of(title) == LV_FONT_DEFAULT);
 }
 
+static lv_obj_t * radio(lv_obj_t * parent)
+{
+    lv_obj_t * cb = lv_checkbox_create(parent);
+    lv_checkbox_set_text(cb, "Option");
+    lv_theme_shadcn_set_role(cb, LV_THEME_SHADCN_ROLE_RADIO);
+    return cb;
+}
+
+static void radio_is_round_with_a_dot(void)
+{
+    lv_obj_t * cb = radio(lv_screen_active());
+    CHECK(lv_obj_is_radio_button(cb));
+    CHECK_INT(lv_obj_get_style_radius(cb, LV_PART_INDICATOR), LV_RADIUS_CIRCLE);
+    /* Unchecked: a background disc in an input ring. */
+    CHECK_COLOR(lv_obj_get_style_bg_color(cb, LV_PART_INDICATOR), palette()->background);
+    CHECK_COLOR(lv_obj_get_style_border_color(cb, LV_PART_INDICATOR), palette()->background);
+    CHECK_INT(lv_obj_get_style_outline_width(cb, LV_PART_INDICATOR), dp(1));
+    CHECK_INT(lv_obj_get_style_outline_pad(cb, LV_PART_INDICATOR), -dp(1));
+    CHECK_COLOR(lv_obj_get_style_outline_color(cb, LV_PART_INDICATOR), palette()->input);
+    lv_obj_add_state(cb, LV_STATE_CHECKED);
+    harness_settle();
+    /* Checked: the primary fill shows as a dot inside the background border, without a check mark. */
+    CHECK_COLOR(lv_obj_get_style_bg_color(cb, LV_PART_INDICATOR), palette()->primary);
+    CHECK_COLOR(lv_obj_get_style_border_color(cb, LV_PART_INDICATOR), palette()->background);
+    CHECK(lv_obj_get_style_border_width(cb, LV_PART_INDICATOR) > dp(2));
+    CHECK_COLOR(lv_obj_get_style_outline_color(cb, LV_PART_INDICATOR), palette()->input);
+    CHECK(lv_obj_get_style_bg_image_src(cb, LV_PART_INDICATOR) == NULL);
+    lv_obj_add_state(cb, LV_STATE_HOVERED);
+    harness_settle();
+    CHECK_COLOR(lv_obj_get_style_border_color(cb, LV_PART_INDICATOR), palette()->background);
+    CHECK(lv_obj_get_style_bg_image_src(cb, LV_PART_INDICATOR) == NULL);
+    lv_obj_remove_state(cb, LV_STATE_HOVERED);
+    harness_settle();
+    lv_theme_shadcn_set_palette(harness_display(), lv_theme_shadcn_palette_zinc_light());
+    CHECK_COLOR(lv_obj_get_style_bg_color(cb, LV_PART_INDICATOR), palette()->primary);
+    CHECK_COLOR(lv_obj_get_style_border_color(cb, LV_PART_INDICATOR), palette()->background);
+}
+
+static void radios_check_one_sibling_at_a_time(void)
+{
+    lv_obj_t * group = lv_obj_create(lv_screen_active());
+    lv_obj_t * a = radio(group);
+    lv_obj_t * b = radio(group);
+    lv_obj_send_event(a, LV_EVENT_RELEASED, NULL);
+    CHECK(lv_obj_has_state(a, LV_STATE_CHECKED));
+    lv_obj_send_event(b, LV_EVENT_RELEASED, NULL);
+    CHECK(lv_obj_has_state(b, LV_STATE_CHECKED));
+    CHECK(!lv_obj_has_state(a, LV_STATE_CHECKED));
+    lv_obj_send_event(b, LV_EVENT_RELEASED, NULL);
+    CHECK(lv_obj_has_state(b, LV_STATE_CHECKED));
+}
+
+static void radio_role_is_for_checkboxes_and_can_be_removed(void)
+{
+    lv_obj_t * box = lv_obj_create(lv_screen_active());
+    lv_theme_shadcn_set_role(box, LV_THEME_SHADCN_ROLE_RADIO);
+    CHECK(!lv_obj_is_radio_button(box));
+    CHECK_INT(lv_obj_get_style_radius(box, LV_PART_INDICATOR), 0);
+
+    lv_obj_t * cb = radio(lv_screen_active());
+    lv_obj_add_state(cb, LV_STATE_CHECKED);
+    lv_theme_shadcn_set_role(cb, LV_THEME_SHADCN_ROLE_RADIO);
+    CHECK(lv_obj_is_radio_button(cb));
+    CHECK_INT(lv_obj_get_style_radius(cb, LV_PART_INDICATOR), LV_RADIUS_CIRCLE);
+    CHECK(lv_obj_get_style_bg_image_src(cb, LV_PART_INDICATOR) == NULL);
+    lv_theme_shadcn_set_role(cb, LV_THEME_SHADCN_ROLE_NONE);
+    CHECK(!lv_obj_is_radio_button(cb));
+    CHECK(lv_obj_get_style_radius(cb, LV_PART_INDICATOR) != LV_RADIUS_CIRCLE);
+    CHECK_COLOR(lv_obj_get_style_border_color(cb, LV_PART_INDICATOR), palette()->primary);
+    CHECK(lv_obj_get_style_bg_image_src(cb, LV_PART_INDICATOR) != NULL);
+}
+
 int main(void)
 {
     RUN(text_roles_pick_fonts);
@@ -514,6 +586,9 @@ int main(void)
     RUN(text_and_component_roles_are_independent);
     RUN(roles_follow_palette);
     RUN(roles_follow_radius);
+    RUN(radio_is_round_with_a_dot);
+    RUN(radios_check_one_sibling_at_a_time);
+    RUN(radio_role_is_for_checkboxes_and_can_be_removed);
     RUN(medium_font_styles_buttons_tabs_and_card_titles);
     RUN(small_sizes_keep_the_small_font);
     RUN(without_medium_font_nothing_changes);

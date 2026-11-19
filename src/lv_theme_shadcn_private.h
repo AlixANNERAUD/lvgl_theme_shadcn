@@ -9,7 +9,7 @@
 #define LV_THEME_SHADCN_RADIUS_COUNT 6
 #define LV_THEME_SHADCN_SIZE_COUNT 6
 #define LV_THEME_SHADCN_TEXT_COUNT 11
-#define LV_THEME_SHADCN_ROLE_COUNT 15
+#define LV_THEME_SHADCN_ROLE_COUNT 16
 #define LV_THEME_SHADCN_PULSE_MS 1000
 #define LV_THEME_SHADCN_PRESS_MIX 26
 /* Foreground mixed into the accent for pressed outline and ghost controls. shadcn's palettes give accent the colour

@@ -353,6 +353,11 @@ typedef enum {
     LV_THEME_SHADCN_ROLE_CARD_CONTENT,
     /** Transparent row of vertically centred card actions. */
     LV_THEME_SHADCN_ROLE_CARD_FOOTER,
+    /**
+     * Radio button, for an @c lv_checkbox only: a round indicator with a primary dot when checked. The role also
+     * makes it a radio button (@c lv_obj_set_radio_button), so only one of its radio siblings is checked at a time.
+     */
+    LV_THEME_SHADCN_ROLE_RADIO,
 } lv_theme_shadcn_role_t;
 
 /**
@@ -551,8 +556,9 @@ void lv_theme_shadcn_set_text_role(lv_obj_t * obj, lv_theme_shadcn_text_t role);
  * @brief Sets the component role of a plain object or label.
  *
  * Replaces any previous role. A ::LV_THEME_SHADCN_ROLE_SKELETON pulse animation is bound to the object and stops
- * when the role is replaced, the object is deleted or the theme is removed. Ignored when @p obj is NULL, its display
- * has no active shadcn theme or @p role is out of range.
+ * when the role is replaced, the object is deleted or the theme is removed. Replacing ::LV_THEME_SHADCN_ROLE_RADIO
+ * also clears the object's radio button flag. Ignored when @p obj is NULL, its display has no active shadcn theme or
+ * @p role is out of range, and ::LV_THEME_SHADCN_ROLE_RADIO is ignored on anything but an @c lv_checkbox.
  *
  * @param obj Object or label to style.
  * @param role New role, or ::LV_THEME_SHADCN_ROLE_NONE to remove it.

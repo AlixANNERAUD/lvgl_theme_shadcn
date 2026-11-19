@@ -204,6 +204,7 @@ impl lv_theme_shadcn_role_t {
     pub const LV_THEME_SHADCN_ROLE_CARD_CONTENT: lv_theme_shadcn_role_t =
         lv_theme_shadcn_role_t(13);
     pub const LV_THEME_SHADCN_ROLE_CARD_FOOTER: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(14);
+    pub const LV_THEME_SHADCN_ROLE_RADIO: lv_theme_shadcn_role_t = lv_theme_shadcn_role_t(15);
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
