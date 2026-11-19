@@ -12,6 +12,10 @@
 #define LV_THEME_SHADCN_ROLE_COUNT 15
 #define LV_THEME_SHADCN_PULSE_MS 1000
 #define LV_THEME_SHADCN_PRESS_MIX 26
+/* Foreground mixed into the accent for pressed outline and ghost controls. shadcn's palettes give accent the colour
+ * of muted (and often secondary), so a pressed accent alone vanishes on muted surfaces; 15 % keeps it at least 32
+ * luminance levels away from background, card and muted for every base, after RGB565 quantization. */
+#define LV_THEME_SHADCN_PRESS_ACCENT_MIX 38
 #define LV_THEME_SHADCN_HOVER_OPA LV_OPA_90
 #define LV_THEME_SHADCN_HOVER_SECONDARY_OPA LV_OPA_80
 #define LV_THEME_SHADCN_DISABLED_OPA LV_OPA_50

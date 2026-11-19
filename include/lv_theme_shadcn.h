@@ -211,9 +211,12 @@ typedef enum {
     LV_THEME_SHADCN_VARIANT_DEFAULT,
     /** Filled with the secondary colour. */
     LV_THEME_SHADCN_VARIANT_SECONDARY,
-    /** Bordered with a transparent background. */
+    /**
+     * Bordered with a transparent background; accent colour when hovered, and the accent darkened or lightened
+     * towards the foreground when pressed, so it shows on muted surfaces too.
+     */
     LV_THEME_SHADCN_VARIANT_OUTLINE,
-    /** Transparent background, accent colour when pressed. */
+    /** Transparent background, with the same hover and pressed colours as ::LV_THEME_SHADCN_VARIANT_OUTLINE. */
     LV_THEME_SHADCN_VARIANT_GHOST,
     /** Filled with the destructive colour. */
     LV_THEME_SHADCN_VARIANT_DESTRUCTIVE,
