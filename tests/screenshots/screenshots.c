@@ -138,11 +138,36 @@ static void build_toggle_buttons(lv_obj_t * parent)
     }
 }
 
+static void build_radio_group(lv_obj_t * parent)
+{
+    static const char * const options[] = { "Default", "Comfortable", "Compact" };
+    lv_obj_set_flex_flow(parent, LV_FLEX_FLOW_ROW);
+    lv_obj_set_style_pad_all(parent, 16, 0);
+    lv_obj_set_style_pad_gap(parent, 16, 0);
+    static const lv_theme_shadcn_surface_t surfaces[] = { LV_THEME_SHADCN_SURFACE_CARD, LV_THEME_SHADCN_SURFACE_MUTED };
+    for(size_t s = 0; s < sizeof(surfaces) / sizeof(surfaces[0]); s++) {
+        lv_obj_t * group = lv_obj_create(parent);
+        lv_theme_shadcn_set_surface(group, surfaces[s]);
+        lv_obj_set_size(group, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+        lv_obj_set_flex_flow(group, LV_FLEX_FLOW_COLUMN);
+        for(size_t i = 0; i < sizeof(options) / sizeof(options[0]); i++) {
+            lv_obj_t * cb = lv_checkbox_create(group);
+            lv_checkbox_set_text_static(cb, options[i]);
+            lv_theme_shadcn_set_role(cb, LV_THEME_SHADCN_ROLE_RADIO);
+            if(i == 1) lv_obj_add_state(cb, LV_STATE_CHECKED);
+        }
+        lv_obj_t * plain = lv_checkbox_create(group);
+        lv_checkbox_set_text_static(plain, "Checkbox");
+        lv_obj_add_state(plain, LV_STATE_CHECKED);
+    }
+}
+
 static const lv_theme_shadcn_scene_t test_scenes[] = {
     { "surface-transparent", build_surface_transparent },
     { "dropdown-open", build_dropdown_open },
     { "pressed-on-surfaces", build_pressed_on_surfaces },
     { "toggle-buttons", build_toggle_buttons },
+    { "radio-group", build_radio_group },
 };
 
 static unsigned char * to_rgba(const lv_draw_buf_t * snap)

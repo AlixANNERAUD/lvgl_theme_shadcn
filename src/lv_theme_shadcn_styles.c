@@ -649,6 +649,22 @@ static void build_roles(lv_theme_shadcn_state_t * st)
     lv_style_set_text_font(title, medium_font(st) ? medium_font(st) : st->fonts.large);
     lv_style_set_text_line_space(title, 0);
 
+    /* A radio's indicator is the checkbox marker made round, with no check mark. A border in the marker's own
+     * background colour hides all of its fill but a central dot, and an outline pulled 1 dp inwards draws the
+     * input ring. Unchecked, the fill is the background, so only the ring shows; checked, the checkbox's primary
+     * fill shows as the dot, hover colour included. The marker's size follows the label's font, sized here from
+     * the body font. */
+    int32_t marker = lv_font_get_line_height(st->fonts.normal) + 2 * (m->space_xs / 2);
+    lv_style_t * radio = role_style(st, LV_THEME_SHADCN_ROLE_RADIO);
+    lv_style_set_radius(radio, LV_RADIUS_CIRCLE);
+    lv_style_set_bg_image_src(radio, NULL);
+    lv_style_set_border_color(radio, p->background);
+    lv_style_set_border_width(radio, LV_MAX(marker * 28 / 100, m->border_width + 1));
+    lv_style_set_outline_width(radio, m->border_width);
+    lv_style_set_outline_color(radio, p->input);
+    lv_style_set_outline_opa(radio, LV_OPA_COVER);
+    lv_style_set_outline_pad(radio, -m->border_width);
+
     lv_style_t * description = role_style(st, LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION);
     lv_style_set_text_font(description, st->fonts.small);
     lv_style_set_text_color(description, p->muted_fg);
