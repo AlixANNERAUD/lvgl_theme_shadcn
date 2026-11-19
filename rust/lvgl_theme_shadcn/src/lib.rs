@@ -666,9 +666,11 @@ pub enum Variant {
     /// Filled with the secondary colour.
     Secondary,
     /// Bordered with a transparent background; accent colour when hovered, and the accent darkened or lightened
-    /// towards the foreground when pressed, so it shows on muted surfaces too.
+    /// towards the foreground when pressed, so it shows on muted surfaces too. A checkable button keeps the pressed
+    /// colour while checked, like shadcn's Toggle.
     Outline,
-    /// Transparent background, with the same hover and pressed colours as [`Variant::Outline`].
+    /// Transparent background, with the same hover, pressed and checked colours as [`Variant::Outline`]: shadcn's
+    /// default Toggle when checkable.
     Ghost,
     /// Filled with the destructive colour.
     Destructive,

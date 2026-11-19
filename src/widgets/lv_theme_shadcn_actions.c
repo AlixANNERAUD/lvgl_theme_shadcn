@@ -5,6 +5,12 @@ void lv_theme_shadcn_add_variant(lv_theme_shadcn_state_t * st, lv_obj_t * obj, l
     lv_obj_add_style(obj, &S(st)->variant[variant], 0);
     lv_obj_add_style(obj, &S(st)->variant_hovered[variant], LV_STATE_HOVERED);
     lv_obj_add_style(obj, &S(st)->variant_pressed[variant], LV_STATE_PRESSED);
+    /* shadcn's Toggle: a checkable outline or ghost button stays highlighted while on. shadcn uses the accent,
+     * which is the muted colour, so the pressed colour is used instead to keep it visible on muted surfaces. Only
+     * these two variants get the entry, so filled buttons pay nothing for it. */
+    if(variant == LV_THEME_SHADCN_VARIANT_OUTLINE || variant == LV_THEME_SHADCN_VARIANT_GHOST) {
+        lv_obj_add_style(obj, &S(st)->variant_pressed[variant], LV_STATE_CHECKED);
+    }
     lv_theme_shadcn_add_hover_filter(obj);
 }
 

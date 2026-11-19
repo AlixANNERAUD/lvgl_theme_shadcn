@@ -146,6 +146,38 @@ static void variant_change_keeps_item_styles(void)
     CHECK_COLOR(lv_obj_get_style_border_color(bm, LV_PART_ITEMS), dark()->input);
 }
 
+static void checkable_outline_and_ghost_are_toggles(void)
+{
+    static const lv_theme_shadcn_variant_t toggles[] = { LV_THEME_SHADCN_VARIANT_GHOST, LV_THEME_SHADCN_VARIANT_OUTLINE };
+    for(size_t i = 0; i < sizeof(toggles) / sizeof(toggles[0]); i++) {
+        lv_obj_t * btn = lv_button_create(lv_screen_active());
+        lv_theme_shadcn_set_variant(btn, toggles[i]);
+        lv_obj_set_checkable(btn, true);
+        CHECK_INT(lv_obj_get_style_bg_opa(btn, LV_PART_MAIN), LV_OPA_TRANSP);
+        lv_obj_add_state(btn, LV_STATE_CHECKED);
+        harness_settle();
+        /* Not the accent: that is the muted colour, invisible on muted surfaces. */
+        CHECK_COLOR(lv_obj_get_style_bg_color(btn, LV_PART_MAIN),
+                    lv_color_mix(dark()->foreground, dark()->accent, 38));
+        CHECK(!lv_color_eq(lv_obj_get_style_bg_color(btn, LV_PART_MAIN), dark()->muted));
+        CHECK_INT(lv_obj_get_style_bg_opa(btn, LV_PART_MAIN), LV_OPA_COVER);
+        CHECK_COLOR(lv_obj_get_style_text_color(btn, LV_PART_MAIN), dark()->accent_fg);
+        lv_obj_remove_state(btn, LV_STATE_CHECKED);
+        harness_settle();
+        CHECK_INT(lv_obj_get_style_bg_opa(btn, LV_PART_MAIN), LV_OPA_TRANSP);
+    }
+}
+
+static void filled_buttons_ignore_checked(void)
+{
+    lv_obj_t * btn = lv_button_create(lv_screen_active());
+    lv_obj_add_state(btn, LV_STATE_CHECKED);
+    CHECK_COLOR(lv_obj_get_style_bg_color(btn, LV_PART_MAIN), dark()->primary);
+    lv_theme_shadcn_set_variant(btn, LV_THEME_SHADCN_VARIANT_GHOST);
+    lv_theme_shadcn_set_variant(btn, LV_THEME_SHADCN_VARIANT_SECONDARY);
+    CHECK_COLOR(lv_obj_get_style_bg_color(btn, LV_PART_MAIN), dark()->secondary);
+}
+
 int main(void)
 {
     RUN(button_is_primary);
@@ -153,6 +185,8 @@ int main(void)
     RUN(button_touch_target_is_48dp);
     RUN(variants_replace_each_other);
     RUN(ghost_and_outline_pressed_stand_out_on_muted);
+    RUN(checkable_outline_and_ghost_are_toggles);
+    RUN(filled_buttons_ignore_checked);
     RUN(destructive_variant);
     RUN(helpers_ignore_foreign_display);
     RUN(buttonmatrix_items_are_outline);
