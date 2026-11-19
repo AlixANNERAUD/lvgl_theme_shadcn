@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/compare/v0.4.0...v0.5.0) - 2026-11-19
+
+### Added
+
+- show checked outline and ghost buttons as toggles ([#14](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/pull/14))
+- add a radio role for checkboxes ([#15](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/pull/15))
+
 ## [0.4.0](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/compare/v0.3.1...v0.4.0) - 2026-11-19
 
 ### Added
