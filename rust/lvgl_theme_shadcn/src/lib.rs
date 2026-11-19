@@ -580,7 +580,8 @@ impl From<Palette> for sys::lv_theme_shadcn_palette_t {
 /// Fonts used by the theme; `None` falls back to `normal`, then to `LV_FONT_DEFAULT`.
 ///
 /// Heading fonts fall back down the chain `h1` → `h2` → `h3` → `large` → `normal`, so setting only `h3` gives
-/// every heading that font.
+/// every heading that font. `medium` restyles button labels, the checked tab button and [`Role::CardTitle`] only
+/// once it differs from `normal`.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Fonts {
     /// Font for captions and secondary text.
@@ -597,6 +598,10 @@ pub struct Fonts {
     pub h2: Option<Font>,
     /// Font for [`TextRole::H3`].
     pub h3: Option<Font>,
+    /// Medium or semibold weight at the body size, for button labels, the checked tab button and
+    /// [`Role::CardTitle`]; `None` falls back to `normal`, and while it equals `normal` those keep their previous
+    /// fonts (card titles use `large`).
+    pub medium: Option<Font>,
 }
 
 impl Fonts {
@@ -610,6 +615,7 @@ impl Fonts {
             h1: raw(self.h1),
             h2: raw(self.h2),
             h3: raw(self.h3),
+            medium: raw(self.medium),
         }
     }
 }
@@ -905,7 +911,7 @@ pub enum Role {
     Skeleton,
     /// Transparent column holding a card title and description.
     CardHeader,
-    /// Card title, with the large font.
+    /// Card title, with [`Fonts::medium`], or the large font while no medium font is set.
     CardTitle,
     /// Card description: the small font in the muted foreground colour.
     CardDescription,

@@ -9,7 +9,8 @@ or linked here: it is provided by whatever crate or build system already supplie
 
 The bindings cover the whole C API, including `lv_theme_shadcn_set_radius`, `lv_theme_shadcn_set_size`,
 `lv_theme_shadcn_set_text_role` and `lv_theme_shadcn_set_role`, and the `lv_theme_shadcn_fonts_t` struct with its
-heading fonts `h1`, `h2` and `h3`. Build the fonts struct with every field set, since Rust has no partial initialisers.
+heading fonts `h1`, `h2` and `h3` and its `medium` font. Build the fonts struct with every field set, since Rust has no
+partial initialisers.
 
 ## Locating LVGL
 

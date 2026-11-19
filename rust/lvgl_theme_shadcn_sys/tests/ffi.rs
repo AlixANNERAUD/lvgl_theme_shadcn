@@ -13,6 +13,7 @@ unsafe extern "C" {
     fn lv_theme_shadcn_probe_palette_dark_offset() -> usize;
     fn lv_theme_shadcn_probe_fonts_size() -> usize;
     fn lv_theme_shadcn_probe_fonts_h1_offset() -> usize;
+    fn lv_theme_shadcn_probe_fonts_medium_offset() -> usize;
 }
 
 unsafe extern "C" {
@@ -66,6 +67,10 @@ fn fonts_layout_matches_c() {
         assert_eq!(
             offset_of!(lv_theme_shadcn_fonts_t, h1),
             lv_theme_shadcn_probe_fonts_h1_offset()
+        );
+        assert_eq!(
+            offset_of!(lv_theme_shadcn_fonts_t, medium),
+            lv_theme_shadcn_probe_fonts_medium_offset()
         );
     }
 }

@@ -23,9 +23,10 @@ lv_theme_shadcn_state_t * lv_theme_shadcn_state_from_obj(const lv_obj_t * obj)
 
 static void resolve_fonts(lv_theme_shadcn_state_t * st, const lv_theme_shadcn_fonts_t * fonts)
 {
-    lv_theme_shadcn_fonts_t f = { NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+    lv_theme_shadcn_fonts_t f = { 0 };
     if(fonts) f = *fonts;
     if(f.normal == NULL) f.normal = LV_FONT_DEFAULT;
+    if(f.medium == NULL) f.medium = f.normal;
     if(f.small == NULL) f.small = f.normal;
     if(f.large == NULL) f.large = f.normal;
     if(f.mono == NULL) f.mono = f.normal;
@@ -230,4 +231,13 @@ void lv_theme_shadcn_set_variant(lv_obj_t * obj, lv_theme_shadcn_variant_t varia
     remove_styles(obj, S(st)->variant_pressed, LV_THEME_SHADCN_VARIANT_COUNT);
     remove_styles(obj, S(st)->variant_hovered, LV_THEME_SHADCN_VARIANT_COUNT);
     lv_theme_shadcn_add_variant(st, obj, variant);
+    /* Variants carry the medium font and sizes the small one, and nothing else they set overlaps: keep the size
+     * above the variant just added, so a small button keeps its small font whatever order they were set in.
+     * lv_obj_add_style moves a style that is already there to the top. */
+    for(int i = 0; i < LV_THEME_SHADCN_SIZE_COUNT - 1; i++) {
+        lv_style_t * size = &S(st)->size[i];
+        if(!lv_obj_get_style_enabled(obj, size, 0)) continue;
+        lv_obj_add_style(obj, size, 0);
+        break;
+    }
 }

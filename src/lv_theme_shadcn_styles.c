@@ -11,6 +11,13 @@ static int32_t dp(const lv_theme_shadcn_state_t * st, int32_t value)
     return lv_display_dpx(st->disp, value);
 }
 
+/* A medium font only restyles text once it differs from the body font: until then buttons and tabs keep inheriting
+ * their font and card titles keep the large one, as before the slot existed. */
+static const lv_font_t * medium_font(const lv_theme_shadcn_state_t * st)
+{
+    return st->fonts.medium != st->fonts.normal ? st->fonts.medium : NULL;
+}
+
 static int32_t radius_dp(const lv_theme_shadcn_state_t * st, int32_t scale_percent)
 {
     int32_t centi = radius_centi_dp[st->radius] * scale_percent / 100;
@@ -185,6 +192,14 @@ static void build_actions(lv_theme_shadcn_state_t * st)
                           lv_color_mix(p->destructive, p->background, LV_THEME_SHADCN_HOVER_OPA));
     set_surface(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_OUTLINE], p->accent, p->accent_fg);
     set_surface(&s->variant_hovered[LV_THEME_SHADCN_VARIANT_GHOST], p->accent, p->accent_fg);
+
+    /* In the variant styles rather than `control`, which dropdown triggers and every tab button share: only
+     * buttons and button matrix items get a variant. Labels inherit it, and smaller sizes still switch to the small
+     * font. */
+    const lv_font_t * medium = medium_font(st);
+    if(medium) {
+        for(int i = 0; i < LV_THEME_SHADCN_VARIANT_COUNT; i++) lv_style_set_text_font(&s->variant[i], medium);
+    }
 }
 
 int32_t lv_theme_shadcn_size_height(const lv_theme_shadcn_state_t * st, lv_theme_shadcn_size_t size)
@@ -420,6 +435,7 @@ static void build_collections(lv_theme_shadcn_state_t * st)
     lv_style_set_pad_ver(&s->tab_button, m->space_xs);
 
     set_surface(&s->tab_button_checked, p->background, p->foreground);
+    if(medium_font(st)) lv_style_set_text_font(&s->tab_button_checked, medium_font(st));
 
     set_surface(&s->calendar_day, p->card, p->card_fg);
     lv_style_set_border_width(&s->calendar_day, m->border_width);
@@ -627,7 +643,7 @@ static void build_roles(lv_theme_shadcn_state_t * st)
     set_card_part(st, LV_THEME_SHADCN_ROLE_CARD_FOOTER, LV_FLEX_FLOW_ROW, LV_FLEX_ALIGN_CENTER, m->space_sm);
 
     lv_style_t * title = role_style(st, LV_THEME_SHADCN_ROLE_CARD_TITLE);
-    lv_style_set_text_font(title, st->fonts.large);
+    lv_style_set_text_font(title, medium_font(st) ? medium_font(st) : st->fonts.large);
     lv_style_set_text_line_space(title, 0);
 
     lv_style_t * description = role_style(st, LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION);
