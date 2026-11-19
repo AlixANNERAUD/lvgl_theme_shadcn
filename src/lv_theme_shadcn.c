@@ -191,9 +191,15 @@ void lv_theme_shadcn_set_size(lv_obj_t * obj, lv_theme_shadcn_size_t size)
 void lv_theme_shadcn_set_surface(lv_obj_t * obj, lv_theme_shadcn_surface_t surface)
 {
     lv_theme_shadcn_state_t * st = lv_theme_shadcn_state_from_obj(obj);
-    if(st == NULL || (int)surface < 0 || surface >= LV_THEME_SHADCN_SURFACE_COUNT) return;
+    if(st == NULL || (int)surface < 0 || surface > LV_THEME_SHADCN_SURFACE_TRANSPARENT) return;
     remove_styles(obj, S(st)->surface, LV_THEME_SHADCN_SURFACE_COUNT);
-    lv_obj_add_style(obj, &S(st)->surface[surface], 0);
+    /* `transparent` is added last, so it overrides the border, radius and padding of `container` and `card`
+     * without removing them: an object that had them gets them back with any other surface, and one that never
+     * had them does not gain them. Removing the theme's own `transparent` from tab and tile panels is harmless,
+     * since their remaining styles never set what it clears. */
+    lv_obj_remove_style(obj, &S(st)->transparent, LV_PART_MAIN | LV_STATE_ANY);
+    if(surface == LV_THEME_SHADCN_SURFACE_TRANSPARENT) lv_obj_add_style(obj, &S(st)->transparent, 0);
+    else lv_obj_add_style(obj, &S(st)->surface[surface], 0);
 }
 
 void lv_theme_shadcn_set_error(lv_obj_t * obj, bool error)

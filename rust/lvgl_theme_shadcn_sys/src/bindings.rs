@@ -135,6 +135,8 @@ impl lv_theme_shadcn_surface_t {
         lv_theme_shadcn_surface_t(2);
     pub const LV_THEME_SHADCN_SURFACE_MUTED: lv_theme_shadcn_surface_t =
         lv_theme_shadcn_surface_t(3);
+    pub const LV_THEME_SHADCN_SURFACE_TRANSPARENT: lv_theme_shadcn_surface_t =
+        lv_theme_shadcn_surface_t(4);
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]

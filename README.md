@@ -241,6 +241,16 @@ lv_theme_shadcn_set_surface(panel, LV_THEME_SHADCN_SURFACE_CARD);
 
 `BACKGROUND`, `CARD`, `POPOVER` and `MUTED` set a container's fill and text colour to the matching palette role.
 
+A plain `lv_obj` is a card by default. For layout containers such as rows, columns and toolbars, `TRANSPARENT` drops
+the card's background, border, radius and padding, and its children inherit the parent's text colour. Switching back
+to another surface restores the card look.
+
+```c
+lv_obj_t * toolbar = lv_obj_create(card);
+lv_theme_shadcn_set_surface(toolbar, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+lv_obj_set_flex_flow(toolbar, LV_FLEX_FLOW_ROW);
+```
+
 ### Errors
 
 ```c

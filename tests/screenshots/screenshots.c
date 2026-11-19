@@ -23,6 +23,62 @@ static void flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * px_m
     lv_display_flush_ready(disp);
 }
 
+/* Scenes rendered only here, for cases the gallery scenes do not show. */
+static lv_obj_t * test_label(lv_obj_t * parent, const char * str)
+{
+    lv_obj_t * label = lv_label_create(parent);
+    lv_label_set_text(label, str);
+    return label;
+}
+
+static lv_obj_t * test_button(lv_obj_t * parent, const char * str, lv_theme_shadcn_variant_t variant)
+{
+    lv_obj_t * btn = lv_button_create(parent);
+    test_label(btn, str);
+    lv_theme_shadcn_set_variant(btn, variant);
+    return btn;
+}
+
+static lv_obj_t * test_column(lv_obj_t * parent)
+{
+    lv_obj_t * column = lv_obj_create(parent);
+    lv_obj_set_size(column, lv_pct(100), LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(column, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_scrollable(column, false);
+    return column;
+}
+
+static void build_surface_transparent(lv_obj_t * parent)
+{
+    lv_obj_set_flex_flow(parent, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_all(parent, 16, 0);
+    lv_obj_set_style_pad_gap(parent, 16, 0);
+
+    lv_obj_t * card = test_column(parent);
+    test_label(card, "Transparent rows inside a card");
+    lv_obj_t * toolbar = lv_obj_create(card);
+    lv_theme_shadcn_set_surface(toolbar, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_obj_set_size(toolbar, lv_pct(100), LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(toolbar, LV_FLEX_FLOW_ROW);
+    lv_obj_set_style_pad_column(toolbar, 8, 0);
+    test_button(toolbar, "Save", LV_THEME_SHADCN_VARIANT_DEFAULT);
+    test_button(toolbar, "Cancel", LV_THEME_SHADCN_VARIANT_OUTLINE);
+    lv_obj_t * details = test_column(card);
+    lv_theme_shadcn_set_surface(details, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_obj_set_style_pad_row(details, 4, 0);
+    test_label(details, "No background, border, radius or padding.");
+    lv_theme_shadcn_set_text_role(test_label(details, "Text keeps the card colour."), LV_THEME_SHADCN_TEXT_MUTED);
+
+    lv_obj_t * restored = test_column(parent);
+    lv_theme_shadcn_set_surface(restored, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_theme_shadcn_set_surface(restored, LV_THEME_SHADCN_SURFACE_CARD);
+    test_label(restored, "Switched back to a card");
+}
+
+static const lv_theme_shadcn_scene_t test_scenes[] = {
+    { "surface-transparent", build_surface_transparent },
+};
+
 static unsigned char * to_rgba(const lv_draw_buf_t * snap)
 {
     unsigned char * rgba = malloc((size_t)WIDTH * HEIGHT * 4);
@@ -227,6 +283,11 @@ int main(int argc, char ** argv)
             snprintf(name, sizeof(name), "%s-%s", scenes[s].name, palette_names[p]);
             check(&scenes[s], name, ref_dir, out_dir, update, &failed, &missing);
             if(strcmp(scenes[s].name, "showcase") == 0) showcase = &scenes[s];
+        }
+        for(size_t s = 0; s < sizeof(test_scenes) / sizeof(test_scenes[0]); s++) {
+            char name[96];
+            snprintf(name, sizeof(name), "%s-%s", test_scenes[s].name, palette_names[p]);
+            check(&test_scenes[s], name, ref_dir, out_dir, update, &failed, &missing);
         }
     }
 

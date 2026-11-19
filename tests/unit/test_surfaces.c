@@ -36,6 +36,77 @@ static void set_surface_switches_background(void)
     CHECK_COLOR(lv_obj_get_style_bg_color(box, LV_PART_MAIN), dark()->card);
 }
 
+static void check_card_look(lv_obj_t * obj)
+{
+    CHECK_COLOR(lv_obj_get_style_bg_color(obj, LV_PART_MAIN), dark()->card);
+    CHECK_INT(lv_obj_get_style_bg_opa(obj, LV_PART_MAIN), LV_OPA_COVER);
+    CHECK_INT(lv_obj_get_style_border_width(obj, LV_PART_MAIN), lv_display_dpx(harness_display(), 1));
+    CHECK_INT(lv_obj_get_style_radius(obj, LV_PART_MAIN), lv_display_dpx(harness_display(), 14));
+    CHECK_INT(lv_obj_get_style_pad_left(obj, LV_PART_MAIN), lv_display_dpx(harness_display(), 16));
+    CHECK_INT(lv_obj_get_style_pad_row(obj, LV_PART_MAIN), lv_display_dpx(harness_display(), 12));
+}
+
+static void transparent_surface_clears_card_look(void)
+{
+    lv_obj_t * card = lv_obj_create(lv_screen_active());
+    lv_obj_t * row = lv_obj_create(card);
+    lv_theme_shadcn_set_surface(row, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    CHECK_INT(lv_obj_get_style_bg_opa(row, LV_PART_MAIN), LV_OPA_TRANSP);
+    CHECK_INT(lv_obj_get_style_border_width(row, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_radius(row, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_pad_left(row, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_pad_top(row, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_pad_row(row, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_pad_column(row, LV_PART_MAIN), 0);
+    CHECK_COLOR(lv_obj_get_style_text_color(row, LV_PART_MAIN), dark()->card_fg);
+    lv_obj_t * label = lv_label_create(row);
+    CHECK_COLOR(lv_obj_get_style_text_color(label, LV_PART_MAIN), dark()->card_fg);
+}
+
+static void transparent_surface_switches_back_to_card(void)
+{
+    lv_obj_t * box = lv_obj_create(lv_screen_active());
+    lv_theme_shadcn_set_surface(box, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_theme_shadcn_set_surface(box, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_theme_shadcn_set_surface(box, LV_THEME_SHADCN_SURFACE_CARD);
+    check_card_look(box);
+    lv_theme_shadcn_set_surface(box, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_theme_shadcn_set_surface(box, LV_THEME_SHADCN_SURFACE_MUTED);
+    CHECK_COLOR(lv_obj_get_style_bg_color(box, LV_PART_MAIN), dark()->muted);
+    CHECK_INT(lv_obj_get_style_border_width(box, LV_PART_MAIN), lv_display_dpx(harness_display(), 1));
+    CHECK_INT(lv_obj_get_style_pad_left(box, LV_PART_MAIN), lv_display_dpx(harness_display(), 16));
+}
+
+static void transparent_surface_survives_restyles(void)
+{
+    lv_obj_t * box = lv_obj_create(lv_screen_active());
+    lv_theme_shadcn_set_surface(box, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_theme_shadcn_set_palette(harness_display(), lv_theme_shadcn_palette_zinc_light());
+    lv_theme_shadcn_set_radius(harness_display(), LV_THEME_SHADCN_RADIUS_XL);
+    CHECK_INT(lv_obj_get_style_bg_opa(box, LV_PART_MAIN), LV_OPA_TRANSP);
+    CHECK_INT(lv_obj_get_style_border_width(box, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_radius(box, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_pad_left(box, LV_PART_MAIN), 0);
+}
+
+static void other_surfaces_add_no_frame(void)
+{
+    lv_obj_t * label = lv_label_create(lv_screen_active());
+    lv_theme_shadcn_set_surface(label, LV_THEME_SHADCN_SURFACE_TRANSPARENT);
+    lv_theme_shadcn_set_surface(label, LV_THEME_SHADCN_SURFACE_MUTED);
+    CHECK_COLOR(lv_obj_get_style_bg_color(label, LV_PART_MAIN), dark()->muted);
+    CHECK_INT(lv_obj_get_style_border_width(label, LV_PART_MAIN), 0);
+    CHECK_INT(lv_obj_get_style_pad_left(label, LV_PART_MAIN), 0);
+}
+
+static void set_surface_ignores_out_of_range(void)
+{
+    lv_obj_t * box = lv_obj_create(lv_screen_active());
+    lv_theme_shadcn_set_surface(box, (lv_theme_shadcn_surface_t)(LV_THEME_SHADCN_SURFACE_TRANSPARENT + 1));
+    lv_theme_shadcn_set_surface(box, (lv_theme_shadcn_surface_t)-1);
+    check_card_look(box);
+}
+
 static void set_error_toggles_destructive_border(void)
 {
     lv_obj_t * box = lv_obj_create(lv_screen_active());
@@ -97,6 +168,11 @@ int main(void)
     RUN(plain_obj_is_a_card);
     RUN(label_inherits_parent_text_color);
     RUN(set_surface_switches_background);
+    RUN(transparent_surface_clears_card_look);
+    RUN(transparent_surface_switches_back_to_card);
+    RUN(transparent_surface_survives_restyles);
+    RUN(other_surfaces_add_no_frame);
+    RUN(set_surface_ignores_out_of_range);
     RUN(set_error_toggles_destructive_border);
     RUN(disabled_obj_is_dimmed);
     RUN(focus_key_shows_ring);

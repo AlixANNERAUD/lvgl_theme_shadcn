@@ -14,6 +14,8 @@ const LV_PART_MAIN: u32 = 0;
 /// Probed from LVGL 9.6 with the `rust/ci` `lv_conf.h`; the value depends on the LVGL version.
 const LV_STYLE_BG_COLOR: u8 = 73;
 /// Probed from LVGL 9.6 like [`LV_STYLE_BG_COLOR`].
+const LV_STYLE_BG_OPA: u8 = 72;
+/// Probed from LVGL 9.6 like [`LV_STYLE_BG_COLOR`].
 const LV_STYLE_RADIUS: u8 = 120;
 /// Probed from LVGL 9.6 like [`LV_STYLE_BG_COLOR`].
 const LV_STYLE_TEXT_COLOR: u8 = 92;
@@ -56,6 +58,10 @@ fn size(object: &Object) -> (i32, i32) {
             lv_obj_get_height(object.as_ptr()),
         )
     }
+}
+
+fn bg_opa(object: &Object) -> i32 {
+    unsafe { lv_obj_get_style_prop(object.as_ptr(), LV_PART_MAIN, LV_STYLE_BG_OPA).num }
 }
 
 fn bg_color(object: &Object) -> Color {
@@ -271,6 +277,13 @@ fn theme_lifecycle_and_helpers() {
     assert_eq!(theme.radius(), Radius::Xl);
     assert_eq!((radius(&button), radius(&card)), (13, 22));
     theme.set_radius(Radius::Default);
+
+    unsafe { set_surface(&card, Surface::Transparent) };
+    assert_eq!(radius(&card), 0);
+    assert_eq!(bg_opa(&card), 0);
+    unsafe { set_surface(&card, Surface::Card) };
+    assert_eq!(radius(&card), 14);
+    assert_eq!(bg_color(&card), theme.palette().expect("palette").card());
 
     unsafe { set_size(&button, Size::Sm) };
     assert_eq!(size(&button).1, 32);

@@ -4,6 +4,7 @@
 #include "lv_theme_shadcn.h"
 
 #define LV_THEME_SHADCN_VARIANT_COUNT 5
+/* Surfaces with a style of their own: every surface but ::LV_THEME_SHADCN_SURFACE_TRANSPARENT. */
 #define LV_THEME_SHADCN_SURFACE_COUNT 4
 #define LV_THEME_SHADCN_RADIUS_COUNT 6
 #define LV_THEME_SHADCN_SIZE_COUNT 6
