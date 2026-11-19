@@ -48,8 +48,12 @@ static void every_scene_fits_the_screen(void)
 static void every_scene_fits_with_heading_fonts(void)
 {
     static const lv_theme_shadcn_fonts_t fonts = {
-        &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL,
-        &lv_font_montserrat_32, &lv_font_montserrat_28, &lv_font_montserrat_24
+        .small = &lv_font_montserrat_12,
+        .normal = &lv_font_montserrat_14,
+        .large = &lv_font_montserrat_20,
+        .h1 = &lv_font_montserrat_32,
+        .h2 = &lv_font_montserrat_28,
+        .h3 = &lv_font_montserrat_24,
     };
     lv_theme_shadcn_init(harness_display(), lv_theme_shadcn_palette_zinc_dark(), &fonts, LV_THEME_SHADCN_FLAG_NONE);
     scenes_fit();

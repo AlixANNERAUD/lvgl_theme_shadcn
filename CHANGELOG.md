@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Breaking
+
+- `lv_theme_shadcn_fonts_t` gains a `medium` font at the end of the struct, used by button labels, the checked tab button and the card title role once it differs from `normal`. Code compiled against the previous header passes a smaller struct: rebuild it. Positional initialisers still compile but warn under `-Wmissing-field-initializers`; use designated initialisers (`.small`, `.normal`, ..., `.medium`). In Rust, `Fonts` has the new `medium` field.
+
 ## [0.3.1](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/compare/v0.3.0...v0.3.1) - 2026-10-15
 
 ### Miscellaneous

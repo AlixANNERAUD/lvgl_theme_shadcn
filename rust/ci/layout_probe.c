@@ -30,3 +30,8 @@ size_t lv_theme_shadcn_probe_fonts_h1_offset(void)
 {
     return offsetof(lv_theme_shadcn_fonts_t, h1);
 }
+
+size_t lv_theme_shadcn_probe_fonts_medium_offset(void)
+{
+    return offsetof(lv_theme_shadcn_fonts_t, medium);
+}

@@ -164,6 +164,9 @@ typedef enum {
  * A NULL font falls back to @ref normal, and a NULL @ref normal falls back to @c LV_FONT_DEFAULT. Heading fonts fall
  * back down the chain @ref h1, @ref h2, @ref h3, @ref large, then @ref normal, so setting only @ref h3 gives every
  * heading that font. Fonts must outlive the theme.
+ *
+ * Use designated initialisers (`.small = ..., .normal = ...`): fields are only ever appended, and positional
+ * initialisers warn under @c -Wmissing-field-initializers when one is.
  */
 typedef struct {
     /** Captions and secondary text. */
@@ -180,6 +183,12 @@ typedef struct {
     const lv_font_t * h2;
     /** ::LV_THEME_SHADCN_TEXT_H3 headings. */
     const lv_font_t * h3;
+    /**
+     * Medium or semibold weight at the body size, for button labels, the checked tab button and
+     * ::LV_THEME_SHADCN_ROLE_CARD_TITLE. NULL falls back to @ref normal, and while it equals @ref normal those
+     * elements keep their previous fonts: buttons and tabs inherit theirs, card titles use @ref large.
+     */
+    const lv_font_t * medium;
 } lv_theme_shadcn_fonts_t;
 
 /**
@@ -329,7 +338,7 @@ typedef enum {
     LV_THEME_SHADCN_ROLE_SKELETON,
     /** Transparent column holding a card title and description. */
     LV_THEME_SHADCN_ROLE_CARD_HEADER,
-    /** Card title, with the large font. */
+    /** Card title, with lv_theme_shadcn_fonts_t::medium, or the large font while no medium font is set. */
     LV_THEME_SHADCN_ROLE_CARD_TITLE,
     /** Card description: the small font in the muted foreground colour. */
     LV_THEME_SHADCN_ROLE_CARD_DESCRIPTION,

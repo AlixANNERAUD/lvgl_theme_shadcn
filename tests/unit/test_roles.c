@@ -1,8 +1,12 @@
 #include "harness.h"
 
 static const lv_theme_shadcn_fonts_t heading_fonts = {
-    &lv_font_montserrat_12, &lv_font_montserrat_14, &lv_font_montserrat_20, NULL,
-    &lv_font_montserrat_32, &lv_font_montserrat_28, &lv_font_montserrat_24
+    .small = &lv_font_montserrat_12,
+    .normal = &lv_font_montserrat_14,
+    .large = &lv_font_montserrat_20,
+    .h1 = &lv_font_montserrat_32,
+    .h2 = &lv_font_montserrat_28,
+    .h3 = &lv_font_montserrat_24,
 };
 
 static int32_t dp(int32_t v)
@@ -145,7 +149,7 @@ static void heading_fonts_fall_back_down_the_chain(void)
     CHECK(font_of(h2) == &lv_font_montserrat_24);
     CHECK(font_of(h3) == &lv_font_montserrat_24);
 
-    lv_theme_shadcn_fonts_t normal_only = { NULL, &lv_font_montserrat_14, NULL, NULL, NULL, NULL, NULL };
+    lv_theme_shadcn_fonts_t normal_only = { .normal = &lv_font_montserrat_14 };
     init_with(&normal_only);
     CHECK(font_of(h1) == &lv_font_montserrat_14);
     init_with(NULL);
@@ -398,6 +402,97 @@ static void roles_follow_radius(void)
     CHECK_INT(lv_obj_get_style_radius(badge, LV_PART_MAIN), LV_RADIUS_CIRCLE);
 }
 
+static const lv_theme_shadcn_fonts_t medium_fonts = {
+    .small = &lv_font_montserrat_12,
+    .normal = &lv_font_montserrat_14,
+    .large = &lv_font_montserrat_20,
+    .medium = &lv_font_montserrat_24,
+};
+
+static lv_obj_t * button_label(lv_obj_t * parent)
+{
+    lv_obj_t * btn = lv_button_create(parent);
+    lv_obj_t * l = lv_label_create(btn);
+    lv_label_set_text(l, "Button");
+    return l;
+}
+
+static void medium_font_styles_buttons_tabs_and_card_titles(void)
+{
+    init_with(&medium_fonts);
+    lv_obj_t * text = button_label(lv_screen_active());
+    lv_obj_t * btn = lv_obj_get_parent(text);
+    CHECK(font_of(text) == &lv_font_montserrat_24);
+    lv_theme_shadcn_set_variant(btn, LV_THEME_SHADCN_VARIANT_GHOST);
+    CHECK(font_of(text) == &lv_font_montserrat_24);
+    lv_theme_shadcn_set_size(btn, LV_THEME_SHADCN_SIZE_LG);
+    CHECK(font_of(text) == &lv_font_montserrat_24);
+
+    static const char * map[] = { "A", "" };
+    lv_obj_t * matrix = lv_buttonmatrix_create(lv_screen_active());
+    lv_buttonmatrix_set_map(matrix, map);
+    CHECK(lv_obj_get_style_text_font(matrix, LV_PART_ITEMS) == &lv_font_montserrat_24);
+
+    lv_obj_t * title = label();
+    lv_theme_shadcn_set_role(title, LV_THEME_SHADCN_ROLE_CARD_TITLE);
+    CHECK(font_of(title) == &lv_font_montserrat_24);
+
+    lv_obj_t * tabview = lv_tabview_create(lv_screen_active());
+    lv_tabview_add_tab(tabview, "One");
+    lv_tabview_add_tab(tabview, "Two");
+    lv_obj_t * bar = lv_tabview_get_tab_bar(tabview);
+    lv_obj_t * checked = lv_obj_get_child(bar, 0);
+    lv_obj_t * other = lv_obj_get_child(bar, 1);
+    CHECK(lv_obj_has_state(checked, LV_STATE_CHECKED));
+    CHECK(font_of(checked) == &lv_font_montserrat_24);
+    CHECK(font_of(other) == &lv_font_montserrat_14);
+
+    lv_obj_t * dropdown = lv_dropdown_create(lv_screen_active());
+    CHECK(font_of(dropdown) == &lv_font_montserrat_14);
+}
+
+static void small_sizes_keep_the_small_font(void)
+{
+    init_with(&medium_fonts);
+    lv_obj_t * text = button_label(lv_screen_active());
+    lv_obj_t * btn = lv_obj_get_parent(text);
+    lv_theme_shadcn_set_size(btn, LV_THEME_SHADCN_SIZE_SM);
+    CHECK(font_of(text) == &lv_font_montserrat_12);
+    lv_theme_shadcn_set_variant(btn, LV_THEME_SHADCN_VARIANT_OUTLINE);
+    CHECK(font_of(text) == &lv_font_montserrat_12);
+    CHECK_INT(lv_obj_get_style_height(btn, LV_PART_MAIN), dp(32));
+    lv_theme_shadcn_set_size(btn, LV_THEME_SHADCN_SIZE_ICON_SM);
+    lv_theme_shadcn_set_variant(btn, LV_THEME_SHADCN_VARIANT_DEFAULT);
+    CHECK(font_of(text) == &lv_font_montserrat_12);
+    lv_theme_shadcn_set_size(btn, LV_THEME_SHADCN_SIZE_DEFAULT);
+    lv_theme_shadcn_set_variant(btn, LV_THEME_SHADCN_VARIANT_SECONDARY);
+    CHECK(font_of(text) == &lv_font_montserrat_24);
+}
+
+static void without_medium_font_nothing_changes(void)
+{
+    init_with(&heading_fonts);
+    lv_obj_t * box = lv_obj_create(lv_screen_active());
+    lv_theme_shadcn_set_text_role(box, LV_THEME_SHADCN_TEXT_SMALL);
+    lv_obj_t * text = button_label(box);
+    CHECK(font_of(text) == &lv_font_montserrat_12);
+    lv_obj_t * title = label();
+    lv_theme_shadcn_set_role(title, LV_THEME_SHADCN_ROLE_CARD_TITLE);
+    CHECK(font_of(title) == &lv_font_montserrat_20);
+
+    lv_theme_shadcn_fonts_t same = heading_fonts;
+    same.medium = same.normal;
+    init_with(&same);
+    CHECK(font_of(text) == &lv_font_montserrat_12);
+    CHECK(font_of(title) == &lv_font_montserrat_20);
+
+    init_with(&medium_fonts);
+    CHECK(font_of(text) == &lv_font_montserrat_24);
+    CHECK(font_of(title) == &lv_font_montserrat_24);
+    init_with(NULL);
+    CHECK(font_of(title) == LV_FONT_DEFAULT);
+}
+
 int main(void)
 {
     RUN(text_roles_pick_fonts);
@@ -419,5 +514,8 @@ int main(void)
     RUN(text_and_component_roles_are_independent);
     RUN(roles_follow_palette);
     RUN(roles_follow_radius);
+    RUN(medium_font_styles_buttons_tabs_and_card_titles);
+    RUN(small_sizes_keep_the_small_font);
+    RUN(without_medium_font_nothing_changes);
     return harness_result();
 }

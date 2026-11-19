@@ -289,6 +289,7 @@ static const lv_theme_shadcn_fonts_t fonts = {
     .h1 = &lv_font_montserrat_32,
     .h2 = &lv_font_montserrat_28,
     .h3 = &lv_font_montserrat_24,
+    .medium = &my_font_medium_14,
 };
 
 lv_theme_shadcn_set_text_role(title, LV_THEME_SHADCN_TEXT_H1);
@@ -300,7 +301,13 @@ Text roles style a label with shadcn's typography: `H1`, `H2`, `H3`, `H4`, `P`, 
 `mono`. A missing `mono` falls back to `normal`, and missing headings fall back in turn (`h3` to `large`, `h2` to `h3`,
 `h1` to `h2`), so the roles work with just the three base fonts.
 
-Adding `h1`, `h2` and `h3` to `lv_theme_shadcn_fonts_t` breaks positional initialisers such as
+`medium` is a medium or semibold weight at the body size, as shadcn uses for buttons, the active tab and card titles.
+LVGL's built-in fonts have a single weight, so convert one with `lv_font_conv` (for example `my_font_medium_14` above,
+from the `500` or `600` weight of your body font). Button labels, the checked tab button and `CARD_TITLE` use it once it
+differs from `normal`; without it they keep their previous fonts, and `CARD_TITLE` stays on `large`. Small button sizes
+keep the `small` font.
+
+New fonts are appended to `lv_theme_shadcn_fonts_t`, which breaks positional initialisers such as
 `{ &small, &normal, &large, &mono }` when compiling with `-Wmissing-field-initializers`; switch to designated
 initialisers as above.
 

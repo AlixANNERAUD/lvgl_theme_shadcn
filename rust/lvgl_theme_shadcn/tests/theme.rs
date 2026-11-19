@@ -44,6 +44,7 @@ unsafe extern "C" {
     fn lv_obj_delete(obj: *mut sys::lv_obj_t);
     fn lv_anim_count_running() -> u16;
     static lv_font_montserrat_14: u8;
+    static lv_font_montserrat_20: u8;
 }
 
 fn radius(object: &Object) -> i32 {
@@ -351,6 +352,22 @@ fn theme_lifecycle_and_helpers() {
         .expect("theme");
     unsafe { set_text_role(&label, TextRole::H1) };
     assert_eq!(text_font(&label), normal.expect("font").as_ptr().cast());
+    drop(theme);
+
+    let medium = unsafe { Font::from_const_ptr(&raw const lv_font_montserrat_20) };
+    let medium_fonts = Fonts {
+        normal,
+        medium,
+        ..Fonts::default()
+    };
+    let theme = unsafe { Theme::init(display, &Palette::zinc_dark(), &medium_fonts, Flags::NONE) }
+        .expect("theme");
+    unsafe {
+        set_text_role(&label, TextRole::Default);
+        set_role(&label, Role::CardTitle);
+    }
+    assert_eq!(text_font(&label), medium.expect("font").as_ptr().cast());
+    unsafe { set_role(&label, Role::None) };
     drop(theme);
 
     let theme = unsafe {

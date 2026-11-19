@@ -101,6 +101,7 @@ pub struct lv_theme_shadcn_fonts_t {
     pub h1: *const lv_font_t,
     pub h2: *const lv_font_t,
     pub h3: *const lv_font_t,
+    pub medium: *const lv_font_t,
 }
 impl lv_theme_shadcn_flags_t {
     pub const LV_THEME_SHADCN_FLAG_NONE: lv_theme_shadcn_flags_t = lv_theme_shadcn_flags_t(0);
