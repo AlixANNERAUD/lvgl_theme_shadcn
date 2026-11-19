@@ -118,10 +118,31 @@ static void build_pressed_on_surfaces(lv_obj_t * parent)
     }
 }
 
+static void build_toggle_buttons(lv_obj_t * parent)
+{
+    static const lv_theme_shadcn_surface_t surfaces[] = { LV_THEME_SHADCN_SURFACE_CARD, LV_THEME_SHADCN_SURFACE_MUTED };
+    lv_obj_set_flex_flow(parent, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_all(parent, 12, 0);
+    lv_obj_set_style_pad_gap(parent, 8, 0);
+    for(size_t i = 0; i < sizeof(surfaces) / sizeof(surfaces[0]); i++) {
+        lv_obj_t * row = test_row(parent, surfaces[i]);
+        static const lv_theme_shadcn_variant_t variants[] = {
+            LV_THEME_SHADCN_VARIANT_GHOST, LV_THEME_SHADCN_VARIANT_GHOST,
+            LV_THEME_SHADCN_VARIANT_OUTLINE, LV_THEME_SHADCN_VARIANT_OUTLINE, LV_THEME_SHADCN_VARIANT_DEFAULT
+        };
+        static const char * const labels[] = { "Bold", "Italic", "Grid", "List", "Filled" };
+        for(size_t v = 0; v < sizeof(variants) / sizeof(variants[0]); v++) {
+            lv_obj_t * btn = test_button(row, labels[v], variants[v], v % 2 == 0 ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+            lv_obj_set_checkable(btn, true);
+        }
+    }
+}
+
 static const lv_theme_shadcn_scene_t test_scenes[] = {
     { "surface-transparent", build_surface_transparent },
     { "dropdown-open", build_dropdown_open },
     { "pressed-on-surfaces", build_pressed_on_surfaces },
+    { "toggle-buttons", build_toggle_buttons },
 };
 
 static unsigned char * to_rgba(const lv_draw_buf_t * snap)

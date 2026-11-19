@@ -235,6 +235,16 @@ lv_theme_shadcn_set_variant(button, LV_THEME_SHADCN_VARIANT_DESTRUCTIVE);
 take the accent colour on hover and mix 15 % of the foreground into it when pressed: shadcn's accent is the muted
 colour, so a plain accent would not show on muted surfaces.
 
+Made checkable, `GHOST` and `OUTLINE` buttons are shadcn's Toggle: they keep the pressed colour while checked, which,
+unlike shadcn's accent, stays visible on muted surfaces. For a group where only one can be on, also call
+`lv_obj_set_radio_button` on each.
+
+```c
+lv_obj_t * bold = lv_button_create(toolbar);
+lv_theme_shadcn_set_variant(bold, LV_THEME_SHADCN_VARIANT_GHOST);
+lv_obj_set_checkable(bold, true);
+```
+
 ### Surfaces
 
 ```c
