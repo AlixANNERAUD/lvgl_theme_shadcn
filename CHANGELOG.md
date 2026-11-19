@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/compare/v0.3.1...v0.4.0) - 2026-11-19
+
+### Added
+
+- add a transparent surface for layout containers ([#11](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/pull/11))
+- [**breaking**] add a medium font slot ([#13](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/pull/13))
+
+### Fixed
+
+- space dropdown options and show pressed outline and ghost buttons on muted surfaces ([#12](https://github.com/AlixANNERAUD/lvgl_theme_shadcn/pull/12))
+
 ### Breaking
 
 - `lv_theme_shadcn_fonts_t` gains a `medium` font at the end of the struct, used by button labels, the checked tab button and the card title role once it differs from `normal`. Code compiled against the previous header passes a smaller struct: rebuild it. Positional initialisers still compile but warn under `-Wmissing-field-initializers`; use designated initialisers (`.small`, `.normal`, ..., `.medium`). In Rust, `Fonts` has the new `medium` field.
